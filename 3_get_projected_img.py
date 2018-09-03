@@ -38,6 +38,7 @@ def img_projected():
     img = cv2.imread('./Images/CF013540.jpg')
     print(img.shape)
     img2 = np.zeros(img.shape, np.uint8)
+    img3 = np.zeros(img.shape, np.uint8)
     classes = []
     for i in tqdm(range(0, px.shape[0])):
         if width > px[i] > 0 and height > py[i] > 0:
@@ -45,7 +46,9 @@ def img_projected():
             if labels[i] not in classes:
                 classes.append(labels[i])
             cv2.circle(img2, (int(px[i]), int(py[i])), 1, c, -1)
+            cv2.circle(img3, (int(px[i]), int(py[i])), 10, c, -1)
     cv2.imwrite("./2.jpg", img2)
+    cv2.imwrite("./3.jpg", img3)
             # draw.point((px[i], py[i]), fill=c)
     # img2.save("./CF013540_labeled.jpg", 'JPEG')
     print("classes: ", classes)

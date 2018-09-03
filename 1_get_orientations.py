@@ -1,5 +1,4 @@
 import os
-from tqdm import tqdm
 
 
 def get_extOri(imgs_path, extOri_file, extOri_save_file):
@@ -16,7 +15,7 @@ def get_extOri(imgs_path, extOri_file, extOri_save_file):
 
     with open(extOri_file, "r") as fp:
         for line in fp:
-            for img_name in tqdm(img_list):
+            for img_name in img_list:
                 if line.split("\t")[0] == img_name.split(".")[0]:
                     with open(extOri_save_file, "a") as fp1:
                         fp1.write(line)
