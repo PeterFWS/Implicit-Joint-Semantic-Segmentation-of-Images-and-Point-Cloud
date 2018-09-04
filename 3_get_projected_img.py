@@ -1,20 +1,35 @@
-# from PIL import Image
-# from PIL import ImageDraw
 import numpy as np
-import time
 from tqdm import tqdm
 import cv2
+import os
 
 
-def img_projected():
-    print("start to load \n")
-    start_time = time.time()
-    px = np.loadtxt("./px.txt")
-    py = np.loadtxt("./py.txt")
-    labels = np.loadtxt("./labels.txt")
-    duration = time.time() - start_time
-    print("down! \n")
-    print("duration: ", duration, " s")
+def img_projected(px, py, labels, color_classes, img_path, data_path):
+
+    width = 11608
+    height = 8708
+
+    img = cv2.imread(img_path)
+    print(img.shape)
+    img2 = np.zeros(img.shape, np.uint8)
+    img3 = np.zeros(img.shape, np.uint8)
+
+    classes = []
+    for i in tqdm(range(0, px.shape[0])):
+        if width > px[i] > 0 and height > py[i] > 0:
+            c = color_classes[str(labels[i])]
+            if labels[i] not in classes:
+                classes.append(labels[i])
+            cv2.circle(img2, (int(px[i]), int(py[i])), 1, c, -1)
+            cv2.circle(img3, (int(px[i]), int(py[i])), 10, c, -1)
+
+    cv2.imwrite(os.path.join(data_path, "2.jpg"), img2)
+    cv2.imwrite(os.path.join(data_path, "3.jpg"), img3)
+
+    print("\n classes: ", classes, " img name: ", img_path.split("/")[-1], "\n")
+
+
+if __name__ == "__main__":
 
     color_classes = {"1.0": (255, 255, 255),  # white
                      "2.0": (255, 255, 0),  # yellow
@@ -29,30 +44,17 @@ def img_projected():
                      "11.0": (143, 67, 61)  # some red
                      }
 
-    width = 11608
-    height = 8708
+    projected_pc_path = "./Images_projected_pc"
+    imgs_path = "./Images"
+    img_list = os.listdir(imgs_path)
 
-    # img = Image.open('./Images/CF013540.jpg')
-    # img2 = Image.new("RGB", img.size)
-    # draw = ImageDraw.Draw(img2)
-    img = cv2.imread('./Images/CF013540.jpg')
-    print(img.shape)
-    img2 = np.zeros(img.shape, np.uint8)
-    img3 = np.zeros(img.shape, np.uint8)
-    classes = []
-    for i in tqdm(range(0, px.shape[0])):
-        if width > px[i] > 0 and height > py[i] > 0:
-            c = color_classes[str(labels[i])]
-            if labels[i] not in classes:
-                classes.append(labels[i])
-            cv2.circle(img2, (int(px[i]), int(py[i])), 1, c, -1)
-            cv2.circle(img3, (int(px[i]), int(py[i])), 10, c, -1)
-    cv2.imwrite("./2.jpg", img2)
-    cv2.imwrite("./3.jpg", img3)
-            # draw.point((px[i], py[i]), fill=c)
-    # img2.save("./CF013540_labeled.jpg", 'JPEG')
-    print("classes: ", classes)
+    for img_name in tqdm(img_list):
 
+        data_path = os.path.join(projected_pc_path, img_name.split(".")[0])
+        img_path = os.path.join(imgs_path, img_name)
 
-if __name__ == "__main__":
-    img_projected()
+        px = np.loadtxt(os.path.join(data_path, "px.txt"))
+        py = np.loadtxt(os.path.join(data_path, "py.txt"))
+        labels = np.loadtxt(os.path.join(data_path, "labels.txt"))
+
+        img_projected(px, py, labels, color_classes, img_path, data_path)
