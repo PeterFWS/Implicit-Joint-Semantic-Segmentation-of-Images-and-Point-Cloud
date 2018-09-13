@@ -3,11 +3,10 @@ from tqdm import tqdm
 import cv2
 import os
 
+import my_parameters
+
 
 def img_projected(px, py, labels, color_classes, img_path, data_path):
-
-    width = 11608
-    height = 8708
 
     img = cv2.imread(img_path)
     print(img.shape)
@@ -16,7 +15,7 @@ def img_projected(px, py, labels, color_classes, img_path, data_path):
 
     classes = []
     for i in tqdm(range(0, px.shape[0])):
-        if width > px[i] > 0 and height > py[i] > 0:
+        if my_parameters.width > px[i] > 0 and my_parameters.height > py[i] > 0:
             c = color_classes[str(labels[i])]
             if labels[i] not in classes:
                 classes.append(labels[i])
@@ -31,30 +30,19 @@ def img_projected(px, py, labels, color_classes, img_path, data_path):
 
 if __name__ == "__main__":
 
-    color_classes = {"1.0": (255, 255, 255),  # white
-                     "2.0": (255, 255, 0),  # yellow
-                     "3.0": (255, 0, 255),  # fashion red
-                     "4.0": (0, 255, 255),  # Cyan
-                     "5.0": (0, 255, 0),  # green
-                     "6.0": (0, 0, 255),  # blue
-                     "7.0": (239, 120, 76),  # some orange
-                     "8.0": (247, 238, 179),  # some yellow
-                     "9.0": (0, 18, 114),  # some blue
-                     "10.0": (63, 34, 15),  # some brown
-                     "11.0": (143, 67, 61)  # some red
-                     }
-
     projected_pc_path = "./Images_projected_pc"
     imgs_path = "./Images"
     img_list = os.listdir(imgs_path)
 
-    for img_name in tqdm(img_list):
+    for img_name in img_list:
 
         data_path = os.path.join(projected_pc_path, img_name.split(".")[0])
         img_path = os.path.join(imgs_path, img_name)
 
         px = np.loadtxt(os.path.join(data_path, "px.txt"))
         py = np.loadtxt(os.path.join(data_path, "py.txt"))
-        labels = np.loadtxt(os.path.join(data_path, "labels.txt"))
+        labels = np.loadtxt("./labels.txt")
 
-        img_projected(px, py, labels, color_classes, img_path, data_path)
+        img_projected(px, py, labels, my_parameters.color_classes, img_path, data_path)
+
+        
