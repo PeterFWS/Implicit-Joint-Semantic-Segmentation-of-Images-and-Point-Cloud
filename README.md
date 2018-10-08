@@ -1,4 +1,4 @@
-# master Thesis in Uni Stuttgart
+# master Thesis - Uni Stuttgart
 ## GeoEngine, Institute for Photogrammetry
 
 run in python3 will not crush
