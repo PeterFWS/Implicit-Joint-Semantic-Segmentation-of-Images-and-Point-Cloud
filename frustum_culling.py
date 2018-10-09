@@ -28,6 +28,7 @@ def make_if_not_exists(dirPath):
 #     return nh, nw, fh, fw
 
 def setCamInternals(nearD, farD):
+    # compute width and height of the near and far plane sections
     nh = my_parameters.height * my_parameters.pixel_size
     nw = my_parameters.width * my_parameters.pixel_size
     fh = nh*farD/nearD
@@ -36,6 +37,11 @@ def setCamInternals(nearD, farD):
     return nh, nw, fh, fw
 
 def setCamDef(nh, nw, fh, fw, nearD, farD, p=Vec3(), l=Vec3(), u=Vec3()):
+    # Input Parameters:
+    #  * the position of the camera,
+    #  * a point to where the camera is pointing
+    #  * the up vector
+
     # Vec3 dir,nc,fc,X,Y,Z;
     Z = p - l
     Z.normalize()
@@ -76,6 +82,7 @@ point_status = {
 def pointInFrustum(p=Vec3(),
                    pl_TOP=Plane(), pl_BOTTOM=Plane(), pl_LEFT=Plane(),
                    pl_RIGHT=Plane(), pl_NEARP=Plane(), pl_FARP=Plane()):
+
     result = "INSIDE"
 
     if pl_TOP.distance(p)<0 \
@@ -115,8 +122,13 @@ if __name__ == "__main__":
     nearD = abs(my_parameters.f)
     farD = Z_
 
+
+    # start frustum culling
     nh, nw, fh, fw = setCamInternals(nearD, farD)
 
     pl_TOP, pl_BOTTOM, pl_LEFT, pl_RIGHT, pl_NEARP, pl_FARP = \
-        setCamDef(nh, nw, fh, fw, nearD, farD, p=Vec3(X_, Y_, Z_), l=Vec3(0,0,1), u=Vec3())
+        setCamDef(nh, nw, fh, fw, nearD, farD, p=Vec3(X_, Y_, Z_), l=Vec3(0,0,1), u=Vec3(0,1,0))
+
+
+
 
