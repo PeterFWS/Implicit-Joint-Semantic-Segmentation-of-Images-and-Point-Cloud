@@ -1,33 +1,42 @@
-# import math
+import math
 import numpy as np
 import os
 import my_parameters
 from my_parameters import Vec3
 from my_parameters import Plane
-# from my_parameters import ANG2RAD
+from my_parameters import ANG2RAD
 import time
 import tqdm
 import cv2
 
 """
-* Parameters:
-    Vec3 ntl,ntr,nbl,nbr,ftl,ftr,fbl,fbr;
-    float nearD, farD, ratio, angle,tang;
-    float nw,nh,fw,fh;
+ * Geometric Approach for View Frustum Culling
+  * test data: 3d point clouds
 """
+
 
 def make_if_not_exists(dirPath):
     if not os.path.exists(dirPath):
         os.makedirs(dirPath)
 
-def setCamInternals(nearD, farD):
+def setCamInternals(angle, ratio, nearD, farD):
     # compute width and height of the near and far plane sections
-    nh = my_parameters.height * my_parameters.pixel_size
-    nw = my_parameters.width * my_parameters.pixel_size
-    fh = nh*farD/nearD
-    fw = nw*farD/nearD
+    tang = float(math.tan(angle * ANG2RAD * 0.5))
+    nh = nearD * tang
+    nw = nh * ratio
+    fh = farD * tang
+    fw = fh * ratio
 
     return nh, nw, fh, fw
+
+# def setCamInternals(nearD, farD):
+#     # compute width and height of the near and far plane sections
+#     nh = my_parameters.height * my_parameters.pixel_size
+#     nw = my_parameters.width * my_parameters.pixel_size
+#     fh = nh*farD/nearD
+#     fw = nw*farD/nearD
+#
+#     return nh, nw, fh, fw
 
 def setCamDef(nh, nw, fh, fw, nearD, farD, p=Vec3(), l=Vec3(), u=Vec3()):
     # Input Parameters:
@@ -37,10 +46,10 @@ def setCamDef(nh, nw, fh, fw, nearD, farD, p=Vec3(), l=Vec3(), u=Vec3()):
 
     # Vec3 dir,nc,fc,X,Y,Z;
     Z = p - l
-    Z.normalize()
+    Z.normalized()
 
     X = u * Z
-    X.normalize()
+    X.normalized()
 
     Y = Z * X
 
@@ -83,7 +92,7 @@ def pointInFrustum(p=Vec3(), pl_TOP=Plane(), pl_BOTTOM=Plane(), pl_LEFT=Plane(),
             or pl_RIGHT.distance(p)<0 \
             or pl_NEARP.distance(p)<0 \
             or pl_FARP.distance(p)<0:
-        return "OUTSIDE"
+        result = "OUTSIDE"
 
     return point_status[result]
 
@@ -104,7 +113,7 @@ if __name__ == "__main__":
     pc_data = np.loadtxt(pointcloud_file)
     duration = time.time() - start_time
     print("Duration: ", duration, " s \n")
-    print(">>>>>>>>>>>>>>>>>>Down!<<<<<<<<<<<<<<<<<<<<<<<<<<! \n")
+    print(">>>>>>>>>>>>>>>>>>Down!<<<<<<<<<<<<<<<<<<<<<<<<<< \n")
 
     # get 3D point coordinates and labels from point cloud data
     xyz = pc_data[:, :3]  # (14129889,3)
@@ -114,29 +123,40 @@ if __name__ == "__main__":
 
 
     # start frustum culling
+    print(">>>>>>>>>>>>>>>>>>Starting to culling frustum<<<<<<<<<<<<<<<<<<<<<<<<<<")
     nearD = abs(my_parameters.f)
     farD = Z_
 
-    nh, nw, fh, fw = setCamInternals(nearD, farD)
+    angle = 45
+    ratio = my_parameters.width/my_parameters.height
 
-    pl_TOP, pl_BOTTOM, pl_LEFT, pl_RIGHT, pl_NEARP, pl_FARP = setCamDef(nh, nw, fh, fw, nearD, farD, Vec3(X_,Y_,Z_), Vec3(0, 0, 1), Vec3(0, 1, 0))
+    nh, nw, fh, fw = setCamInternals(angle, ratio, nearD, farD)
+
+    pl_TOP, pl_BOTTOM, pl_LEFT, pl_RIGHT, pl_NEARP, pl_FARP = \
+        setCamDef(nh, nw, fh, fw, nearD, farD, Vec3(X_,Y_,Z_), Vec3(0, 0, -1), Vec3(0, 1, 0))
 
 
     xyz_3d = []
     for i in range(0, xyz.shape[0]):
 
         p = Vec3(xyz[i, 0], xyz[i, 1], xyz[i, 2])
+        # print(p)
 
         flag = pointInFrustum(p,
                        pl_TOP, pl_BOTTOM, pl_LEFT,
                        pl_RIGHT, pl_NEARP, pl_FARP)
+        # print(flag)
 
         if flag == 1:
+            print(p)
             xyz_3d.append([p.x, p.y, p.z])
+    print(">>>>>>>>>>>>>>>>>>Down!<<<<<<<<<<<<<<<<<<<<<<<<<< \n")
 
     xyz_3d = np.matrix(xyz_3d)
 
+
     # 3d to 2d
+    print(">>>>>>>>>>>>>>>>>>Starting to project 3d points to 2d<<<<<<<<<<<<<<<<<<<<<<<<<< \n")
     with open(extOri_file, "r") as fp:
         for line in fp:
             if line.split("\t")[0] == PhotoID:
@@ -185,6 +205,8 @@ if __name__ == "__main__":
 
     cv2.imwrite(os.path.join("./Images_projected_pc", "2.jpg"), img2)
     cv2.imwrite(os.path.join("./Images_projected_pc", "3.jpg"), img3)
+
+    print(">>>>>>>>>>>>>>>>>>Down!<<<<<<<<<<<<<<<<<<<<<<<<<< \n")
 
 
 
