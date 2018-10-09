@@ -115,7 +115,7 @@ class Vec3:
 
     def normalized(self):
         '''Return this vector normalized'''
-        return self/self.length()
+        return self / self.length()
 
     def normalize(self):
         '''Normalize this Vec3'''
@@ -136,13 +136,14 @@ class Plane:
         v2 = p2 - p1
 
         # the cross product is a vector normal to the plane
-        self.cp = Vec3.cross(v1, v2).normalized()
+        self.cp = Vec3.cross(v1, v2)
         self.a, self.b, self.c = self.cp
 
         # This evaluates a * x3 + b * y3 + c * z3 which equals d
         self.d = Vec3.dot(self.cp, p3)
 
-        # print('The equation is {0}x + {1}y + {2}z = {3}'.format(self.a, self.b, self.c, self.d))
+    def print_info(self):
+        print('The equation is {0}x + {1}y + {2}z = {3}'.format(self.a, self.b, self.c, self.d))
 
     def distance(self, p=Vec3()):
         return self.d + Vec3.dot(self.cp, p)

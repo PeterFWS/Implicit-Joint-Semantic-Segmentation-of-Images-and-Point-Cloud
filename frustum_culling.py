@@ -4,7 +4,7 @@ import os
 import my_parameters
 from my_parameters import Vec3
 from my_parameters import Plane
-from my_parameters import ANG2RAD
+# from my_parameters import ANG2RAD
 import time
 import tqdm
 import cv2
@@ -19,15 +19,6 @@ import cv2
 def make_if_not_exists(dirPath):
     if not os.path.exists(dirPath):
         os.makedirs(dirPath)
-
-# def setCamInternals(angle, ratio, nearD, farD):
-#     tang = float(math.tan(angle * ANG2RAD * 0.5))
-#     nh = nearD * tang
-#     nw = nh * ratio
-#     fh = farD * tang
-#     fw = fh * ratio
-#
-#     return nh, nw, fh, fw
 
 def setCamInternals(nearD, farD):
     # compute width and height of the near and far plane sections
@@ -81,22 +72,20 @@ point_status = {
     "OUTSIDE": 0
 }
 
-def pointInFrustum(p=Vec3(),
-                   pl_TOP=Plane(), pl_BOTTOM=Plane(), pl_LEFT=Plane(),
-                   pl_RIGHT=Plane(), pl_NEARP=Plane(), pl_FARP=Plane()):
+
+def pointInFrustum(p=Vec3(), pl_TOP=Plane(), pl_BOTTOM=Plane(), pl_LEFT=Plane(), pl_RIGHT=Plane(), pl_NEARP=Plane(), pl_FARP=Plane()):
 
     result = "INSIDE"
 
     if pl_TOP.distance(p)<0 \
-        or pl_BOTTOM.distance(p)<0 \
-        or pl_LEFT.distance(p)<0 \
-        or pl_RIGHT.distance(p)<0 \
-        or pl_NEARP.distance(p)<0 \
-        or pl_FARP.distance(p)<0:
+            or pl_BOTTOM.distance(p)<0 \
+            or pl_LEFT.distance(p)<0 \
+            or pl_RIGHT.distance(p)<0 \
+            or pl_NEARP.distance(p)<0 \
+            or pl_FARP.distance(p)<0:
         return "OUTSIDE"
 
     return point_status[result]
-
 
 
 if __name__ == "__main__":
@@ -130,8 +119,7 @@ if __name__ == "__main__":
 
     nh, nw, fh, fw = setCamInternals(nearD, farD)
 
-    pl_TOP, pl_BOTTOM, pl_LEFT, pl_RIGHT, pl_NEARP, pl_FARP = \
-        setCamDef(nh, nw, fh, fw, nearD, farD, Vec3(X_,Y_,Z_), Vec3(0, 0, 1), Vec3(0, 1, 0))
+    pl_TOP, pl_BOTTOM, pl_LEFT, pl_RIGHT, pl_NEARP, pl_FARP = setCamDef(nh, nw, fh, fw, nearD, farD, Vec3(X_,Y_,Z_), Vec3(0, 0, 1), Vec3(0, 1, 0))
 
 
     xyz_3d = []

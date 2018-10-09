@@ -2,7 +2,6 @@ import numpy as np
 from tqdm import tqdm
 import cv2
 import os
-
 import my_parameters
 
 
