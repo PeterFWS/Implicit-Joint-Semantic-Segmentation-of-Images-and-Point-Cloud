@@ -285,15 +285,14 @@ int main(int argc, char** argv)
   /***********************************
    * Init parameters and read data
    ***********************************/
-	int num_angles=60;
 	//rotation in degree
-	float rot_x=M_PI/2;
-	float rot_y=0;//M_PI;
+	float rot_x=0;
+	float rot_y=0;
 	float rot_z=0;
 	//translation	
-	float trans_x=0;
-	float trans_y=0;
-	float trans_z=0;
+	double trans_x=513956.3197161849200000;
+	double trans_y=5426766.6255130861000000;
+	double trans_z=276.9661760997179300;
 
   pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
 
@@ -324,22 +323,18 @@ int main(int argc, char** argv)
   for(unsigned int i = 0; i < 9;i++)
     intr_mat[i] = 0.0;
 
-	// int rows = 256;
-	// int cols = 256;
-	
-	// intr_mat[0] =400;
-	// intr_mat[2] = (double)rows/2;
-	// intr_mat[4] = 400.0;
-	// intr_mat[5] = (double)cols/2;	
-	// intr_mat[8] = 1.0;
-
 	int rows = 8708;
 	int cols = 11608;
-	
-	intr_mat[0] = 51;
-	intr_mat[2] = (double)rows/2;
-	intr_mat[4] = 51.0;
-	intr_mat[5] = (double)cols/2;	
+
+	double f = 51.6829425484485650/0.0045999880303564;
+	double x0 = 5798.5783629179004000; 
+	double y0 = 4358.1365279104657000;
+
+
+	intr_mat[0] = f;
+	intr_mat[2] = x0;
+	intr_mat[4] = -f;
+	intr_mat[5] = y0;	
 	intr_mat[8] = 1.0;
   
   double* dist_coeff = NULL;
@@ -349,103 +344,181 @@ int main(int argc, char** argv)
 	unsigned int num_iterations = 30;
 	float cluster_width = 0.1f;
 	
-	float rot_angle =2 * M_PI / num_angles;
-	int tot_iter = 5 * num_angles; 
-	std::stringstream ss;	
-	int iter;
+
+
+  /***************************************************
+   * render point cloud from specific camera view
+   ***************************************************/
+
+  Eigen::Matrix4f tot_transform;
+
+  pointCloudProjection::PointCloudToDepthBase point_cloud_projector(intr_mat, dist_coeff, rows, cols);
+
+point_cloud_projector.addPointCloud(cloud);
+  
+std::cout<<"transform cloud.. \n";
+  tot_transform = point_cloud_projector.transform(rot_x,rot_y,rot_z,trans_x,trans_y,trans_z);
+
+
+std::cout<<tot_transform<<std::endl;
+
+
+
+  //depth image
+  float* depth_im = point_cloud_projector.getDepthImageMeanShift(cluster_val_threshold, lim, num_iterations, cluster_width, tot_transform);
+
+  float* R_im = point_cloud_projector.getRimage();
+  float* G_im = point_cloud_projector.getGimage();
+  float* B_im = point_cloud_projector.getBimage();
+
+	int* label_im = point_cloud_projector.getLabelimage();
+
+  cv::Mat label_image = cv::Mat(rows, cols, CV_32S, label_im);
+  cv::Mat R_image = cv::Mat(rows, cols, CV_32F, R_im);
+  cv::Mat G_image = cv::Mat(rows, cols, CV_32F, G_im);
+  cv::Mat B_image = cv::Mat(rows, cols, CV_32F, B_im);
+
+  std::vector<int> compression_params;
+compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+	compression_params.push_back(9);
+
+std::cout<<"save image: "<<location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+"im_num"+".png\n";
+
+saveFloatImage(location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+"im_num"+".png", depth_im, rows * cols);
+
+  imwrite(location + "/" + clound_filename + "/label/" + clound_filename + "label"+"im_num"+".png", label_image, compression_params);
+
+  std::vector<cv::Mat> RGB_im;	
+  RGB_im.push_back(B_image);
+  RGB_im.push_back(G_image);
+  RGB_im.push_back(R_image);
+
+  cv::Mat color;
+  cv::merge(RGB_im,color);
+
+  imwrite(location + "/" + clound_filename + "/rgb/" + clound_filename + "RGB" + "im_num" + ".png", color, compression_params);
+
+  saveEigenMatrix(location + "/" + clound_filename + "/transform/" + clound_filename + "Transform" + "im_num" + ".txt", tot_transform);
+
+if(is_test)
+{
+	  unsigned int* num_points = point_cloud_projector.getNumSources();
+    std::vector< std::vector< unsigned int > >* points = point_cloud_projector.getVisablePoints();
+    saveNumPointsImage(location + "/" + clound_filename + "/visability/" + clound_filename + "numPoints" + "im_num" +".bin", num_points, rows * cols);
+    savePointsImage(location + "/" + clound_filename + "/visability/" + clound_filename + "Points" + "im_num" +".bin", points);
+  points->clear();
+  delete[] num_points;
+}
+// ss.clear();	
+// im_num.clear();
+delete[] R_im;
+delete[] G_im;
+delete[] B_im;
+delete[] label_im;
+delete[] depth_im;
+
+
+
+
 
   /***************************************************
    * render point cloud from different camera views
    ***************************************************/
-	for(int iter = 0; iter < tot_iter; iter++)
-	{
+	// for(int iter = 0; iter < tot_iter; iter++)
+	// {
 
-	  int c = iter % num_angles;
-	  int u = iter / num_angles;
-	  std::cout<< iter <<'\n';
+	//   int c = iter % num_angles;
+	//   int u = iter / num_angles;
+	//   std::cout<< iter <<'\n';
 
   
-	  Eigen::Matrix4f tot_transform;
-	  pointCloudProjection::PointCloudToDepthBase point_cloud_projector(intr_mat, dist_coeff, rows, cols);
+	//   Eigen::Matrix4f tot_transform;
+	//   pointCloudProjection::PointCloudToDepthBase point_cloud_projector(intr_mat, dist_coeff, rows, cols);
 
-    point_cloud_projector.addPointCloud(cloud);
+ //    point_cloud_projector.addPointCloud(cloud);
       
-    std::cout<<"transform cloud.. \n";
-	  tot_transform = point_cloud_projector.transform(rot_x,c*rot_angle,rot_z,trans_x,trans_y,trans_z);
-	  if (u == 2)
-	  {
-		  tot_transform = point_cloud_projector.transform(-M_PI/8,0,0,0,0,0) * tot_transform;
-	  }
-    else if(u == 3)
-    {
-      tot_transform = point_cloud_projector.transform(-M_PI/8-M_PI/12 ,0,0,0,0,0) * tot_transform;
-    }
-	  else if(u == 1)
-		  tot_transform = point_cloud_projector.transform(0,0,0,0,0,7) * tot_transform;
-    else if(u == 4)
-      tot_transform = point_cloud_projector.transform(-M_PI/12 ,0,0,0,0,0) * tot_transform;
+ //    std::cout<<"transform cloud.. \n";
+	//   tot_transform = point_cloud_projector.transform(rot_x,c*rot_angle,rot_z,trans_x,trans_y,trans_z);
+	//   if (u == 2)
+	//   {
+	// 	  tot_transform = point_cloud_projector.transform(-M_PI/8,0,0,0,0,0) * tot_transform;
+	//   }
+ //    else if(u == 3)
+ //    {
+ //      tot_transform = point_cloud_projector.transform(-M_PI/8-M_PI/12 ,0,0,0,0,0) * tot_transform;
+ //    }
+	//   else if(u == 1)
+	// 	  tot_transform = point_cloud_projector.transform(0,0,0,0,0,7) * tot_transform;
+ //    else if(u == 4)
+ //      tot_transform = point_cloud_projector.transform(-M_PI/12 ,0,0,0,0,0) * tot_transform;
 
-    std::cout<<tot_transform<<std::endl;
+ //    std::cout<<tot_transform<<std::endl;
 
-	  ss << iter;
+	//   ss << iter;
 
-	  std::string im_num = ss.str();
-	  ss.str("");
+	//   std::string im_num = ss.str();
+	//   ss.str("");
 
-	  //depth image
-	  float* depth_im = point_cloud_projector.getDepthImageMeanShift(cluster_val_threshold, lim, num_iterations, cluster_width, tot_transform);
+	//   //depth image
+	//   float* depth_im = point_cloud_projector.getDepthImageMeanShift(cluster_val_threshold, lim, num_iterations, cluster_width, tot_transform);
 
-	  float* R_im = point_cloud_projector.getRimage();
-	  float* G_im = point_cloud_projector.getGimage();
-	  float* B_im = point_cloud_projector.getBimage();
+	//   float* R_im = point_cloud_projector.getRimage();
+	//   float* G_im = point_cloud_projector.getGimage();
+	//   float* B_im = point_cloud_projector.getBimage();
 
-   	int* label_im = point_cloud_projector.getLabelimage();
+ //   	int* label_im = point_cloud_projector.getLabelimage();
 
-	  cv::Mat label_image = cv::Mat(rows, cols, CV_32S, label_im);
-	  cv::Mat R_image = cv::Mat(rows, cols, CV_32F, R_im);
-	  cv::Mat G_image = cv::Mat(rows, cols, CV_32F, G_im);
-	  cv::Mat B_image = cv::Mat(rows, cols, CV_32F, B_im);
+	//   cv::Mat label_image = cv::Mat(rows, cols, CV_32S, label_im);
+	//   cv::Mat R_image = cv::Mat(rows, cols, CV_32F, R_im);
+	//   cv::Mat G_image = cv::Mat(rows, cols, CV_32F, G_im);
+	//   cv::Mat B_image = cv::Mat(rows, cols, CV_32F, B_im);
 
-	  std::vector<int> compression_params;
-    compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
-  	compression_params.push_back(9);
+	//   std::vector<int> compression_params;
+ //    compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+ //  	compression_params.push_back(9);
 
-    std::cout<<"save image: "<<location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+im_num+".png\n";
+ //    std::cout<<"save image: "<<location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+im_num+".png\n";
 
-    saveFloatImage(location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+im_num+".png", depth_im, rows * cols);
+ //    saveFloatImage(location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+im_num+".png", depth_im, rows * cols);
     
-	  imwrite(location + "/" + clound_filename + "/label/" + clound_filename + "label"+im_num+".png", label_image, compression_params);
+	//   imwrite(location + "/" + clound_filename + "/label/" + clound_filename + "label"+im_num+".png", label_image, compression_params);
 
-	  std::vector<cv::Mat> RGB_im;	
-	  RGB_im.push_back(B_image);
-	  RGB_im.push_back(G_image);
-	  RGB_im.push_back(R_image);
+	//   std::vector<cv::Mat> RGB_im;	
+	//   RGB_im.push_back(B_image);
+	//   RGB_im.push_back(G_image);
+	//   RGB_im.push_back(R_image);
 
-	  cv::Mat color;
-	  cv::merge(RGB_im,color);
+	//   cv::Mat color;
+	//   cv::merge(RGB_im,color);
 	
-	  imwrite(location + "/" + clound_filename + "/rgb/" + clound_filename + "RGB" + im_num + ".png", color, compression_params);
+	//   imwrite(location + "/" + clound_filename + "/rgb/" + clound_filename + "RGB" + im_num + ".png", color, compression_params);
 	
-	  saveEigenMatrix(location + "/" + clound_filename + "/transform/" + clound_filename + "Transform" + im_num + ".txt", tot_transform);
+	//   saveEigenMatrix(location + "/" + clound_filename + "/transform/" + clound_filename + "Transform" + im_num + ".txt", tot_transform);
 
-    if(is_test)
-    {
-  	  unsigned int* num_points = point_cloud_projector.getNumSources();
-	    std::vector< std::vector< unsigned int > >* points = point_cloud_projector.getVisablePoints();
-	    saveNumPointsImage(location + "/" + clound_filename + "/visability/" + clound_filename + "numPoints" + im_num +".bin", num_points, rows * cols);
-	    savePointsImage(location + "/" + clound_filename + "/visability/" + clound_filename + "Points" + im_num +".bin", points);
-      points->clear();
-      delete[] num_points;
-    }
-    ss.clear();	
-    im_num.clear();
-    delete[] R_im;
-    delete[] G_im;
-    delete[] B_im;
-    delete[] label_im;
-    delete[] depth_im;
+ //    if(is_test)
+ //    {
+ //  	  unsigned int* num_points = point_cloud_projector.getNumSources();
+	//     std::vector< std::vector< unsigned int > >* points = point_cloud_projector.getVisablePoints();
+	//     saveNumPointsImage(location + "/" + clound_filename + "/visability/" + clound_filename + "numPoints" + im_num +".bin", num_points, rows * cols);
+	//     savePointsImage(location + "/" + clound_filename + "/visability/" + clound_filename + "Points" + im_num +".bin", points);
+ //      points->clear();
+ //      delete[] num_points;
+ //    }
+ //    ss.clear();	
+ //    im_num.clear();
+ //    delete[] R_im;
+ //    delete[] G_im;
+ //    delete[] B_im;
+ //    delete[] label_im;
+ //    delete[] depth_im;
     
-	}
+	// }
+
+
+
+
+
+
 
 	std::cout<<"Done!"<<'\n';
 
