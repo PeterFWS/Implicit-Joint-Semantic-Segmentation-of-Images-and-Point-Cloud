@@ -175,13 +175,14 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
 	cloud->width    = pc_size;
 	cloud->height   = 1;
 	cloud->is_dense = false;
+	unsigned int res_points = (cloud->width * cloud->height);
+	cloud->points.resize (res_points);
 
 	unsigned int pcnt = 0;
 	std::cout<<"generate point cloud... \n";
 
 	for(unsigned int i = 0; i < pc_size; i++)
 	{
-		std::cout<<"check point 1 \n";
 		cloud->points[pcnt].x =pc[7*i+0];
 		cloud->points[pcnt].y =pc[7*i+1];
 		cloud->points[pcnt].z =pc[7*i+2];
@@ -189,17 +190,13 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
 		cloud->points[pcnt].g =pc[7*i+5];
 		cloud->points[pcnt].b =pc[7*i+6];
 
-		std::cout<<"check point 2 \n";
-
 		if(haslabel)
 			cloud->points[pcnt].a =label[1*i+0];
 		else
 			cloud->points[pcnt].a = 0;
 
-
-
 		pcnt++;
-		std::cout<<"check pcnt: "<<pcnt<<std::endl;
+
 	}
 
 	std::cout<<"delete pc\n";
@@ -289,7 +286,8 @@ int main(int argc, char** argv)
 
 	int rows = 8708; // height
 	int cols = 11608; // width
-	double f = -51.6829425484485650/1000; // m
+
+	double f = 51.6829425484485650/1000; // m
 	double pixel_size = 0.0045999880303564/1000; //m
 	double x0 = 5798.5783629179004000;  // [pixel] principle point
 	double y0 = 4358.1365279104657000;  // [pixel]
@@ -392,6 +390,8 @@ int main(int argc, char** argv)
     delete[] label_im;
     delete[] depth_im;
     
+
+    std::cout<<"Down!"<<std::endl;
 
 	return 0;
 }

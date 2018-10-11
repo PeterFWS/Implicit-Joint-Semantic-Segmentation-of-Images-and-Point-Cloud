@@ -588,26 +588,26 @@ namespace pointCloudProjection
 		float distorted_point[2];
 		float pixel_coordinates[2];
 		unsigned int pts_cnt = 0;
-		Eigen::Vector4f xyz;
-		Eigen::Vector4f xyz_trans;
+		Eigen::MatrixXf xyz(4,1);
+		Eigen::MatrixXf xyz_trans(3,1);
 
 		for(unsigned int c = 0; c < big_cloud_.size(); c++)
 		{
 			for(unsigned int i = 0; i < big_cloud_[c]->points.size(); i++)
 			{
-			  xyz(0)=big_cloud_[c]->points[i].x;
-		      xyz(1)=big_cloud_[c]->points[i].y;
-		      xyz(2)=big_cloud_[c]->points[i].z;
-		      xyz(3)=1;
+			  xyz(0,0)=big_cloud_[c]->points[i].x;
+		      xyz(1,0)=big_cloud_[c]->points[i].y;
+		      xyz(2,0)=big_cloud_[c]->points[i].z;
+		      xyz(3,0)=1;
 
 	      	  xyz_trans=transform*xyz;
 	 
 
-				if(xyz_trans(2) > 0.05f && mask[c][i] == 1)
+				if(xyz_trans(2,0) > 0.05f && mask[c][i] == 1)
 				{	     
-					proj_point[0] = xyz_trans(0)/xyz_trans(2);
-					proj_point[1] = xyz_trans(1)/xyz_trans(2);
-					float depth = xyz_trans(2);
+					proj_point[0] = xyz_trans(0,0)/xyz_trans(2,0);
+					proj_point[1] = xyz_trans(1,0)/xyz_trans(2,0);
+					float depth = xyz_trans(2,0);
 					float r = big_cloud_[c]->points[i].r;
 					float g = big_cloud_[c]->points[i].g;
 					float b = big_cloud_[c]->points[i].b;
