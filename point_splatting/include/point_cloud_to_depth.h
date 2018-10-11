@@ -242,7 +242,7 @@ class PointCloudToDepthBase
 		void addDepthImage(float* depth_image, unsigned int rows, unsigned int cols, unsigned int method, float* conf = NULL, float conf_thresh = 0.0f);
     float* getDepthImageNearestNeighbor(float cluster_dist);
 		void addPointCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud);
-		float* getDepthImageMeanShift(float cluster_val_threshold, float lim, unsigned int num_iterations, float cluster_width, Eigen::Matrix4f transform = Eigen::Matrix4f::Identity());
+		float* getDepthImageMeanShift(float cluster_val_threshold, float lim, unsigned int num_iterations, float cluster_width, Eigen::MatrixXf transform);
 		float* getClusterValImage();
 		float* getRimage();
 		float* getGimage();
@@ -252,8 +252,9 @@ class PointCloudToDepthBase
 		std::vector< std::vector< unsigned int > >* getVisablePoints();
 		unsigned int getRows();
 		unsigned int getCols();
-		Eigen::Matrix4f transformCloud(float alfa,float beta,float theta,float trans_x,float trans_y,float trans_z);
-		Eigen::Matrix4f transform(float alfa,float beta,float theta,float trans_x,float trans_y,float trans_z);
+		// Eigen::Matrix4f transformCloud(float alfa,float beta,float theta,float trans_x,float trans_y,float trans_z);
+		// Eigen::MatrixXf transform(float alfa,float beta,float theta,float trans_x,float trans_y,float trans_z);
+		Eigen::MatrixXf transform(float trans_x, float trans_y, float trans_z, float r11, float r12, float r13, float r21, float r22, float r23, float r31, float r32, float r33);
 
   private:
 	  void addPoint(float* pixel, float depth,unsigned int method, unsigned int id, float conf=1.0f);
@@ -267,8 +268,8 @@ class PointCloudToDepthBase
 	  void insertionSortn(float* array, int size, unsigned int* inds);
 	  void processDepthImageMeanShift(float cluster_val_threshold, float lim, unsigned int num_iterations, float cluster_width);
    	//void visualizeCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud, float norm_factor, std::vector< unsigned int >& mask);
-	  void projectCloud(std::vector< std::vector< unsigned int > >& mask);
-    void projectCloud(std::vector< std::vector< unsigned int > >& mask, Eigen::Matrix4f transform);
+	  // void projectCloud(std::vector< std::vector< unsigned int > >& mask);
+    void projectCloud(std::vector< std::vector< unsigned int > >& mask, Eigen::MatrixXf transform);
     
 	  std::vector<std::vector<DepthImagePoint> > depth_image_points_;
 

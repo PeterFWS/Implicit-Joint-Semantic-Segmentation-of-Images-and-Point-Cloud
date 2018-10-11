@@ -10,6 +10,8 @@
 #include <vector>
 #include <fstream>
 
+#define PI 3.14159265
+
 /**********************************************************
  * global variables
  **********************************************************/
@@ -174,11 +176,12 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
 	cloud->height   = 1;
 	cloud->is_dense = false;
 
-
 	unsigned int pcnt = 0;
 	std::cout<<"generate point cloud... \n";
+
 	for(unsigned int i = 0; i < pc_size; i++)
 	{
+		std::cout<<"check point 1 \n";
 		cloud->points[pcnt].x =pc[7*i+0];
 		cloud->points[pcnt].y =pc[7*i+1];
 		cloud->points[pcnt].z =pc[7*i+2];
@@ -186,12 +189,17 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
 		cloud->points[pcnt].g =pc[7*i+5];
 		cloud->points[pcnt].b =pc[7*i+6];
 
+		std::cout<<"check point 2 \n";
+
 		if(haslabel)
 			cloud->points[pcnt].a =label[1*i+0];
 		else
 			cloud->points[pcnt].a = 0;
 
+
+
 		pcnt++;
+		std::cout<<"check pcnt: "<<pcnt<<std::endl;
 	}
 
 	std::cout<<"delete pc\n";
@@ -275,9 +283,9 @@ int main(int argc, char** argv)
 	std::cout<<"cloud size = "<<cloud->points.size()<<std::endl;
 
 	// Define intrinsic matrix
-	double* intr_mat = new double[9];
+	double* intr_mat_K = new double[9];
 	for(unsigned int i = 0; i < 9;i++)
-		intr_mat[i] = 0.0;
+		intr_mat_K[i] = 0.0;
 
 	int rows = 8708; // height
 	int cols = 11608; // width
@@ -286,11 +294,11 @@ int main(int argc, char** argv)
 	double x0 = 5798.5783629179004000;  // [pixel] principle point
 	double y0 = 4358.1365279104657000;  // [pixel]
 
-	intr_mat[0] = f/pixel_size;
-	intr_mat[2] = x0;
-	intr_mat[4] = - f/pixel_size;
-	intr_mat[5] = y0;	
-	intr_mat[8] = 1.0;
+	intr_mat_K[0] = f/pixel_size;
+	intr_mat_K[2] = x0;
+	intr_mat_K[4] = -f/pixel_size;
+	intr_mat_K[5] = y0;	
+	intr_mat_K[8] = 1.0;
 	
 	// Define some parameters
 	double* dist_coeff = NULL;
@@ -306,21 +314,31 @@ int main(int argc, char** argv)
 	/***************************************************
 	* render point cloud 
 	***************************************************/
-	pointCloudProjection::PointCloudToDepthBase point_cloud_projector(intr_mat, dist_coeff, rows, cols);
+	pointCloudProjection::PointCloudToDepthBase point_cloud_projector(intr_mat_K, dist_coeff, rows, cols);
 	point_cloud_projector.addPointCloud(cloud);
-
 
 	// Define extrinsic matrix (camera pose) information	
 	float trans_x = 513956.3197161849200000;
 	float trans_y = 5426766.6255130861000000;
 	float trans_z = 276.9661760997179300;
+
+	float r11 = 0.9950306608836720;
+	float r12 = 0.0816887604073615;
+	float r13 = 0.0569291693643232;
+
+	float r21 = -0.0814123153947630;
+	float r22 = 0.9966547730117062;
+	float r23 = -0.0071622856022397;
+
+	float r31 = -0.0573238066030756;
+	float r32 = 0.0024919582847845;
+	float r33 = 0.9983525285891952;
 	      
-	Eigen::Matrix4f tot_transform;
+	Eigen::MatrixXf tot_transform(3,4);
 	// Here only project point cloud into a specific camera view
 	std::cout<<"transform cloud.. \n";
-	tot_transform = point_cloud_projector.transform(0,0,0,trans_x,trans_y,trans_z); 
+	tot_transform = point_cloud_projector.transform(trans_x,trans_y,trans_z, r11, r12, r13, r21, r22, r23, r31, r32, r33); 
     std::cout<<tot_transform<<std::endl;
-
 
 
 	ss << iter;
