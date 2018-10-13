@@ -7,5 +7,5 @@ It is quite slow but you should be able to speed it up by parallellizing the loo
 
 
 
-
+Run the code in /build
 ./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result"
