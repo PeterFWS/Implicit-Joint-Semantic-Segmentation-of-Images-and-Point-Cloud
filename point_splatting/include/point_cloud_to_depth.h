@@ -264,10 +264,10 @@ class PointCloudToDepthBase
 	  void addPointGauss(float* pixel, float depth,unsigned int id, float conf=1.0f);
 	  void addPointIntegerGauss(float* pixel, int pixel_x,int pixel_y, float depth,unsigned int id, float conf=1.0f);
 	  void addPointInteger(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf=1.0f);
-	  void opencvDistort(float* distPoint, float* projPoint, float* dist_coeff, unsigned int length_dist_coeff);
+	  // void opencvDistort(float* distPoint, float* projPoint, float* dist_coeff, unsigned int length_dist_coeff);
 	  void insertionSortn(float* array, int size, unsigned int* inds);
 	  void processDepthImageMeanShift(float cluster_val_threshold, float lim, unsigned int num_iterations, float cluster_width);
-   	  //void visualizeCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud, float norm_factor, std::vector< unsigned int >& mask);
+   	  // void visualizeCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud, float norm_factor, std::vector< unsigned int >& mask);
 	  // void projectCloud(std::vector< std::vector< unsigned int > >& mask);
    	  void projectCloud(std::vector< std::vector< unsigned int > >& mask, Eigen::MatrixXf transform);
     

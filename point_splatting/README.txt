@@ -7,5 +7,14 @@ It is quite slow but you should be able to speed it up by parallellizing the loo
 
 
 
-Run the code in /build
-./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result"
+* inputs: 
+ *     clound_filename: name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels as in semantic3D
+ *     location: output folder location
+ *     haslabel: flag with 1 for labeled point clouds and 0 for unlabeled point clouds
+
+ *     lim
+ *     cluster_val_threshold
+ *     num_iterations
+ *     cluster_width
+
+./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.01f 30 0.1f

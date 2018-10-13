@@ -41,7 +41,9 @@ namespace pointCloudProjection
 		std::cout<<"Initializing point cloud to depth mapper\n";
 		std::cout<<"focal length: \n"<<" fx = "<<fx_<<" fy = "<<fy_<<std::endl;
 		std::cout<<"principle points: \n"<<" cx = "<<cx_<<" cy = "<<cy_<<std::endl;
-		std::cout<<"size of image: "<<" rows = "<<rows_<<" cols = "<<cols_<<std::endl;
+		std::cout<<"size of image: \n"<<" rows = "<<rows_<<" cols = "<<cols_<<std::endl;
+
+		std::cout<<"\n";
 	    
 		if(distortion_coefficients != NULL)
 		{
@@ -146,7 +148,7 @@ namespace pointCloudProjection
 		num_sources_ = new unsigned int[depth_image_points_.size()];
 
 	  	visible_points_.resize(depth_image_points_.size()); //contains ids of
-	  	
+
 		float gaussian_var = 0.5f*cluster_width*0.5f*cluster_width;
 		int max_num_points = 80;
 
@@ -208,6 +210,8 @@ namespace pointCloudProjection
 						}
 					}
 				}
+
+				
 
 
 				/*
@@ -526,7 +530,7 @@ namespace pointCloudProjection
 		std::cout << "K: \n" << K << std::endl;
 		std::cout << "Rt: \n" << Rt << std::endl;
 
-		std::cout << "P" << P << std::endl;
+		std::cout << "P: \n" << P << std::endl;
 
 		return P;
 	}
@@ -554,11 +558,13 @@ namespace pointCloudProjection
 		      xyz(2,0) = big_cloud_[c]->points[i].z;
 		      xyz(3,0) = 1;
 
+		      // std::cout << "xyz: " << xyz(0,0) << "," << xyz(1,0) << "," << xyz(2,0) << "," << xyz(3,0) << std::endl;
+
 	      	  xyz_trans = transform * xyz;
 	 
 
-				if(xyz_trans(2,0) > 0.05f && mask[c][i] == 1)
-				{	     
+				// if(xyz_trans(2,0) > 0.05f && mask[c][i] == 1)
+				// {	     
 					proj_point[0] = xyz_trans(0,0) / xyz_trans(2,0); // Normalization of pixel points
 					proj_point[1] = xyz_trans(1,0) / xyz_trans(2,0);
 
@@ -570,6 +576,14 @@ namespace pointCloudProjection
 
 					float label = big_cloud_[c]->points[i].a;
 
+					// std::cout<<std::endl;
+
+					// std::cout << "x: " << proj_point[0] << " y: " << proj_point[1] << std::endl;
+					// std::cout << "r: " << r << " g: " << g << " b: " << b << " label: " << label << std::endl;
+
+					// std:: cout << "depth: " << depth << std::endl;
+
+
 					// opencvDistort(distorted_point, proj_point, dist_coeff_, length_dist_coeff_); // here, length_dist_coeff_ = 0
 					// pixel_coordinates[0] = fx_ * distorted_point[0] + cx_;
 					// pixel_coordinates[1] = fy_ * distorted_point[1] + cy_;
@@ -578,7 +592,7 @@ namespace pointCloudProjection
 					// addPoint(pixel_coordinates, depth, POINT_CLOUD_TO_DEPTH_GAUSS, i, conf_val);
 					addPoint(proj_point, depth, POINT_CLOUD_TO_DEPTH_GAUSS, i, conf_val);
 
-				}   
+				// }   
 
 				pts_cnt++; 
 			}
@@ -599,7 +613,7 @@ void PointCloudToDepthBase::addPoint(float* pixel, float depth,unsigned int meth
         case POINT_CLOUD_TO_DEPTH_BILINEAR:
             addPointBilinear(pixel, depth,id, conf);
             break;
-		case POINT_CLOUD_TO_DEPTH_GAUSS:
+		case POINT_CLOUD_TO_DEPTH_GAUSS: // the one we use
 		 	addPointGauss(pixel, depth,id, conf);
             break;
 
@@ -643,12 +657,19 @@ void PointCloudToDepthBase::addPointBilinear(float* pixel, float depth, unsigned
   addPointInteger(pixel, pixel_x+1, pixel_y+1, depth, id, conf);
 }
 
+
+// the one we use
 void PointCloudToDepthBase::addPointIntegerGauss(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf)
 {
-    if(pixel_x >= 0 && pixel_x < cols_ && pixel_y >= 0 && pixel_y < rows_) // tell, if the pixel points is visible in the image space
-    {
+    if(pixel_x >= 0 && pixel_x < cols_ && pixel_y >= 0 && pixel_y < rows_) 
+    {	// tell, if the pixel points is visible in the image space
         float dist_x = pixel_x-pixel[0];
         float dist_y = pixel_y-pixel[1];
+
+        // std::cout << "pixel_x: " << pixel_x << std::endl;
+        // std::cout << "pixel_y: " << pixel_y << std::endl;
+
+
         float dist_sqr = dist_x*dist_x+dist_y*dist_y;
         float w = conf*1.0f/(2*M_PI*0.25f)*std::exp(-0.5f*dist_sqr/0.25f);
 
@@ -679,59 +700,59 @@ void PointCloudToDepthBase::addPointGauss(float* pixel, float depth,unsigned int
   
 
 //dist_coeff = [k1 k2 p1 p2 [k3 [k4 k5 k6]]] or [k1 k2 k3]
-void PointCloudToDepthBase::opencvDistort(float* distPoint, float* projPoint, float* dist_coeff, unsigned int length_dist_coeff)
-{
-	if(length_dist_coeff == 0)
-	{
-		distPoint[0] = projPoint[0];
-		distPoint[1] = projPoint[1];
-		return;
-	}
+// void PointCloudToDepthBase::opencvDistort(float* distPoint, float* projPoint, float* dist_coeff, unsigned int length_dist_coeff)
+// {
+// 	if(length_dist_coeff == 0)
+// 	{
+// 		distPoint[0] = projPoint[0];
+// 		distPoint[1] = projPoint[1];
+// 		return;
+// 	}
 
-	float r = sqrt(projPoint[0]*projPoint[0]+projPoint[1]*projPoint[1]);
+// 	float r = sqrt(projPoint[0]*projPoint[0]+projPoint[1]*projPoint[1]);
 
-	//1+k1^2+k2^4+k3^6
-	float nom = 1.0;
-	int k_num=0;
-	if(length_dist_coeff==3)
-	{
-		nom+=dist_coeff[0]*pow(r,2)+dist_coeff[1]*pow(r,4)+dist_coeff[2]*pow(r,6);
-	}
-	else
-	{
-		for(int i = 0; i < 5 && i<length_dist_coeff; i++)
-		{
-			if(i!=2 && i!=3)
-			{
-				k_num++;
-				nom+=dist_coeff[i]*pow(r,k_num*2);
-			}
-		}
-	}
+// 	//1+k1^2+k2^4+k3^6
+// 	float nom = 1.0;
+// 	int k_num=0;
+// 	if(length_dist_coeff==3)
+// 	{
+// 		nom+=dist_coeff[0]*pow(r,2)+dist_coeff[1]*pow(r,4)+dist_coeff[2]*pow(r,6);
+// 	}
+// 	else
+// 	{
+// 		for(int i = 0; i < 5 && i<length_dist_coeff; i++)
+// 		{
+// 			if(i!=2 && i!=3)
+// 			{
+// 				k_num++;
+// 				nom+=dist_coeff[i]*pow(r,k_num*2);
+// 			}
+// 		}
+// 	}
 
-	//1+k4^2+k5^4+k6^6
-	float denom=1.0;
-	k_num=0;
-	for(int i = 5; i< 8 && i<length_dist_coeff; i++)
-	{
-		k_num++;
-		denom+=dist_coeff[i]*pow(r,k_num*2);
-	}
-	float quota = nom/denom;
+// 	//1+k4^2+k5^4+k6^6
+// 	float denom=1.0;
+// 	k_num=0;
+// 	for(int i = 5; i< 8 && i<length_dist_coeff; i++)
+// 	{
+// 		k_num++;
+// 		denom+=dist_coeff[i]*pow(r,k_num*2);
+// 	}
+// 	float quota = nom/denom;
 
-	float p1=0.0;
-	float p2=0.0;
-	if(length_dist_coeff>2 && length_dist_coeff!=3)
-		p1=dist_coeff[2];
-	if(length_dist_coeff>3 & length_dist_coeff!=3)
-		p2=dist_coeff[3];
+// 	float p1=0.0;
+// 	float p2=0.0;
+// 	if(length_dist_coeff>2 && length_dist_coeff!=3)
+// 		p1=dist_coeff[2];
+// 	if(length_dist_coeff>3 & length_dist_coeff!=3)
+// 		p2=dist_coeff[3];
 
-	float xprime = projPoint[0];
-	float yprime = projPoint[1];
+// 	float xprime = projPoint[0];
+// 	float yprime = projPoint[1];
 
-	distPoint[0] = xprime*quota+2*p1*xprime*yprime+p2*(r*r+2*xprime*xprime);
-	distPoint[1] = yprime*quota+p1*(r*r+2*yprime*yprime)+2*p2*xprime*yprime;
-}
+// 	distPoint[0] = xprime*quota+2*p1*xprime*yprime+p2*(r*r+2*xprime*xprime);
+// 	distPoint[1] = yprime*quota+p1*(r*r+2*yprime*yprime)+2*p2*xprime*yprime;
+// }
 
 
 void PointCloudToDepthBase::insertionSortn(float* array, int size, unsigned int* inds) 

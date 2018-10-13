@@ -221,6 +221,10 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
  *     clound_filename: name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels as in semantic3D
  *     location: output folder location
  *     haslabel: flag with 1 for labeled point clouds and 0 for unlabeled point clouds
+ *     lim
+ *     cluster_val_threshold
+ *     num_iterations
+ *     cluster_width
 
  * outputs:
  *     depth images: binary files containing float arrays, 
@@ -259,6 +263,8 @@ int main(int argc, char** argv)
 
 		std::cout<<"has label = "<<haslabel<<std::endl;
 	}
+
+
 		
 
 	/***********************************
@@ -284,13 +290,20 @@ int main(int argc, char** argv)
 	for(unsigned int i = 0; i < 9;i++)
 		intr_mat_K[i] = 0.0;
 
-	int rows = 8708; // height
-	int cols = 11608; // width
+	// int rows = 8708; // height
+	// int cols = 11608; // width
+
+	int rows = 8000; // height
+	int cols = 8000; // width
 
 	float f = -51.6829425484485650/1000; // m
 	float pixel_size = 0.0045999880303564/1000; //m
 	float x0 = 5798.5783629179004000;  // [pixel] principle point
 	float y0 = 4358.1365279104657000;  // [pixel]
+
+	// float x0 = (float)cols/2;  // [pixel] principle point
+	// float y0 = (float)rows/2;  // [pixel]
+
 
 	intr_mat_K[0] = f/pixel_size;
 	intr_mat_K[2] = x0;
@@ -301,10 +314,25 @@ int main(int argc, char** argv)
 	// Define some parameters
 	double* dist_coeff = NULL;
 		
-	float lim = std::pow(10,-5); 
-	float cluster_val_threshold = 0.01f;
-	unsigned int num_iterations = 30;
-	float cluster_width = 0.1f;
+	// float lim = std::pow(10,-5);
+	// float cluster_val_threshold = 0.01f;
+	// unsigned int num_iterations = 30;
+	// float cluster_width = 0.1f;
+
+
+
+	float lim = std::pow(10,std::stof(argv[4]));
+	float cluster_val_threshold = std::stof(argv[5]);
+	unsigned int num_iterations = std::stoul(argv[6]);
+	float cluster_width = std::stof(argv[7]);
+
+
+	std::cout << "lim: " << lim << std::endl;
+	std::cout << "cluster_val_threshold: " << cluster_val_threshold << std::endl;
+	std::cout << "num_iterations: " << num_iterations << std::endl;
+	std::cout << "cluster_width: " << cluster_width << std::endl;
+
+
 		
 	std::stringstream ss;	
 	int iter = 0;
@@ -369,7 +397,7 @@ int main(int argc, char** argv)
 		 [-1.16452910e+03  1.12087267e+04  4.27048511e+03 -6.02298096e+10]
 		 [-5.73238066e-02  2.49195828e-03  9.98352529e-01  1.56621467e+04]]
 
-	test tot_transform:
+	output tot_transform:
 		    -11294.3     -912.826      1357.08        1.07581e+10
 		    -1029.35      11202.9      1916.23        -6.02667e+10
 		    -0.0573238   0.00249196    0.998353       15662.1
