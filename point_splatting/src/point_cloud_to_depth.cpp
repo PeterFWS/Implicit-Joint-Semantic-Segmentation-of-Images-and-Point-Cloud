@@ -18,30 +18,28 @@ namespace pointCloudProjection
 
 	/*****************************
 		* Modified based on origin code
-			* re-arrange code
 
 		* by Fangwen Shu
 	*****************************/
-	PointCloudToDepthBase::PointCloudToDepthBase(double* intrinsic_camera_matrix, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols)
+	PointCloudToDepthBase::PointCloudToDepthBase(float* intrinsic_camera_matrix, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols)
 	{
 	    //allocate vector memory
 	    for(unsigned int i = 0; i < in_rows*in_cols; i++)
 	    {
 	      std::vector<DepthImagePoint> tmp;
 	      depth_image_points_.push_back(tmp);
-
 	    }
 
 	    rows_ = in_rows;
 	    cols_ = in_cols;
 
-	    fx_ = float(intrinsic_camera_matrix[0]);
-	    fy_ = float(intrinsic_camera_matrix[4]);
-	    cx_ = float(intrinsic_camera_matrix[2]);
-	    cy_ = float(intrinsic_camera_matrix[5]);
+	    fx_ = intrinsic_camera_matrix[0];
+	    fy_ = intrinsic_camera_matrix[4];
+	    cx_ = intrinsic_camera_matrix[2];
+	    cy_ = intrinsic_camera_matrix[5];
 
 		std::cout<<"Initializing point cloud to depth mapper\n";
-		std::cout<<"focal length: \n"<<"fx = "<<fx_<<" fy = "<<fy_<<std::endl;
+		std::cout<<"focal length: \n"<<" fx = "<<fx_<<" fy = "<<fy_<<std::endl;
 		std::cout<<"principle points: \n"<<" cx = "<<cx_<<" cy = "<<cy_<<std::endl;
 		std::cout<<"size of image: "<<" rows = "<<rows_<<" cols = "<<cols_<<std::endl;
 	    
@@ -146,7 +144,9 @@ namespace pointCloudProjection
 		label_image_ = new int[depth_image_points_.size()];
 		cluster_val_image_ = new float[depth_image_points_.size()];
 		num_sources_ = new unsigned int[depth_image_points_.size()];
+
 	  	visible_points_.resize(depth_image_points_.size()); //contains ids of
+	  	
 		float gaussian_var = 0.5f*cluster_width*0.5f*cluster_width;
 		int max_num_points = 80;
 
@@ -459,58 +459,6 @@ namespace pointCloudProjection
 		cluster_point_mask_.push_back(tmp_mask);
 	}
 
-	/*
-	Eigen::Matrix4f PointCloudToDepthBase::transformCloud(float alfa,float beta,float theta,float trans_x,float trans_y,float trans_z)
-	{	Eigen::Matrix4f rot_X = Eigen::Matrix4f::Identity();
-		Eigen::Matrix4f rot_Y = Eigen::Matrix4f::Identity();
-		Eigen::Matrix4f rot_Z = Eigen::Matrix4f::Identity();
-		Eigen::Matrix4f transform = Eigen::Matrix4f::Identity();
-	 	
-		//rot around z
-	  	rot_Z (0,0) = cos (theta);
-	  	rot_Z (0,1) = -sin(theta);
-	  	rot_Z (1,0) = sin (theta);
-	  	rot_Z (1,1) = cos (theta);
-		//rot around y
-	  	rot_Y (0,0) = cos (beta);
-	  	rot_Y (0,2) = sin (beta);
-	  	rot_Y (2,0) = -sin(beta);
-	  	rot_Y (2,2) = cos (beta);
-		//rot around x  	
-		rot_X (1,1) = cos (alfa);
-	  	rot_X (1,2) = -sin(alfa);
-	  	rot_X (2,1) = sin (alfa);
-	  	rot_X (2,2) = cos (alfa);
-
-		//tot rot
-		transform=rot_Z*rot_Y*rot_X;
-
-		//add translation
-		transform(0,3)=trans_x;
-		transform(1,3)=trans_y;
-		transform(2,3)=trans_z;
-
-		Eigen::Vector4f xyz;
-		Eigen::Vector4f xyz_trans;
-
-		for(unsigned int c = 0; c < big_cloud_.size();c++)
-		for(unsigned int i = 0; i < big_cloud_[c]->points.size();i++)
-		{
-		
-		  xyz(0)=big_cloud_[c]->points[i].x;
-		  xyz(1)=big_cloud_[c]->points[i].y;
-		  xyz(2)=big_cloud_[c]->points[i].z;
-		  xyz(3)=1;
-		  xyz_trans=transform*xyz;
-
-		  big_cloud_[c]->points[i].x=xyz_trans(0);
-		  big_cloud_[c]->points[i].y=xyz_trans(1);
-		  big_cloud_[c]->points[i].z=xyz_trans(2);
-		}
-		return transform;
-	}
-	*/
-
 
 	/*****************************
 		* Modified based on origin code
@@ -575,6 +523,11 @@ namespace pointCloudProjection
 
 		P = K*Rt;
 
+		std::cout << "K: \n" << K << std::endl;
+		std::cout << "Rt: \n" << Rt << std::endl;
+
+		std::cout << "P" << P << std::endl;
+
 		return P;
 	}
 
@@ -588,36 +541,42 @@ namespace pointCloudProjection
 		float distorted_point[2];
 		float pixel_coordinates[2];
 		unsigned int pts_cnt = 0;
-		Eigen::MatrixXf xyz(4,1);
-		Eigen::MatrixXf xyz_trans(3,1);
+
+		Eigen::MatrixXf xyz(4,1); // homogeneous coordinate
+		Eigen::MatrixXf xyz_trans(3,1); //homogeneous coordinates after transformation
 
 		for(unsigned int c = 0; c < big_cloud_.size(); c++)
 		{
 			for(unsigned int i = 0; i < big_cloud_[c]->points.size(); i++)
 			{
-			  xyz(0,0)=big_cloud_[c]->points[i].x;
-		      xyz(1,0)=big_cloud_[c]->points[i].y;
-		      xyz(2,0)=big_cloud_[c]->points[i].z;
-		      xyz(3,0)=1;
+			  xyz(0,0) = big_cloud_[c]->points[i].x;
+		      xyz(1,0) = big_cloud_[c]->points[i].y;
+		      xyz(2,0) = big_cloud_[c]->points[i].z;
+		      xyz(3,0) = 1;
 
-	      	  xyz_trans=transform*xyz;
+	      	  xyz_trans = transform * xyz;
 	 
 
 				if(xyz_trans(2,0) > 0.05f && mask[c][i] == 1)
 				{	     
-					proj_point[0] = xyz_trans(0,0)/xyz_trans(2,0);
-					proj_point[1] = xyz_trans(1,0)/xyz_trans(2,0);
+					proj_point[0] = xyz_trans(0,0) / xyz_trans(2,0); // Normalization of pixel points
+					proj_point[1] = xyz_trans(1,0) / xyz_trans(2,0);
+
 					float depth = xyz_trans(2,0);
+
 					float r = big_cloud_[c]->points[i].r;
 					float g = big_cloud_[c]->points[i].g;
 					float b = big_cloud_[c]->points[i].b;
+
 					float label = big_cloud_[c]->points[i].a;
-					opencvDistort(distorted_point, proj_point, dist_coeff_, length_dist_coeff_);
-					pixel_coordinates[0] = fx_ * distorted_point[0] + cx_;
-					pixel_coordinates[1] = fy_ * distorted_point[1] + cy_;
+
+					// opencvDistort(distorted_point, proj_point, dist_coeff_, length_dist_coeff_); // here, length_dist_coeff_ = 0
+					// pixel_coordinates[0] = fx_ * distorted_point[0] + cx_;
+					// pixel_coordinates[1] = fy_ * distorted_point[1] + cy_;
 					float conf_val = conf_vec_.size()==0 ? 1.0f: conf_vec_[c][i];
 
-					addPoint(pixel_coordinates, depth, POINT_CLOUD_TO_DEPTH_GAUSS, i, conf_val);
+					// addPoint(pixel_coordinates, depth, POINT_CLOUD_TO_DEPTH_GAUSS, i, conf_val);
+					addPoint(proj_point, depth, POINT_CLOUD_TO_DEPTH_GAUSS, i, conf_val);
 
 				}   
 
@@ -631,6 +590,7 @@ namespace pointCloudProjection
 void PointCloudToDepthBase::addPoint(float* pixel, float depth,unsigned int method, unsigned int id, float conf)
 {
     //std::cout<<"addPoint\n";
+
     switch(method)
     {
         case POINT_CLOUD_TO_DEPTH_NEAREST:
@@ -639,9 +599,10 @@ void PointCloudToDepthBase::addPoint(float* pixel, float depth,unsigned int meth
         case POINT_CLOUD_TO_DEPTH_BILINEAR:
             addPointBilinear(pixel, depth,id, conf);
             break;
-				case POINT_CLOUD_TO_DEPTH_GAUSS:
-				  addPointGauss(pixel, depth,id, conf);
+		case POINT_CLOUD_TO_DEPTH_GAUSS:
+		 	addPointGauss(pixel, depth,id, conf);
             break;
+
         default:
             std::cout<<"PointCloudToDepthBase::addPoint: requested add point method not implemented. Use nearest instead\n";
             addPointNearest(pixel, depth,id, conf);
@@ -684,14 +645,17 @@ void PointCloudToDepthBase::addPointBilinear(float* pixel, float depth, unsigned
 
 void PointCloudToDepthBase::addPointIntegerGauss(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf)
 {
-    if(pixel_x >= 0 && pixel_x < cols_ && pixel_y >= 0 && pixel_y < rows_)
+    if(pixel_x >= 0 && pixel_x < cols_ && pixel_y >= 0 && pixel_y < rows_) // tell, if the pixel points is visible in the image space
     {
         float dist_x = pixel_x-pixel[0];
         float dist_y = pixel_y-pixel[1];
         float dist_sqr = dist_x*dist_x+dist_y*dist_y;
         float w = conf*1.0f/(2*M_PI*0.25f)*std::exp(-0.5f*dist_sqr/0.25f);
+
         DepthImagePoint p(depth , w, cloud_id_, id);
+
         int ind = pixel_y * cols_+ pixel_x;
+
         depth_image_points_[ind].push_back(p);
     }
 }

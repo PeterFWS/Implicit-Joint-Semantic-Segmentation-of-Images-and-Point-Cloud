@@ -236,11 +236,11 @@ struct MeanShiftCluster
 class PointCloudToDepthBase
 {
   public:
-    PointCloudToDepthBase(double* intr, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols);
+    PointCloudToDepthBase(float* intr, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols);
     ~PointCloudToDepthBase();
 
 		void addDepthImage(float* depth_image, unsigned int rows, unsigned int cols, unsigned int method, float* conf = NULL, float conf_thresh = 0.0f);
-    float* getDepthImageNearestNeighbor(float cluster_dist);
+    	float* getDepthImageNearestNeighbor(float cluster_dist);
 		void addPointCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud);
 		float* getDepthImageMeanShift(float cluster_val_threshold, float lim, unsigned int num_iterations, float cluster_width, Eigen::MatrixXf transform);
 		float* getClusterValImage();
@@ -267,9 +267,9 @@ class PointCloudToDepthBase
 	  void opencvDistort(float* distPoint, float* projPoint, float* dist_coeff, unsigned int length_dist_coeff);
 	  void insertionSortn(float* array, int size, unsigned int* inds);
 	  void processDepthImageMeanShift(float cluster_val_threshold, float lim, unsigned int num_iterations, float cluster_width);
-   	//void visualizeCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud, float norm_factor, std::vector< unsigned int >& mask);
+   	  //void visualizeCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud, float norm_factor, std::vector< unsigned int >& mask);
 	  // void projectCloud(std::vector< std::vector< unsigned int > >& mask);
-    void projectCloud(std::vector< std::vector< unsigned int > >& mask, Eigen::MatrixXf transform);
+   	  void projectCloud(std::vector< std::vector< unsigned int > >& mask, Eigen::MatrixXf transform);
     
 	  std::vector<std::vector<DepthImagePoint> > depth_image_points_;
 

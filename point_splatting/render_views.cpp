@@ -280,17 +280,17 @@ int main(int argc, char** argv)
 	std::cout<<"cloud size = "<<cloud->points.size()<<std::endl;
 
 	// Define intrinsic matrix
-	double* intr_mat_K = new double[9];
+	float* intr_mat_K = new float[9];
 	for(unsigned int i = 0; i < 9;i++)
 		intr_mat_K[i] = 0.0;
 
 	int rows = 8708; // height
 	int cols = 11608; // width
 
-	double f = 51.6829425484485650/1000; // m
-	double pixel_size = 0.0045999880303564/1000; //m
-	double x0 = 5798.5783629179004000;  // [pixel] principle point
-	double y0 = 4358.1365279104657000;  // [pixel]
+	float f = -51.6829425484485650/1000; // m
+	float pixel_size = 0.0045999880303564/1000; //m
+	float x0 = 5798.5783629179004000;  // [pixel] principle point
+	float y0 = 4358.1365279104657000;  // [pixel]
 
 	intr_mat_K[0] = f/pixel_size;
 	intr_mat_K[2] = x0;
@@ -316,9 +316,10 @@ int main(int argc, char** argv)
 	point_cloud_projector.addPointCloud(cloud);
 
 	// Define extrinsic matrix (camera pose) information	
-	float trans_x = 513956.3197161849200000;
-	float trans_y = 5426766.6255130861000000;
-	float trans_z = 276.9661760997179300;
+	std::cout <<  "Corresponding Image: CF013540.jpg" << std::endl; 
+	float trans_x = 513956.31971618492;
+	float trans_y = 5426766.6255130861;
+	float trans_z = 276.96617609971793;
 
 	float r11 = 0.9950306608836720;
 	float r12 = 0.0816887604073615;
@@ -334,9 +335,45 @@ int main(int argc, char** argv)
 	      
 	Eigen::MatrixXf tot_transform(3,4);
 	// Here only project point cloud into a specific camera view
+
 	std::cout<<"transform cloud.. \n";
+
 	tot_transform = point_cloud_projector.transform(trans_x,trans_y,trans_z, r11, r12, r13, r21, r22, r23, r31, r32, r33); 
-    std::cout<<tot_transform<<std::endl;
+
+    /*
+    R = np.matrix([[r11, r12, r13],
+                   [r21, r22, r23],
+                   [r31, r32, r33]])
+
+    X0 = np.matrix([X, Y, Z]).T
+
+    Rt = np.concatenate((R, -np.dot(R, X0)), axis=1)
+
+    K = np.matrix([[f / pixel_size, 0, x0],
+                   [0, -f / pixel_size, y0],
+                   [0, 0, 1]])
+
+    P = np.dot(K, Rt)
+    Pix_coor = np.dot(P, xyz)
+
+    K: 
+		 [[-1.12354515e+04  0.00000000e+00  5.79857836e+03]
+		 [ 0.00000000e+00  1.12354515e+04  4.35813653e+03]
+		 [ 0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+	Rt:
+		 [[ 9.95030661e-01  8.16887604e-02  5.69291694e-02 -9.54723903e+05]
+	 	 [-8.14123154e-02  9.96654773e-01 -7.16228560e-03 -5.36676850e+06]
+	     [-5.73238066e-02  2.49195828e-03  9.98352529e-01  1.56621467e+04]]
+	P: 
+		 [[-1.15120153e+04 -9.03360293e+02  5.14940045e+03  1.08175723e+10]
+		 [-1.16452910e+03  1.12087267e+04  4.27048511e+03 -6.02298096e+10]
+		 [-5.73238066e-02  2.49195828e-03  9.98352529e-01  1.56621467e+04]]
+
+	test tot_transform:
+		    -11294.3     -912.826      1357.08        1.07581e+10
+		    -1029.35      11202.9      1916.23        -6.02667e+10
+		    -0.0573238   0.00249196    0.998353       15662.1
+    */
 
 
 	ss << iter;
