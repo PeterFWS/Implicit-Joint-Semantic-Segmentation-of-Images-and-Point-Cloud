@@ -13,16 +13,18 @@ namespace pointCloudProjection
 struct DepthImagePoint
 {
 public:
-  DepthImagePoint(float d_in, float w_in,unsigned int cloud_id_in, unsigned int pt_id_in)
+  	DepthImagePoint(float d_in, float w_in,unsigned int cloud_id_in, unsigned int pt_id_in)
 	{
-		d = d_in;
-		w = w_in;
+		d = d_in; // depth
+		w = w_in; // weight
 		cloud_id_ = cloud_id_in;
 		pt_id_ = pt_id_in;
 	}
-  float d,w;
+
+  	float d,w;
 	unsigned int cloud_id_, pt_id_;
 };
+
 
 class DepthIdPair
 {
@@ -40,6 +42,7 @@ public:
   float d;
 	unsigned int id;
 };
+
 
 struct MeanShiftClusterColor
 {
@@ -89,11 +92,12 @@ struct MeanShiftClusterColor
 			val = val_in;
 			mean = mean_in;
 			r = r_in;
-		  g = g_in;
-		  b = b_in;
+			g = g_in;
+			b = b_in;
 		}
 	}
 	
+
 	void addPoint(float w, unsigned int id, unsigned int pt, int label)
 	{
 
@@ -133,6 +137,7 @@ struct MeanShiftClusterColor
 		
 		return label;
 	}
+
 	float val;
 	float mean, r, g, b;
 	float weight;
@@ -233,13 +238,14 @@ struct MeanShiftCluster
 	bool has_view_zero;
 };
 
+
 class PointCloudToDepthBase
 {
   public:
     PointCloudToDepthBase(float* intr, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols);
     ~PointCloudToDepthBase();
 
-		void addDepthImage(float* depth_image, unsigned int rows, unsigned int cols, unsigned int method, float* conf = NULL, float conf_thresh = 0.0f);
+		// void addDepthImage(float* depth_image, unsigned int rows, unsigned int cols, unsigned int method, float* conf = NULL, float conf_thresh = 0.0f);
     	float* getDepthImageNearestNeighbor(float cluster_dist);
 		void addPointCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud);
 		float* getDepthImageMeanShift(float cluster_val_threshold, float lim, unsigned int num_iterations, float cluster_width, Eigen::MatrixXf transform);
@@ -274,13 +280,21 @@ class PointCloudToDepthBase
 	  std::vector<std::vector<DepthImagePoint> > depth_image_points_;
 
 	  unsigned int rows_, cols_, length_dist_coeff_ ,cloud_id_;
+
 	  unsigned int* num_sources_;
+
 	  int* label_image_;
+
 	  std::vector< std::vector<unsigned char> > cluster_point_mask_;
+
 	  float* dist_coeff_, *depth_image_, *cluster_val_image_,*R_image_,*G_image_,*B_image_;
+
 	  float fx_,fy_,cx_,cy_;
+
 	  std::vector< std::vector< unsigned int > > visible_points_;
+
 	  std::vector<float*> conf_vec_;
+
 	  std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr > big_cloud_;
 };
 

@@ -1,7 +1,6 @@
 import numpy as np
 import time
 import os
-import gc
 import my_parameters
 
 f = my_parameters.f
@@ -40,7 +39,11 @@ def pointcloud2pixelcoord(img_name, extOri_file, result_path, xyz):
                                [0, -f / pixel_size, y0],
                                [0, 0, 1]])
 
+                print("K: \n", K)
+
                 P = np.dot(K, Rt)
+
+                print("P: \n", P)
 
                 # calculate pixel points
                 Pix_coor = np.dot(P, xyz)
@@ -49,11 +52,18 @@ def pointcloud2pixelcoord(img_name, extOri_file, result_path, xyz):
                 px = Pix_coor[0, :] / Pix_coor[2, :]
                 py = Pix_coor[1, :] / Pix_coor[2, :]
 
+                depth = Pix_coor[2, :]
+
+                # Pix_coor[0, :] = Pix_coor[0, :] / Pix_coor[2, :]
+                # Pix_coor[1, :] = Pix_coor[1, :] / Pix_coor[2, :]
+
                 save_path = os.path.join(result_path, str(PhotoID))
                 make_if_not_exists(save_path)
 
                 np.savetxt(os.path.join(save_path, "px.txt"), px)
                 np.savetxt(os.path.join(save_path, "py.txt"), py)
+                np.savetxt(os.path.join(save_path, "depth.txt"), depth)
+
 
                 # del px, py
                 # gc.collect()

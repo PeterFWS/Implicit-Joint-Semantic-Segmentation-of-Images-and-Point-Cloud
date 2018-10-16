@@ -10,8 +10,6 @@
 #include <vector>
 #include <fstream>
 
-#define PI 3.14159265
-
 /**********************************************************
  * global variables
  **********************************************************/
@@ -25,14 +23,14 @@ std::string clouds_location = "/home/fangwen/masThesis/point_splatting/";
 
 void savePCD(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud, std::string name)
 {
-  std::string filename = clouds_location + name + ".pcd";
-  std::cout<<"save cloud to "<<filename<<std::endl;  
-  pcl::io::savePCDFile( filename, *cloud, true );
+	std::string filename = clouds_location + name + ".pcd";
+	std::cout<<"save cloud to "<<filename<<std::endl;  
+	pcl::io::savePCDFile( filename, *cloud, true );
 }
 
 unsigned int readToArray(std::string config_file_name, float** files_to_process, unsigned int row_size)
 {
-  std::cout<<"read file: "<<config_file_name<<std::endl;
+  	std::cout<<"read file: "<<config_file_name<<std::endl;
 	std::ifstream file_init(config_file_name.c_str());
 
 	std::string line;
@@ -40,7 +38,7 @@ unsigned int readToArray(std::string config_file_name, float** files_to_process,
 	
 	unsigned int lines_count = 0;
 	while (std::getline(file_init, line))
-	  ++lines_count;
+		++lines_count;
 	  
 	file_init.close();
 	
@@ -49,8 +47,8 @@ unsigned int readToArray(std::string config_file_name, float** files_to_process,
 	
 	while (std::getline(file, line))
 	{
-	  float value;
-	  std::stringstream ss(line);
+		float value;
+		std::stringstream ss(line);
 
 		for(unsigned int c = 0; c < row_size; c++)
 		{
@@ -66,68 +64,68 @@ unsigned int readToArray(std::string config_file_name, float** files_to_process,
 	}
 	file.close();
 	
-  return lines_count;
+	return lines_count;
 }
 
 pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromPCD(std::string dataset)
 {
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
-  std::string filename = clouds_location + dataset + ".pcd";
+	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
+	std::string filename = clouds_location + dataset + ".pcd";
 
-  if(pcl::io::loadPCDFile( filename, *cloud ) == -1)
-    std::cout<<"unable to read "<<filename<<std::endl;
+	if(pcl::io::loadPCDFile( filename, *cloud ) == -1)
+		std::cout<<"unable to read "<<filename<<std::endl;
 
-  return cloud;
+	return cloud;
 }
 
 void saveEigenMatrix(std::string filename, Eigen::MatrixXf m)
 {
-  std::ofstream file(filename.c_str(), std::ofstream::out);
-  if (file.is_open())
-  {
-    file << m;
-  }
-  else
-    std::cout<<"unable to open file: "<<filename<<std::endl;
+	std::ofstream file(filename.c_str(), std::ofstream::out);
+	if (file.is_open())
+	{
+		file << m;
+	}
+	else
+		std::cout<<"unable to open file: "<<filename<<std::endl;
 }
 
 void saveNumPointsImage(std::string filename, unsigned int* num_points, unsigned int size_im)
 {
 	std::ofstream file(filename.c_str(), std::ofstream::binary);
-  if (file.is_open())
-  {
-    char* buffer = reinterpret_cast<char*>(num_points);
-    file.write(buffer, sizeof(unsigned int) * size_im);
-  }
-  else
-    std::cout<<"unable to open file: "<<filename<<std::endl;
+	if (file.is_open())
+	{
+		char* buffer = reinterpret_cast<char*>(num_points);
+		file.write(buffer, sizeof(unsigned int) * size_im);
+	}
+	else
+		std::cout<<"unable to open file: "<<filename<<std::endl;
 }
 
 void savePointsImage(std::string filename, std::vector< std::vector< unsigned int > >* points)
 {
 	std::ofstream file(filename.c_str(), std::ofstream::binary);
-  if (file.is_open())
-  {
-    for(unsigned int i = 0; i < points->size(); i++)
-    {
-      char* buffer = reinterpret_cast<char*>(&(*points)[i][0]);
-      file.write(buffer, sizeof(unsigned int) * (*points)[i].size());
-    }
-  }
-  else
-    std::cout<<"unable to open file: "<<filename<<std::endl;
+	if (file.is_open())
+	{
+		for(unsigned int i = 0; i < points->size(); i++)
+		{
+			char* buffer = reinterpret_cast<char*>(&(*points)[i][0]);
+			file.write(buffer, sizeof(unsigned int) * (*points)[i].size());
+		}
+	}
+	else
+		std::cout<<"unable to open file: "<<filename<<std::endl;
 }
 
 void saveFloatImage(std::string filename, float* num_points, unsigned int size_im)
 {
 	std::ofstream file(filename.c_str(), std::ofstream::binary);
-  if (file.is_open())
-  {
-    char* buffer = reinterpret_cast<char*>(num_points);
-    file.write(buffer, sizeof(float) * size_im);
-  }
-  else
-    std::cout<<"unable to open filetransform: "<<filename<<std::endl;
+	if (file.is_open())
+	{
+		char* buffer = reinterpret_cast<char*>(num_points);
+		file.write(buffer, sizeof(float) * size_im);
+	}
+	else
+		std::cout<<"unable to open filetransform: "<<filename<<std::endl;
 }
 
 
@@ -221,10 +219,6 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
  *     clound_filename: name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels as in semantic3D
  *     location: output folder location
  *     haslabel: flag with 1 for labeled point clouds and 0 for unlabeled point clouds
- *     lim
- *     cluster_val_threshold
- *     num_iterations
- *     cluster_width
 
  * outputs:
  *     depth images: binary files containing float arrays, 
@@ -265,15 +259,14 @@ int main(int argc, char** argv)
 	}
 
 
-		
-
 	/***********************************
 	* Init parameters and read data
 	***********************************/
 	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
 
 	std::cout<<"reading cloud from txt\n";
-		cloud = readPointCloudFromTxt(clound_filename, haslabel, true);
+	
+	cloud = readPointCloudFromTxt(clound_filename, haslabel, true);
 
 	if(cloud->size() <= 0)
 	{
@@ -314,17 +307,17 @@ int main(int argc, char** argv)
 	// Define some parameters
 	double* dist_coeff = NULL;
 		
-	// float lim = std::pow(10,-5);
-	// float cluster_val_threshold = 0.01f;
-	// unsigned int num_iterations = 30;
-	// float cluster_width = 0.1f;
+	float lim = std::pow(10,-5);
+	float cluster_val_threshold = 0.01f;
+	unsigned int num_iterations = 30;
+	float cluster_width = 0.1f;
 
 
 
-	float lim = std::pow(10,std::stof(argv[4]));
-	float cluster_val_threshold = std::stof(argv[5]);
-	unsigned int num_iterations = std::stoul(argv[6]);
-	float cluster_width = std::stof(argv[7]);
+	// float lim = std::pow(10,std::stof(argv[4]));
+	// float cluster_val_threshold = std::stof(argv[5]);
+	// unsigned int num_iterations = std::stoul(argv[6]);
+	// float cluster_width = std::stof(argv[7]);
 
 
 	std::cout << "lim: " << lim << std::endl;
@@ -338,7 +331,7 @@ int main(int argc, char** argv)
 	int iter = 0;
 
 	/***************************************************
-	* render point cloud 
+	* render point cloud (from one specific view)
 	***************************************************/
 	pointCloudProjection::PointCloudToDepthBase point_cloud_projector(intr_mat_K, dist_coeff, rows, cols);
 	point_cloud_projector.addPointCloud(cloud);
@@ -367,41 +360,6 @@ int main(int argc, char** argv)
 	std::cout<<"transform cloud.. \n";
 
 	tot_transform = point_cloud_projector.transform(trans_x,trans_y,trans_z, r11, r12, r13, r21, r22, r23, r31, r32, r33); 
-
-    /*
-    R = np.matrix([[r11, r12, r13],
-                   [r21, r22, r23],
-                   [r31, r32, r33]])
-
-    X0 = np.matrix([X, Y, Z]).T
-
-    Rt = np.concatenate((R, -np.dot(R, X0)), axis=1)
-
-    K = np.matrix([[f / pixel_size, 0, x0],
-                   [0, -f / pixel_size, y0],
-                   [0, 0, 1]])
-
-    P = np.dot(K, Rt)
-    Pix_coor = np.dot(P, xyz)
-
-    K: 
-		 [[-1.12354515e+04  0.00000000e+00  5.79857836e+03]
-		 [ 0.00000000e+00  1.12354515e+04  4.35813653e+03]
-		 [ 0.00000000e+00  0.00000000e+00  1.00000000e+00]]
-	Rt:
-		 [[ 9.95030661e-01  8.16887604e-02  5.69291694e-02 -9.54723903e+05]
-	 	 [-8.14123154e-02  9.96654773e-01 -7.16228560e-03 -5.36676850e+06]
-	     [-5.73238066e-02  2.49195828e-03  9.98352529e-01  1.56621467e+04]]
-	P: 
-		 [[-1.15120153e+04 -9.03360293e+02  5.14940045e+03  1.08175723e+10]
-		 [-1.16452910e+03  1.12087267e+04  4.27048511e+03 -6.02298096e+10]
-		 [-5.73238066e-02  2.49195828e-03  9.98352529e-01  1.56621467e+04]]
-
-	output tot_transform:
-		    -11294.3     -912.826      1357.08        1.07581e+10
-		    -1029.35      11202.9      1916.23        -6.02667e+10
-		    -0.0573238   0.00249196    0.998353       15662.1
-    */
 
 
 	ss << iter;

@@ -37,9 +37,9 @@ class Vec3:
         if isinstance(v_x, tuple) or isinstance(v_x, list):
             self.x, self.y, self.z = v_x
         else:
-            self.x = v_x
-            self.y = v_y
-            self.z = v_z
+            self.x = float(v_x)
+            self.y = float(v_y)
+            self.z = float(v_z)
 
     def __getitem__(self, index):
         if index==0: return self.x
@@ -115,11 +115,13 @@ class Vec3:
 
     def normalized(self):
         '''Return this vector normalized'''
-        return self / self.length()
+        self.x = self.x / self.length()
+        self.y = self.y / self.length()
+        self.z = self.z / self.length()
 
-    def normalize(self):
-        '''Normalize this Vec3'''
-        self /= self.length()
+    # def normalize(self):
+    #     '''Normalize this Vec3'''
+    #     self = self/self.length()
 
 """
 * test

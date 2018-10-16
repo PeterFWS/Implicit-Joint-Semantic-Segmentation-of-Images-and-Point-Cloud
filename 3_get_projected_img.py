@@ -6,11 +6,13 @@ import my_parameters
 
 
 def img_projected(px, py, labels, color_classes, img_path, data_path):
-
+    # img_path = "./Images/CF013540.jpg"
     img = cv2.imread(img_path)
     print(img.shape)
     img2 = np.zeros(img.shape, np.uint8)
     img3 = np.zeros(img.shape, np.uint8)
+
+    img4 = np.zeros(img.shape, np.uint8)
 
     classes = []
     for i in tqdm(range(0, px.shape[0])):
