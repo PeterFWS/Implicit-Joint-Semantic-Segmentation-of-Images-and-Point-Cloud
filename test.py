@@ -26,9 +26,9 @@ print(">>>>>>>>>>>>>>>>>>Down!<<<<<<<<<<<<<<<<<<<<<<<<<<! \n")
 # get 3D point coordinates and labels from point cloud data
 xyz = pc_data[:, :3].T  # (3, 14129889)
 xyz = np.concatenate((np.mat(xyz), np.full((1, xyz.shape[1]), 1)), axis=0)
+labels = pc_data[:, -1]
 
-
-img_name = "CF013540"
+img_name = "CF013540" # (14129889,)
 
 with open(extOri_file, "r") as fp:
     for line in fp:
@@ -62,14 +62,45 @@ with open(extOri_file, "r") as fp:
             # calculate pixel points
             Pix_coor = np.dot(P, xyz)
 
-            Pix_coor[0, :] = Pix_coor[0, :] / Pix_coor[2, :]
-            Pix_coor[1, :] = Pix_coor[1, :] / Pix_coor[2, :]
+            px = Pix_coor[0, :] / Pix_coor[2, :]
+            py = Pix_coor[1, :] / Pix_coor[2, :]
 
-            Pix_coor = Pix_coor.T
+            depth = Pix_coor[2, :]
 
-            Pix_coor = sorted(Pix_coor, key=lambda x: x[:,2])
+
+
+
 
 img_path = "./Images/CF013540.jpg"
 img = cv2.imread(img_path)
 print(img.shape)
+img2 = np.zeros(img.shape, np.uint8)
+img3 = np.zeros(img.shape, np.uint8)
 
+
+
+classes = []
+for i in tqdm(range(0, px.shape[1])):
+    if my_parameters.width > px[0,i] > 0 and my_parameters.height > py[0,i] > 0:
+        c = my_parameters.color_classes[str(labels[i])]
+        if labels[i] not in classes:
+            classes.append(labels[i])
+        cv2.circle(img2, (int(px[0,i]), int(py[0,i])), 1, c, -1)
+        cv2.circle(img3, (int(px[0,i]), int(py[0,i])), 10, c, -1)
+
+cv2.imwrite("./2.jpg", img2)
+cv2.imwrite("./3.jpg", img3)
+
+
+
+with open("./px.txt", "w") as fp1:
+    for i in range(0, px.shape[1]):
+        fp1.write(str(px[0,i]) + "\n")
+
+with open("./py.txt", "w") as fp2:
+    for i in range(0, py.shape[1]):
+        fp2.write(str(py[0,i]) + "\n")
+
+with open("./depth.txt", "w") as fp3:
+    for i in range(0, depth.shape[1]):
+        fp3.write(str(depth[0,i]) + "\n")

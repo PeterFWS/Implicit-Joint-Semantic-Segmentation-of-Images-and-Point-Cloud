@@ -22,7 +22,7 @@ namespace pointCloudProjection
 
 		* by Fangwen Shu
 	*****************************/
-	PointCloudToDepthBase::PointCloudToDepthBase(float* intrinsic_camera_matrix, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols)
+	PointCloudToDepthBase::PointCloudToDepthBase(float* intrinsic_camera_matrix, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols, int k_g)
 	{
 	    //allocate vector memory
 	    for(unsigned int i = 0; i < in_rows*in_cols; i++)
@@ -33,6 +33,8 @@ namespace pointCloudProjection
 
 	    rows_ = in_rows;
 	    cols_ = in_cols;
+
+	    k_guss_ = k_g;
 
 	    fx_ = intrinsic_camera_matrix[0];
 	    fy_ = intrinsic_camera_matrix[4];
@@ -206,7 +208,44 @@ namespace pointCloudProjection
 		return P;
 	}
 
+	unsigned int PointCloudToDepthBase::readToArray(std::string config_file_name, float** files_to_process, unsigned int row_size)
+	{
+	  	std::cout<<"read file: "<<config_file_name<<std::endl;
+		std::ifstream file_init(config_file_name.c_str());
 
+		std::string line;
+		int i = 0;
+		
+		unsigned int lines_count = 0;
+		while (std::getline(file_init, line))
+			++lines_count;
+		  
+		file_init.close();
+		
+		std::ifstream file(config_file_name.c_str());
+		*files_to_process = new float[lines_count*row_size];
+		
+		while (std::getline(file, line))
+		{
+			float value;
+			std::stringstream ss(line);
+
+			for(unsigned int c = 0; c < row_size; c++)
+			{
+			  if(ss >> value)
+			  {
+				  (*files_to_process)[row_size*i+c] = value;
+				}
+				else
+				  std::cout<<"unable to read value, this will crash \n";
+			}
+
+	    ++i;
+		}
+		file.close();
+		
+		return lines_count;
+	}
 
 	void PointCloudToDepthBase::projectCloud(std::vector< std::vector< unsigned int > >& mask, Eigen::MatrixXf transform)
 	{	
@@ -220,31 +259,49 @@ namespace pointCloudProjection
 		Eigen::MatrixXf xyz(4,1); // homogeneous coordinate
 		Eigen::MatrixXf xyz_trans(3,1); //homogeneous coordinates after transformation
 
-		// test
-		cv::Mat test_image = cv::Mat(8000, 8000, CV_8UC3, cv::Scalar(0, 0, 0));
+
+		float* px;
+		unsigned int px_size = 0;
+		px_size = readToArray("/home/fangwen/masThesis/px.txt", &px, 1);
+
+		float* py;
+		unsigned int py_size = 0;
+		py_size = readToArray("/home/fangwen/masThesis/py.txt", &py, 1);
+
+		float* pdepth;
+		unsigned int pdepth_size = 0;
+		pdepth_size = readToArray("/home/fangwen/masThesis/depth.txt", &pdepth, 1);
+
+
+		std::cout << "\n==>splatting radius (kxk Gaussian): " << k_guss_ << std::endl;
+
 
 		for(unsigned int c = 0; c < big_cloud_.size(); c++)
 		{
 			for(unsigned int i = 0; i < big_cloud_[c]->points.size(); i++)
 			{
-			  xyz(0,0) = big_cloud_[c]->points[i].x;
-		      xyz(1,0) = big_cloud_[c]->points[i].y;
-		      xyz(2,0) = big_cloud_	[c]->points[i].z;
-		      xyz(3,0) = 1;
+				// xyz(0,0) = big_cloud_[c]->points[i].x;
+				// xyz(1,0) = big_cloud_[c]->points[i].y;
+				// xyz(2,0) = big_cloud_[c]->points[i].z;
+				// xyz(3,0) = 1.0;
 
-	      	  xyz_trans = transform * xyz;
+				// xyz_trans = transform * xyz;
 	 
 
-				if(abs(xyz_trans(2,0)) > 0.05f && mask[c][i] == 1)
-				{	     
-					proj_point[0] = xyz_trans(0,0) / xyz_trans(2,0); // Normalization of pixel points
-					proj_point[1] = xyz_trans(1,0) / xyz_trans(2,0);
+				// if(abs(xyz_trans(2,0)) > 0.05f && mask[c][i] == 1)
+				// {	     
+					// proj_point[0] = xyz_trans(0,0) / xyz_trans(2,0); // Normalization of pixel points
+					// proj_point[1] = xyz_trans(1,0) / xyz_trans(2,0);
 
-					float depth = xyz_trans(2,0);
+					proj_point[0] = px[i];
+					proj_point[1] = py[i];
 
-					float r = big_cloud_[c]->points[i].r;
-					float g = big_cloud_[c]->points[i].g;
-					float b = big_cloud_[c]->points[i].b;
+					// float depth = xyz_trans(2,0);
+					float depth = abs(pdepth[i]);
+
+					// float r = big_cloud_[c]->points[i].r;
+					// float g = big_cloud_[c]->points[i].g;
+					// float b = big_cloud_[c]->points[i].b;
 
 					float label = big_cloud_[c]->points[i].a;
 
@@ -252,86 +309,103 @@ namespace pointCloudProjection
 
 					addPoint(proj_point, depth, POINT_CLOUD_TO_DEPTH_GAUSS, i, conf_val);
 
-					// test
-					if(proj_point[0] >= 0 && proj_point[0] < cols_ && proj_point[1] >= 0 && proj_point[1] < rows_) 
-					{	
-					    cv::circle(test_image, cv::Point(int(proj_point[0]), int(proj_point[1])),2, cv::Scalar(r,g,b),cv::FILLED, 8,0);
-					}
 
-				} 
+				// } 
 
 				pts_cnt++; 
 			}
 			//get ready for new cloud
 			// cloud_id_++;  // it will not change since we only have 1 cloud
 		}
-		cv::namedWindow("A_good_name", cv::WINDOW_AUTOSIZE);
-		cv::imshow("A_good_name", test_image);
-		imwrite("/home/fangwen/masThesis/point_splatting/result/ps_pointcloud/test.png", test_image);
-		cv::waitKey(0);
-		cv::destroyWindow("A_good_name");
+
+		delete[] px;
+		delete[] py;
+		delete[] pdepth;
+
 	}
 
 	void PointCloudToDepthBase::addPoint(float* pixel, float depth,unsigned int method, unsigned int id, float conf)
 	{
 	    //std::cout<<"addPoint\n";
 
-	    switch(method)
-	    {
-	        case POINT_CLOUD_TO_DEPTH_NEAREST:
-	            addPointNearest(pixel, depth,id, conf);
-	            break;
-	        case POINT_CLOUD_TO_DEPTH_BILINEAR:
-	            addPointBilinear(pixel, depth,id, conf);
-	            break;
-			case POINT_CLOUD_TO_DEPTH_GAUSS: // the one we use
+	    // switch(method)
+	    // {
+	        // case POINT_CLOUD_TO_DEPTH_NEAREST:
+	        //     addPointNearest(pixel, depth,id, conf);
+	        //     break;
+	        // case POINT_CLOUD_TO_DEPTH_BILINEAR:
+	        //     addPointBilinear(pixel, depth,id, conf);
+	        //     break;
+			// case POINT_CLOUD_TO_DEPTH_GAUSS: 
 			 	addPointGauss(pixel, depth,id, conf);
-	            break;
+	            // break;
 
-	        default:
-	            std::cout<<"PointCloudToDepthBase::addPoint: requested add point method not implemented. Use nearest instead\n";
-	            addPointNearest(pixel, depth,id, conf);
-	    }
+	        // default:
+	        //     std::cout<<"PointCloudToDepthBase::addPoint: requested add point method not implemented. Use nearest instead\n";
+	        //     addPointNearest(pixel, depth,id, conf);
+	    // }
 	}
 
-	void PointCloudToDepthBase::addPointNearest(float* pixel, float depth, unsigned int id, float conf)
-	{
-		int pixel_x = int(pixel[0] + 0.5f);
-		int pixel_y = int(pixel[1] + 0.5f);
+	// void PointCloudToDepthBase::addPointNearest(float* pixel, float depth, unsigned int id, float conf)
+	// {
+	// 	int pixel_x = int(pixel[0] + 0.5f);
+	// 	int pixel_y = int(pixel[1] + 0.5f);
 
-		addPointInteger(pixel, pixel_x, pixel_y, depth, id, conf);
-	}
+	// 	addPointInteger(pixel, pixel_x, pixel_y, depth, id, conf);
+	// }
 
-	 void PointCloudToDepthBase::addPointInteger(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf)
-	{
-	    if(pixel_x >= 0 && pixel_x < cols_ && pixel_y >= 0 && pixel_y < rows_)
-	    {
-	        float dist_x = pixel_x-pixel[0];
-	        float dist_y = pixel_y-pixel[1];
-	        float dist = std::sqrt(dist_x*dist_x+dist_y*dist_y);
-	        float w = conf*(1.0f-dist);
+	//  void PointCloudToDepthBase::addPointInteger(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf)
+	// {
+	//     if(pixel_x >= 0 && pixel_x < cols_ && pixel_y >= 0 && pixel_y < rows_)
+	//     {
+	//         float dist_x = pixel_x-pixel[0];
+	//         float dist_y = pixel_y-pixel[1];
+	//         float dist = std::sqrt(dist_x*dist_x+dist_y*dist_y);
+	//         float w = conf*(1.0f-dist);
 
-			int ind = pixel_y * cols_+ pixel_x;
+	// 		int ind = pixel_y * cols_+ pixel_x;
 
-			DepthImagePoint p(depth,w, cloud_id_, id);
+	// 		DepthImagePoint p(depth,w, cloud_id_, id);
 	        
-	        depth_image_points_[ind].push_back(p);
-	    }
-	}
+	//         depth_image_points_[ind].push_back(p);
+	//     }
+	// }
 
-	void PointCloudToDepthBase::addPointBilinear(float* pixel, float depth, unsigned int id, float conf)
+	// void PointCloudToDepthBase::addPointBilinear(float* pixel, float depth, unsigned int id, float conf)
+	// {
+	// 	int pixel_x = int(pixel[0] + 0.5f);
+	// 	int pixel_y = int(pixel[1] + 0.5f);
+
+	// 	addPointInteger(pixel, pixel_x, pixel_y, depth, id, conf);
+	// 	addPointInteger(pixel, pixel_x+1, pixel_y, depth, id, conf);
+	// 	addPointInteger(pixel, pixel_x, pixel_y+1, depth, id, conf);
+	// 	addPointInteger(pixel, pixel_x+1, pixel_y+1, depth, id, conf);
+	// }
+
+
+	void PointCloudToDepthBase::addPointGauss(float* pixel, float depth,unsigned int id, float conf)
 	{
-		int pixel_x = int(pixel[0] + 0.5f);
-		int pixel_y = int(pixel[1] + 0.5f);
+	  int pixel_x = int(pixel[0] + 0.5f);
+	  int pixel_y = int(pixel[1] + 0.5f);
 
-		addPointInteger(pixel, pixel_x, pixel_y, depth, id, conf);
-		addPointInteger(pixel, pixel_x+1, pixel_y, depth, id, conf);
-		addPointInteger(pixel, pixel_x, pixel_y+1, depth, id, conf);
-		addPointInteger(pixel, pixel_x+1, pixel_y+1, depth, id, conf);
+	  addPointIntegerGauss(pixel, pixel_x, pixel_y, depth, id, conf);
+
+
+	  for (int k = 1; k <= k_guss_; k++)
+	  {
+		addPointIntegerGauss(pixel, pixel_x+k, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y+k, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+k, pixel_y+k, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-k, pixel_y+k, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+k, pixel_y-k, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y-k, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-k, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-k, pixel_y-k, depth, id, conf);
+	  }
+
 	}
 
 
-	// the one we use
 	void PointCloudToDepthBase::addPointIntegerGauss(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf)
 	{
 	    if(pixel_x >= 0 && pixel_x < cols_ && pixel_y >= 0 && pixel_y < rows_) 
@@ -348,29 +422,6 @@ namespace pointCloudProjection
 
 	        depth_image_points_[ind].push_back(p);
 	    }
-	}
-
-
-	void PointCloudToDepthBase::addPointGauss(float* pixel, float depth,unsigned int id, float conf)
-	{
-	  int pixel_x = int(pixel[0] + 0.5f);
-	  int pixel_y = int(pixel[1] + 0.5f);
-
-
-	  // for (int k = 1; k <= 10; k++)
-	  // {
-	  	int k = 1;
-	  	addPointIntegerGauss(pixel, pixel_x, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+k, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x, pixel_y+k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+k, pixel_y+k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-k, pixel_y+k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+k, pixel_y-k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x, pixel_y-k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-k, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-k, pixel_y-k, depth, id, conf);
-	  // }
-
 	}
 
 	/*****************************
@@ -390,12 +441,12 @@ namespace pointCloudProjection
 		cluster_val_image_ = new float[depth_image_points_.size()];
 		num_sources_ = new unsigned int[depth_image_points_.size()];
 
-	  	visible_points_.resize(depth_image_points_.size()); //contains ids of
+	  	visible_points_.resize(depth_image_points_.size()); //depth_image_points_.size() = cols*rows
 
 		float gaussian_var = 0.5f*cluster_width*0.5f*cluster_width;
 		int max_num_points = 80;
 
-		std::cout << "depth_image_points_.size(): " << depth_image_points_.size() << std::endl;
+		// std::cout << "depth_image_points_.size(): " << depth_image_points_.size() << std::endl;
 
 		for(unsigned int i = 0; i < depth_image_points_.size(); i++)
 		{
@@ -409,8 +460,6 @@ namespace pointCloudProjection
 	    
 			if(depth_image_points_[i].size() > 0)
 		  	{
-		  		std::cout << "i: " << i << ", depth_image_points_[i].size(): " << depth_image_points_[i].size() << std::endl;
-
 
 				if(depth_image_points_[i].size() == 1)
 				{
@@ -677,8 +726,8 @@ namespace pointCloudProjection
 				delete[] kernel_desity_eval;
 		     	delete[] rand_mask;
 
-				// if(i % 10000 == 0)
-				// 	std::cout<<"mean shift pixel "<<i<<" depth_image_points_[i].size() =  "<<depth_image_points_[i].size()<<std::endl;
+				if(i % 100000 == 0)
+					std::cout<<"mean shift pixel "<<i<<" depth_image_points_[i].size() =  "<<depth_image_points_[i].size()<<std::endl;
 			}
 		}
 	}

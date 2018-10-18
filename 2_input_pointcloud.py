@@ -52,7 +52,7 @@ def pointcloud2pixelcoord(img_name, extOri_file, result_path, xyz):
                 px = Pix_coor[0, :] / Pix_coor[2, :]
                 py = Pix_coor[1, :] / Pix_coor[2, :]
 
-                depth = Pix_coor[2, :]
+                # depth = Pix_coor[2, :]
 
                 # Pix_coor[0, :] = Pix_coor[0, :] / Pix_coor[2, :]
                 # Pix_coor[1, :] = Pix_coor[1, :] / Pix_coor[2, :]
@@ -62,7 +62,7 @@ def pointcloud2pixelcoord(img_name, extOri_file, result_path, xyz):
 
                 np.savetxt(os.path.join(save_path, "px.txt"), px)
                 np.savetxt(os.path.join(save_path, "py.txt"), py)
-                np.savetxt(os.path.join(save_path, "depth.txt"), depth)
+                # np.savetxt(os.path.join(save_path, "depth.txt"), depth)
 
 
                 # del px, py

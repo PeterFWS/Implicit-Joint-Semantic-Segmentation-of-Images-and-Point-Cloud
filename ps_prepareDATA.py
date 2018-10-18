@@ -26,16 +26,16 @@ print(">>>>>>>>>>>>>>>>>>Down!<<<<<<<<<<<<<<<<<<<<<<<<<<! \n")
 xyz = pc_data[:, :3]  # (14129889, 3)
 labels = pc_data[:, -1]  # (14129889,)
 
-# print(">>>>>>>>>>>>>>>>>>Starting to SAVE point cloud data for point splatting!<<<<<<<<<<<<<<<<<<<<< \n")
-# temp = ""
-# with open("./ps_pointcloud.txt", "w") as fp:
-#     for i in range(0, xyz.shape[0]):
-#         temp = str(xyz[i,0]) + " " + str(xyz[i,1]) + " " + str(xyz[i,2]) + " " + str(i) + str(my_parameters.color_classes[str(labels[i])]).replace("("," ").replace(","," ").replace(")"," ") + "\n"
-#         fp.write(temp)
-# print(">>>>>>>>>>>>>>>>>>Down!<<<<<<<<<<<<<<<<<<<<<<<<<<! \n")
-
+print(">>>>>>>>>>>>>>>>>>Starting to SAVE point cloud data for point splatting!<<<<<<<<<<<<<<<<<<<<< \n")
 temp = ""
-with open("./labels_int.txt", "w") as fp:
-    for i in range(0, labels.shape[0]):
-        temp = str(labels[i]).split(".")[0] + "\n"
+with open("./ps_pointcloud.txt", "w") as fp:
+    for i in range(0, xyz.shape[0]):
+        temp = str(xyz[i,0]) + " " + str(xyz[i,1]) + " " + str(xyz[i,2]) + " " + str(i) + str(my_parameters.color_classes[str(labels[i])]).replace("("," ").replace(",","").replace(")","") + "\n"
         fp.write(temp)
+print(">>>>>>>>>>>>>>>>>>Down!<<<<<<<<<<<<<<<<<<<<<<<<<<! \n")
+
+# temp = ""
+# with open("./labels_int.txt", "w") as fp:
+#     for i in range(0, labels.shape[0]):
+#         temp = str(labels[i]).split(".")[0] + "\n"
+#         fp.write(temp)

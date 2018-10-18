@@ -8,13 +8,22 @@ It is quite slow but you should be able to speed it up by parallellizing the loo
 
 
 * inputs: 
- *     clound_filename: name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels as in semantic3D
- *     location: output folder location
- *     haslabel: flag with 1 for labeled point clouds and 0 for unlabeled point clouds
 
- *     lim
- *     cluster_val_threshold
- *     num_iterations
- *     cluster_width
+**Basic information:
+ *	[1]clound_filename: 
+ 		name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels as in semantic3D
+ *	[2]location: output folder location
+ *	[3]haslabel: flag with 1 for labeled point clouds and 0 for unlabeled point clouds
 
-./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.01f 30 0.1f
+**Paramaters related to Mean-shift pip-line
+ *	[4]lim
+ *	[5]cluster_val_threshold
+ *	[6]num_iterations
+ *	[7]cluster_width
+
+**Parameters related to splatting radius and image size
+ *	[8]k_guss
+ *	[9]rows
+ *	[10]cols
+
+./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.001f 30 0.1f 150 3000 3000

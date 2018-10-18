@@ -242,7 +242,7 @@ struct MeanShiftCluster
 class PointCloudToDepthBase
 {
   public:
-    PointCloudToDepthBase(float* intr, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols);
+    PointCloudToDepthBase(float* intr, double* distortion_coefficients, unsigned int in_rows, unsigned int in_cols, int k_g);
     ~PointCloudToDepthBase();
 
 		// void addDepthImage(float* depth_image, unsigned int rows, unsigned int cols, unsigned int method, float* conf = NULL, float conf_thresh = 0.0f);
@@ -264,18 +264,19 @@ class PointCloudToDepthBase
 
   private:
 	  void addPoint(float* pixel, float depth,unsigned int method, unsigned int id, float conf=1.0f);
-	  void addPointLabelInteger(float* pixel, int pixel_x,int pixel_y, float depth, int label, unsigned int id, float conf=1.0f);
-	  void addPointNearest(float* pixel, float depth,unsigned int id, float conf=1.0f);
-	  void addPointBilinear(float* pixel, float depth,unsigned int id, float conf=1.0f);
+	  // void addPointLabelInteger(float* pixel, int pixel_x,int pixel_y, float depth, int label, unsigned int id, float conf=1.0f);
+	  // void addPointNearest(float* pixel, float depth,unsigned int id, float conf=1.0f);
+	  // void addPointBilinear(float* pixel, float depth,unsigned int id, float conf=1.0f);
 	  void addPointGauss(float* pixel, float depth,unsigned int id, float conf=1.0f);
 	  void addPointIntegerGauss(float* pixel, int pixel_x,int pixel_y, float depth,unsigned int id, float conf=1.0f);
-	  void addPointInteger(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf=1.0f);
+	  // void addPointInteger(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf=1.0f);
 	  // void opencvDistort(float* distPoint, float* projPoint, float* dist_coeff, unsigned int length_dist_coeff);
 	  void insertionSortn(float* array, int size, unsigned int* inds);
 	  void processDepthImageMeanShift(float cluster_val_threshold, float lim, unsigned int num_iterations, float cluster_width);
    	  // void visualizeCloud(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud, float norm_factor, std::vector< unsigned int >& mask);
 	  // void projectCloud(std::vector< std::vector< unsigned int > >& mask);
    	  void projectCloud(std::vector< std::vector< unsigned int > >& mask, Eigen::MatrixXf transform);
+   	  unsigned int readToArray(std::string config_file_name, float** files_to_process, unsigned int row_size);
     
 	  std::vector<std::vector<DepthImagePoint> > depth_image_points_;
 
@@ -296,6 +297,9 @@ class PointCloudToDepthBase
 	  std::vector<float*> conf_vec_;
 
 	  std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr > big_cloud_;
+
+
+	  int k_guss_;
 };
 
 }

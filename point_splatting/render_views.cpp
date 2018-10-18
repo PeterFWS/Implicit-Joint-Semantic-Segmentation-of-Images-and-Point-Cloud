@@ -170,8 +170,8 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
 
 	// Generate point cloud
 	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
-	cloud->width    = pc_size;
-	cloud->height   = 1;
+	cloud->width    = pc_size; // total number od points
+	cloud->height   = 1; // it is set to 1 for unorganized datasets 
 	cloud->is_dense = false;
 	unsigned int res_points = (cloud->width * cloud->height);
 	cloud->points.resize (res_points);
@@ -179,21 +179,50 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
 	unsigned int pcnt = 0;
 	std::cout<<"generate point cloud... \n";
 
+//********************
+// float r_ = 0.0;
+// float g_ = 0.0;
+// float b_ = 0.0;
+// float* px;
+// unsigned int px_size = 0;
+// px_size = readToArray("/home/fangwen/masThesis/px.txt", &px, 1);
+
+// float* py;
+// unsigned int py_size = 0;
+// py_size = readToArray("/home/fangwen/masThesis/py.txt", &py, 1);
+
+
+// cv::Mat test_image = cv::Mat(8708, 11608, CV_8UC3, cv::Scalar(0, 0, 0));
+//********************
+
 	for(unsigned int i = 0; i < pc_size; i++)
 	{
-		cloud->points[pcnt].x =pc[7*i+0];
-		cloud->points[pcnt].y =pc[7*i+1];
-		cloud->points[pcnt].z =pc[7*i+2];
-		cloud->points[pcnt].r =pc[7*i+4];
-		cloud->points[pcnt].g =pc[7*i+5];
-		cloud->points[pcnt].b =pc[7*i+6];
+		cloud->points[pcnt].x = pc[7*i+0];
+		cloud->points[pcnt].y = pc[7*i+1];
+		cloud->points[pcnt].z = pc[7*i+2];
+		cloud->points[pcnt].r = pc[7*i+4];
+		cloud->points[pcnt].g = pc[7*i+5];
+		cloud->points[pcnt].b = pc[7*i+6];
 
 		if(haslabel)
 			cloud->points[pcnt].a =label[1*i+0];
-		else
+		else 	
 			cloud->points[pcnt].a = 0;
 
 		pcnt++;
+
+//********************
+		// if(px[i] > 0 && px[i] < 11608 && py[i] > 0 && py[i] < 8708) 
+		// {	
+		// 	std::cout << px[i] << " , " << py[i] << std::endl;
+
+		// 	r_ = pc[7*i+4];
+		// 	g_ = pc[7*i+5];
+		// 	b_ = pc[7*i+6];
+
+		// 	cv::circle(test_image, cv::Point(int(px[i]), int(py[i])), 5, cv::Scalar(b_,g_,r_), cv::FILLED);
+		// }
+//*******************
 
 	}
 
@@ -202,12 +231,21 @@ pcl::PointCloud<pcl::PointXYZRGBA>::Ptr readPointCloudFromTxt(std::string datase
  
 	if(haslabel)
 	{
-		std::cout<<"delete labels\n";
+		std::cout<<"delete labels\n" << std::endl;
 		delete[] label;
 	}
 
-    if(save)
-    	savePCD(cloud, dataset);
+    // if(save)
+    // 	savePCD(cloud, dataset);
+
+
+
+//********************
+	// imwrite("/home/fangwen/masThesis/point_splatting/result/ps_pointcloud/test.jpg", test_image);
+
+	// std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+//********************
+
 
     return cloud;
 }
@@ -283,20 +321,13 @@ int main(int argc, char** argv)
 	for(unsigned int i = 0; i < 9;i++)
 		intr_mat_K[i] = 0.0;
 
-	// int rows = 8708; // height
-	// int cols = 11608; // width
-
-	int rows = 8000; // height
-	int cols = 8000; // width
+	int rows = std::stoi(argv[9]); // height 8708
+	int cols = std::stoi(argv[10]); // width 11608
 
 	float f = -51.6829425484485650/1000; // m
 	float pixel_size = 0.0045999880303564/1000; //m
 	float x0 = 5798.5783629179004000;  // [pixel] principle point
 	float y0 = 4358.1365279104657000;  // [pixel]
-
-	// float x0 = (float)cols/2;  // [pixel] principle point
-	// float y0 = (float)rows/2;  // [pixel]
-
 
 	intr_mat_K[0] = f/pixel_size;
 	intr_mat_K[2] = x0;
@@ -307,25 +338,21 @@ int main(int argc, char** argv)
 	// Define some parameters
 	double* dist_coeff = NULL;
 		
-	float lim = std::pow(10,-5);
-	float cluster_val_threshold = 0.01f;
-	unsigned int num_iterations = 30;
-	float cluster_width = 0.1f;
+	// float lim = std::pow(10,-5);
+	// float cluster_val_threshold = 0.01f;
+	// unsigned int num_iterations = 30;
+	// float cluster_width = 0.1f;
+	float lim = std::pow(10,std::stof(argv[4]));
+	float cluster_val_threshold = std::stof(argv[5]);
+	unsigned int num_iterations = std::stoul(argv[6]);
+	float cluster_width = std::stof(argv[7]);
 
-
-
-	// float lim = std::pow(10,std::stof(argv[4]));
-	// float cluster_val_threshold = std::stof(argv[5]);
-	// unsigned int num_iterations = std::stoul(argv[6]);
-	// float cluster_width = std::stof(argv[7]);
-
+	int k_guss = std::stoi(argv[8]); // splatting radius
 
 	std::cout << "lim: " << lim << std::endl;
 	std::cout << "cluster_val_threshold: " << cluster_val_threshold << std::endl;
 	std::cout << "num_iterations: " << num_iterations << std::endl;
 	std::cout << "cluster_width: " << cluster_width << std::endl;
-
-
 		
 	std::stringstream ss;	
 	int iter = 0;
@@ -333,33 +360,33 @@ int main(int argc, char** argv)
 	/***************************************************
 	* render point cloud (from one specific view)
 	***************************************************/
-	pointCloudProjection::PointCloudToDepthBase point_cloud_projector(intr_mat_K, dist_coeff, rows, cols);
+	pointCloudProjection::PointCloudToDepthBase point_cloud_projector(intr_mat_K, dist_coeff, rows, cols, k_guss);
 	point_cloud_projector.addPointCloud(cloud);
 
 	// Define extrinsic matrix (camera pose) information	
 	std::cout <<  "Corresponding Image: CF013540.jpg" << std::endl; 
-	float trans_x = 513956.31971618492;
-	float trans_y = 5426766.6255130861;
-	float trans_z = 276.96617609971793;
+	// float trans_x = 513956.31971618492;
+	// float trans_y = 5426766.6255130861;
+	// float trans_z = 276.96617609971793;
 
-	float r11 = 0.9950306608836720;
-	float r12 = 0.0816887604073615;
-	float r13 = 0.0569291693643232;
+	// float r11 = 0.9950306608836720;
+	// float r12 = 0.0816887604073615;
+	// float r13 = 0.0569291693643232;
 
-	float r21 = -0.0814123153947630;
-	float r22 = 0.9966547730117062;
-	float r23 = -0.0071622856022397;
+	// float r21 = -0.0814123153947630;
+	// float r22 = 0.9966547730117062;
+	// float r23 = -0.0071622856022397;
 
-	float r31 = -0.0573238066030756;
-	float r32 = 0.0024919582847845;
-	float r33 = 0.9983525285891952;
+	// float r31 = -0.0573238066030756;
+	// float r32 = 0.0024919582847845;
+	// float r33 = 0.9983525285891952;
 	      
 	Eigen::MatrixXf tot_transform(3,4);
 	// Here only project point cloud into a specific camera view
 
-	std::cout<<"transform cloud.. \n";
+	// std::cout<<"transform cloud.. \n";
 
-	tot_transform = point_cloud_projector.transform(trans_x,trans_y,trans_z, r11, r12, r13, r21, r22, r23, r31, r32, r33); 
+	// tot_transform = point_cloud_projector.transform(trans_x,trans_y,trans_z, r11, r12, r13, r21, r22, r23, r31, r32, r33); 
 
 
 	ss << iter;
@@ -375,22 +402,22 @@ int main(int argc, char** argv)
 	float* G_im = point_cloud_projector.getGimage();
 	float* B_im = point_cloud_projector.getBimage();
 
-   	int* label_im = point_cloud_projector.getLabelimage();
+   	// int* label_im = point_cloud_projector.getLabelimage();
 
-	cv::Mat label_image = cv::Mat(rows, cols, CV_32S, label_im);
+	// cv::Mat label_image = cv::Mat(rows, cols, CV_32S, label_im);
 	cv::Mat R_image = cv::Mat(rows, cols, CV_32F, R_im);
 	cv::Mat G_image = cv::Mat(rows, cols, CV_32F, G_im);
 	cv::Mat B_image = cv::Mat(rows, cols, CV_32F, B_im);
 
-	std::vector<int> compression_params;
-    compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
-  	compression_params.push_back(9);
+	// std::vector<int> compression_params;
+	// compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+	// compression_params.push_back(9);
 
-    std::cout<<"save image: "<<location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+im_num+".png\n";
+    // std::cout<<"save image: "<<location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+im_num+".jpg\n";
 
-    saveFloatImage(location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+im_num+".png", depth_im, rows * cols);
+    // saveFloatImage(location + "/" + clound_filename + "/depth/" + clound_filename + "depth"+im_num+".jpg", depth_im, rows * cols);
     
-	imwrite(location + "/" + clound_filename + "/label/" + clound_filename + "label"+im_num+".png", label_image, compression_params);
+	// imwrite(location + "/" + clound_filename + "/label/" + clound_filename + "label"+im_num+".jpg", label_image);
 
 	std::vector<cv::Mat> RGB_im;	
 	RGB_im.push_back(B_image);
@@ -400,9 +427,9 @@ int main(int argc, char** argv)
 	cv::Mat color;
 	cv::merge(RGB_im,color);
 
-	imwrite(location + "/" + clound_filename + "/rgb/" + clound_filename + "RGB" + im_num + ".png", color, compression_params);
+	imwrite(location + "/" + clound_filename + "/rgb/" + clound_filename + "RGB" + im_num + ".jpg", color);
 
-	saveEigenMatrix(location + "/" + clound_filename + "/transform/" + clound_filename + "Transform" + im_num + ".txt", tot_transform);
+	// saveEigenMatrix(location + "/" + clound_filename + "/transform/" + clound_filename + "Transform" + im_num + ".txt", tot_transform);
 
     
     ss.clear();	
@@ -410,7 +437,7 @@ int main(int argc, char** argv)
     delete[] R_im;
     delete[] G_im;
     delete[] B_im;
-    delete[] label_im;
+    // delete[] label_im;
     delete[] depth_im;
     
 
