@@ -10,8 +10,7 @@ It is quite slow but you should be able to speed it up by parallellizing the loo
 * inputs: 
 
 **Basic information:
- *	[1]clound_filename: 
- 		name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels as in semantic3D
+ *	[1]clound_filename: name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels asin semantic3D
  *	[2]location: output folder location
  *	[3]haslabel: flag with 1 for labeled point clouds and 0 for unlabeled point clouds
 
