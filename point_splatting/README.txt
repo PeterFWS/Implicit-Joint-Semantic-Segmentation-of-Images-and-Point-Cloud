@@ -10,7 +10,8 @@ It is quite slow but you should be able to speed it up by parallellizing the loo
 * inputs: 
 
 **Basic information:
- *	[1]clound_filename: name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels asin semantic3D
+ *	[1]clound_filename: 
+ 		name of textfile containing point cloud (x y z i r g b) and label filename containing integer labels as in semantic3D
  *	[2]location: output folder location
  *	[3]haslabel: flag with 1 for labeled point clouds and 0 for unlabeled point clouds
 
@@ -25,4 +26,7 @@ It is quite slow but you should be able to speed it up by parallellizing the loo
  *	[9]rows
  *	[10]cols
 
-./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.001f 30 0.1f 150 3000 3000
+
+ export OMP_NUM_THREADS=4
+
+./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.001f 300 1000.0f 40 8000 8000

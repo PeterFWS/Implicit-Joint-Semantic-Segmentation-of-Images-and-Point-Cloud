@@ -8,6 +8,8 @@
 #include <time.h>       /* time */
 #include <opencv2/opencv.hpp>
 
+#include "omp.h" 
+
 namespace pointCloudProjection
 {
 
@@ -297,13 +299,24 @@ namespace pointCloudProjection
 					proj_point[1] = py[i];
 
 					// float depth = xyz_trans(2,0);
+
 					float depth = abs(pdepth[i]);
+					//float depth = 0.0;
+
+
 
 					// float r = big_cloud_[c]->points[i].r;
 					// float g = big_cloud_[c]->points[i].g;
 					// float b = big_cloud_[c]->points[i].b;
 
-					float label = big_cloud_[c]->points[i].a;
+					// float label = big_cloud_[c]->points[i].a;
+
+					// if ((int)label == 6)
+					// {
+					// 	depth = abs(pdepth[i]) + 50.0;
+					// }
+					// else 
+					// 	depth = abs(pdepth[i]);
 
 					float conf_val = conf_vec_.size()==0 ? 1.0f: conf_vec_[c][i];
 
@@ -390,7 +403,7 @@ namespace pointCloudProjection
 
 	  addPointIntegerGauss(pixel, pixel_x, pixel_y, depth, id, conf);
 
-
+	  #pragma omp parallel for
 	  for (int k = 1; k <= k_guss_; k++)
 	  {
 		addPointIntegerGauss(pixel, pixel_x+k, pixel_y, depth, id, conf);
@@ -408,6 +421,7 @@ namespace pointCloudProjection
 
 	void PointCloudToDepthBase::addPointIntegerGauss(float* pixel, int pixel_x,int pixel_y, float depth, unsigned int id, float conf)
 	{
+
 	    if(pixel_x >= 0 && pixel_x < cols_ && pixel_y >= 0 && pixel_y < rows_) 
 	    {	
 	        float dist_x = pixel_x-pixel[0];
@@ -444,10 +458,12 @@ namespace pointCloudProjection
 	  	visible_points_.resize(depth_image_points_.size()); //depth_image_points_.size() = cols*rows
 
 		float gaussian_var = 0.5f*cluster_width*0.5f*cluster_width;
-		int max_num_points = 80;
+		int max_num_points = 100;
 
 		// std::cout << "depth_image_points_.size(): " << depth_image_points_.size() << std::endl;
 
+
+		#pragma omp parallel for
 		for(unsigned int i = 0; i < depth_image_points_.size(); i++)
 		{
 			depth_image_[i] = 0.0f;
