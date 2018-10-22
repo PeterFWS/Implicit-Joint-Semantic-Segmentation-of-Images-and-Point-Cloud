@@ -29,4 +29,9 @@ It is quite slow but you should be able to speed it up by parallellizing the loo
 
  export OMP_NUM_THREADS=4
 
-./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.001f 300 1000.0f 40 8000 8000
+ 	// float lim = std::pow(10,-5);
+	// float cluster_val_threshold = 0.01f;
+	// unsigned int num_iterations = 30;
+	// float cluster_width = 0.1f;
+
+./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.0001f 100 100f 50 4000 4000

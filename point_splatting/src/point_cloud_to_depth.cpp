@@ -264,15 +264,15 @@ namespace pointCloudProjection
 
 		float* px;
 		unsigned int px_size = 0;
-		px_size = readToArray("/home/fangwen/masThesis/px.txt", &px, 1);
+		px_size = readToArray("/home/fangwen/masThesis/point_splatting/px.txt", &px, 1);
 
 		float* py;
 		unsigned int py_size = 0;
-		py_size = readToArray("/home/fangwen/masThesis/py.txt", &py, 1);
+		py_size = readToArray("/home/fangwen/masThesis/point_splatting/py.txt", &py, 1);
 
 		float* pdepth;
 		unsigned int pdepth_size = 0;
-		pdepth_size = readToArray("/home/fangwen/masThesis/depth.txt", &pdepth, 1);
+		pdepth_size = readToArray("/home/fangwen/masThesis/point_splatting/depth.txt", &pdepth, 1);
 
 
 		std::cout << "\n==>splatting radius (kxk Gaussian): " << k_guss_ << std::endl;
@@ -402,19 +402,98 @@ namespace pointCloudProjection
 	  int pixel_y = int(pixel[1] + 0.5f);
 
 	  addPointIntegerGauss(pixel, pixel_x, pixel_y, depth, id, conf);
+	  // 3x3
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y+1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y+1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y+1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y-1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y-1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y-1, depth, id, conf);
+		// 5x5
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y-1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y+1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y+2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y+2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y+2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y+2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y+2, depth+2, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y-1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y+1, depth, id, conf);
+		// 7x7
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y-1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y+1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y+2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y+3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y-1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y+1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y+2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y+3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y+3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y+3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y+3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y+3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y+3, depth, id, conf);
+		// 9x9
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y-1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y+1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y+2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y+3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y+4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+4, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y-4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y-1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y-2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y-3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y+1, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y+2, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y+3, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-4, pixel_y+4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+1, pixel_y+4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+2, pixel_y+4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x+3, pixel_y+4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x, pixel_y+4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-1, pixel_y+4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-2, pixel_y+4, depth, id, conf);
+		addPointIntegerGauss(pixel, pixel_x-3, pixel_y+4, depth, id, conf);
 
-	  #pragma omp parallel for
-	  for (int k = 1; k <= k_guss_; k++)
-	  {
-		addPointIntegerGauss(pixel, pixel_x+k, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x, pixel_y+k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+k, pixel_y+k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-k, pixel_y+k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+k, pixel_y-k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x, pixel_y-k, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-k, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-k, pixel_y-k, depth, id, conf);
-	  }
+
+
+
+
+
+
+
 
 	}
 
