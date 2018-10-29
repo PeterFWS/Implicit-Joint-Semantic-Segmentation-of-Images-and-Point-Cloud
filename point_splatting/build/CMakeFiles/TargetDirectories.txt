@@ -1,0 +1,3 @@
+/home/fangwen/masThesis/point_splatting/build/CMakeFiles/rebuild_cache.dir
+/home/fangwen/masThesis/point_splatting/build/CMakeFiles/render_point_views.dir
+/home/fangwen/masThesis/point_splatting/build/CMakeFiles/edit_cache.dir

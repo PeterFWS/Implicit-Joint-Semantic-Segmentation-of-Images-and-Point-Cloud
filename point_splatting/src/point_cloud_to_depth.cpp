@@ -403,31 +403,31 @@ namespace pointCloudProjection
 
 	  addPointIntegerGauss(pixel, pixel_x, pixel_y, depth, id, conf);
 	  // 3x3
-		addPointIntegerGauss(pixel, pixel_x+1, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x, pixel_y+1, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+1, pixel_y+1, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-1, pixel_y+1, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+1, pixel_y-1, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x, pixel_y-1, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-1, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-1, pixel_y-1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+1, pixel_y, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x, pixel_y+1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+1, pixel_y+1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-1, pixel_y+1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+1, pixel_y-1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x, pixel_y-1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-1, pixel_y, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-1, pixel_y-1, depth, id, conf);
 		// 5x5
-		addPointIntegerGauss(pixel, pixel_x+2, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+2, pixel_y-1, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+2, pixel_y-2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+2, pixel_y+1, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+2, pixel_y+2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x, pixel_y-2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+1, pixel_y-2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-1, pixel_y-2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-2, pixel_y-2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x, pixel_y+2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x+1, pixel_y+2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-1, pixel_y+2, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-2, pixel_y+2, depth+2, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-2, pixel_y-1, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-2, pixel_y, depth, id, conf);
-		addPointIntegerGauss(pixel, pixel_x-2, pixel_y+1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+2, pixel_y, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+2, pixel_y-1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+2, pixel_y-2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+2, pixel_y+1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+2, pixel_y+2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x, pixel_y-2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+1, pixel_y-2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-1, pixel_y-2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-2, pixel_y-2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x, pixel_y+2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x+1, pixel_y+2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-1, pixel_y+2, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-2, pixel_y+2, depth+2, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-2, pixel_y-1, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-2, pixel_y, depth, id, conf);
+		// addPointIntegerGauss(pixel, pixel_x-2, pixel_y+1, depth, id, conf);
 		// 7x7
 		addPointIntegerGauss(pixel, pixel_x+3, pixel_y, depth, id, conf);
 		addPointIntegerGauss(pixel, pixel_x+3, pixel_y-1, depth, id, conf);

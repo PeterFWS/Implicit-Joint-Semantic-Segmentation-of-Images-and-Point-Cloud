@@ -24,9 +24,8 @@ width = 11608
 height = 8708
 
 
-# Some Classes for View Frustum Culling
+# for View Frustum Culling
 ANG2RAD = 3.14159265358979323846/180
-
 
 class Vec3:
     ''' A three dimensional vector '''

@@ -34,4 +34,4 @@ It is quite slow but you should be able to speed it up by parallellizing the loo
 	// unsigned int num_iterations = 30;
 	// float cluster_width = 0.1f;
 
-./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.0001f 100 100f 50 4000 4000
+./render_point_views "ps_pointcloud" "/home/fangwen/masThesis/point_splatting/result" 1 -5 0.01f 30 0.1f 9 6000 6000
