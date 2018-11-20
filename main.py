@@ -14,23 +14,26 @@ def make_if_not_exists(dirPath):
     if not os.path.exists(dirPath):
         os.makedirs(dirPath)
 
+# global variables
+imgs_path = "./data/Images"
+extOri_file = "./data/All Camera Orientations/txt/extOri.txt"
+pointcloud_file = "./data/LiDAR_pointcloud_labeled.txt"
+save_path = "./data/result"
+make_if_not_exists(save_path)
+
+
 """
    THE MAIN SCRIPT OF PROJECT:
    
    *Input:
-    * images and corresponding exterior/interior orientations
+    * images
+    * corresponding exterior/interior orientations
     * 3d point cloud with semantic label
     
    *Output:
     * synthetic images with semantic label and depth information
 """
 
-# global variables
-imgs_path = "./Images"
-extOri_file = "./All Camera Orientations/txt/extOri.txt"
-pointcloud_file = "./LiDAR_pointcloud_labeled.txt"
-save_path = "./result"
-make_if_not_exists(save_path)
 
 # reading Point Cloud
 print("Starting to read point cloud data!\n")
@@ -47,21 +50,29 @@ for img_name in os.listdir(imgs_path):
     test example:
     img_name = "CF013540.jpg"
     """
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>processing {0}!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n".format(img_name))
     start_time = time.time()
 
+    # img_name = "CF013540.jpg"
+    
     # get exterior orientation
     ex_data = f_go.get_exterior_orientation(img_name, extOri_file).split("\t")
+
     # frustum culling
     xyz_temp, label_temp = f_fc.frustum_culling(ex_data, xyz, labels)
+
     # hidden point removal
     myPoints, mylabels = f_HPR.HPR(ex_data, xyz_temp, label_temp)
+
     # projection
-    px, py, depth,  = f_p.pointcloud2pixelcoord(ex_data, myPoints)
+    px, py, depth = f_p.pointcloud2pixelcoord(ex_data, myPoints)
+
     # generation of synthetic images
-    f_gsi.img_projected(px, py, mylabels, my_parameters.color_classes, os.path.join(imgs_path, img_name), save_path)
+    f_gsi.img_projected(px, py, depth, mylabels, my_parameters.color_classes, os.path.join(imgs_path, img_name), save_path)
 
     duration = time.time() - start_time
     print("Duration of processing one image: ", duration, " s \n")
+
 
 
 

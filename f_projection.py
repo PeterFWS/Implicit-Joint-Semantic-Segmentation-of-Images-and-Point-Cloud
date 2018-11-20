@@ -11,9 +11,7 @@ y0 = my_parameters.y0
 
 def pointcloud2pixelcoord(ex_data, myPoints):
     PhotoID = ex_data[0]
-    print("target PhotoID: ", PhotoID, "\n")
     X, Y, Z, Omega, Phi, Kappa, r11, r12, r13, r21, r22, r23, r31, r32, r33 = map(float, ex_data[1:])
-
     # Projection Matrix
     R = np.matrix([[r11, r12, r13],
                    [r21, r22, r23],
@@ -27,11 +25,11 @@ def pointcloud2pixelcoord(ex_data, myPoints):
                    [0, -f / pixel_size, y0],
                    [0, 0, 1]])
 
-    print("K: \n", K)
+    # print("K: \n", K)
 
     P = np.dot(K, Rt)
 
-    print("P: \n", P)
+    # print("P: \n", P)
 
     # calculate pixel points
     myPoints = np.matrix(myPoints).T

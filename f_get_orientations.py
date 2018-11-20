@@ -1,5 +1,5 @@
 """
-return Exterior Orientations of corresponding image
+ * return Exterior Orientations of corresponding image
 """
 
 def get_exterior_orientation(img_name, extOri_file):
@@ -9,4 +9,6 @@ def get_exterior_orientation(img_name, extOri_file):
         for line in fp:
             if line.split("\t")[0] == img_name.split(".")[0]:
                 return line
+
+
 

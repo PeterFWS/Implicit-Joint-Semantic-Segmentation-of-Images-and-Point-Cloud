@@ -82,7 +82,7 @@ def frustum_culling(ex_data, xyz, labels):
     """
     Main
     """
-    print("Starting to culling frustum \n")
+    print("Culling frustum... \n")
     X_, Y_, Z_ = map(float, ex_data[1:4])
     nearD = abs(my_parameters.f)
     farD = Z_

@@ -3,6 +3,9 @@ import numpy as np
 from scipy.spatial import ConvexHull
 
 
+"""
+ * Hidden Point Removal
+"""
 
 '''
 Function used to Perform Spherical Flip on the Original Point Cloud
@@ -35,7 +38,7 @@ def HPR(ex_data, my_xyz, labels):
     """
     Main
     """
-    print("Starting HPR\n")
+    print("Hidden point removal... \n")
 
     flag = np.zeros(len(my_xyz),int)  #  0 - Invisible; 1 - Visible.
     X_, Y_, Z_ = map(float, ex_data[1:4])
