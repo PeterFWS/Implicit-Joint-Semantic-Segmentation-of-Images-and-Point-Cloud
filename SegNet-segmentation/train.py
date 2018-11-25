@@ -6,11 +6,11 @@ train_images_path = "./data/images_prepped_train/"
 train_segs_path = "./data/annotations_prepped_train/"
 save_weights_path = "./weights/ex1"
 
-input_height = 244
-input_width = 244
+input_height = 224
+input_width = 224
 n_classes = 11
 train_batch_size = 1
-epochs = 1
+epochs = 5
 
 validate = False
 if validate:
@@ -19,26 +19,27 @@ if validate:
 	val_batch_size = 2
 
 
-m = Models.Segnet.segnet2(n_classes, input_height=input_height, input_width=input_width)
+# m = Models.Segnet.segnet(n_classes, input_height=input_height, input_width=input_width)
+m = Models.VGGSegnet.VGGSegnet(n_classes, input_height=input_height, input_width=input_width)
+
 m.compile(loss='categorical_crossentropy',
       optimizer= "adadelta" ,
       metrics=['accuracy'])
 
-# load_weights = ""
-# if len( load_weights ) > 0:
-# 	m.load_weights(load_weights)
+
+# m.load_weights("./data/vgg16_weights_th_dim_ordering_th_kernels.h5")
 
 
 print "Model output shape" ,  m.output_shape
 
-# output_height = m.outputHeight
-# output_width = m.outputWidth
+output_height = m.outputHeight
+output_width = m.outputWidth
 
-G  = LoadBatches.imageSegmentationGenerator( train_images_path , train_segs_path ,  train_batch_size,  n_classes , input_height , input_width , input_height , input_width   )
+G  = LoadBatches.imageSegmentationGenerator( train_images_path , train_segs_path ,  train_batch_size,  n_classes , input_height , input_width , output_height , output_width   )
 
 
 if validate:
-	G2  = LoadBatches.imageSegmentationGenerator( val_images_path , val_segs_path ,  val_batch_size,  n_classes , input_height , input_width , input_height , input_width   )
+	G2  = LoadBatches.imageSegmentationGenerator( val_images_path , val_segs_path ,  val_batch_size,  n_classes , input_height , input_width , output_height , output_width   )
 
 if not validate:
 	for ep in range( epochs ):
