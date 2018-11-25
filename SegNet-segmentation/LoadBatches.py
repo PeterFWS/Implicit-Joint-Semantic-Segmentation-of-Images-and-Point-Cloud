@@ -25,7 +25,9 @@ def getImageArr( path , width , height , imgNorm="sub_mean" , odering='channels_
 
 		if odering == 'channels_first':
 			img = np.rollaxis(img, 2, 0)
+
 		return img
+		
 	except Exception, e:
 		print path , e
 		img = np.zeros((  height , width  , 3 ))
@@ -77,17 +79,9 @@ def imageSegmentationGenerator( images_path , segs_path ,  batch_size,  n_classe
 		Y = []
 		for _ in range( batch_size) :
 			im , seg = zipped.next()
-			X.append( getImageArr(im , input_width , input_height, odering='channe' )  )
+			X.append( getImageArr(im , input_width , input_height, odering='channels_end' )  )
 			Y.append( getSegmentationArr( seg , n_classes , output_width , output_height )  )
 
 		yield np.array(X) , np.array(Y)
-
-
-# import Models , LoadBatches
-# G  = LoadBatches.imageSegmentationGenerator( "data/clothes_seg/prepped/images_prepped_train/" ,  "data/clothes_seg/prepped/annotations_prepped_train/" ,  1,  10 , 800 , 550 , 400 , 272   ) 
-# G2  = LoadBatches.imageSegmentationGenerator( "data/clothes_seg/prepped/images_prepped_test/" ,  "data/clothes_seg/prepped/annotations_prepped_test/" ,  1,  10 , 800 , 550 , 400 , 272   ) 
-
-# m = Models.VGGSegnet.VGGSegnet( 10  , use_vgg_weights=True ,  optimizer='adadelta' , input_image_size=( 800 , 550 )  )
-# m.fit_generator( G , 512  , nb_epoch=10 )
 
 
