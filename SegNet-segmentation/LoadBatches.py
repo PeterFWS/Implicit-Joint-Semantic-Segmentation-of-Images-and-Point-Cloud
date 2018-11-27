@@ -5,22 +5,25 @@ import glob
 import itertools
 
 
-def getImageArr( path , width , height , imgNorm="sub_mean" , odering='channels_first' ):
+def getImageArr( path , width , height , imgNorm="divide" , odering='channels_end' ):
 
 	try:
 		img = cv2.imread(path, 1)
 
 		if imgNorm == "sub_and_divide":
 			img = np.float32(cv2.resize(img, ( width , height ))) / 127.5 - 1
+
 		elif imgNorm == "sub_mean":
 			img = cv2.resize(img, ( width , height ))
 			img = img.astype(np.float32)
 			img[:,:,0] -= 103.939
 			img[:,:,1] -= 116.779
 			img[:,:,2] -= 123.68
+
 		elif imgNorm == "divide":
 			img = cv2.resize(img, ( width , height ))
 			img = img.astype(np.float32)
+			#img = img[:, :, :2]
 			img = img/255.0
 
 		if odering == 'channels_first':
@@ -34,8 +37,6 @@ def getImageArr( path , width , height , imgNorm="sub_mean" , odering='channels_
 		if odering == 'channels_first':
 			img = np.rollaxis(img, 2, 0)
 		return img
-
-
 
 
 
@@ -54,6 +55,7 @@ def getSegmentationArr( path , nClasses ,  width , height  ):
 		print e
 		
 	seg_labels = np.reshape(seg_labels, ( width*height , nClasses ))
+	# print "seg_labels", seg_labels.shape
 	return seg_labels
 
 
@@ -79,10 +81,8 @@ def imageSegmentationGenerator( images_path , segs_path ,  batch_size,  n_classe
 		Y = []
 		for _ in range( batch_size) :
 			im , seg = zipped.next()
-			X.append( getImageArr(im , input_width , input_height )  )
+			X.append( getImageArr(im , input_width , input_height)  )
 			Y.append( getSegmentationArr( seg , n_classes , output_width , output_height )  )
-
-
 
 		yield np.array(X) , np.array(Y)
 
