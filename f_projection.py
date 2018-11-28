@@ -1,5 +1,6 @@
 import numpy as np
 import my_parameters
+import time
 
 f = my_parameters.f
 pixel_size = my_parameters.pixel_size
@@ -10,6 +11,10 @@ y0 = my_parameters.y0
 
 
 def pointcloud2pixelcoord(ex_data, myPoints):
+
+    print("projection... ")
+    start_time = time.time()
+
     PhotoID = ex_data[0]
     X, Y, Z, Omega, Phi, Kappa, r11, r12, r13, r21, r22, r23, r31, r32, r33 = map(float, ex_data[1:])
     # Projection Matrix
@@ -40,6 +45,9 @@ def pointcloud2pixelcoord(ex_data, myPoints):
     px = Pix_coor[0, :] / Pix_coor[2, :]
     py = Pix_coor[1, :] / Pix_coor[2, :]
     depth = Pix_coor[2, :]
+
+    duration = time.time() - start_time
+    print(duration, "s\n")
 
     return px, py, depth
 

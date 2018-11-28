@@ -24,8 +24,8 @@ color_classes_int = {
 n_classes = 11
 images_path = "data/images_prepped_test/"
 
-input_height = 512#8708
-input_width = 512#11608
+input_height = 2048#8708
+input_width = 2048#11608
 epoch_number = 5
 
 m = Models.Segnet.segnet( n_classes , input_height=input_height, input_width=input_width   )
@@ -34,9 +34,6 @@ m.compile(loss='categorical_crossentropy',
       optimizer= 'adadelta' ,
       metrics=['accuracy'])
 
-
-# output_height = m.outputHeight
-# output_width = m.outputWidth
 output_height = input_height
 output_width = input_width
 
@@ -46,15 +43,15 @@ images.sort()
 #colors = [  ( random.randint(0,255),random.randint(0,255),random.randint(0,255)   ) for _ in range(n_classes)  ]
 
 for imgName in images:
-	outName = imgName.replace( images_path ,  "data/predictions/" )
-	X = LoadBatches.getImageArr(imgName , input_width  , input_height)
-	pr = m.predict( np.array([X]) )[0]
-	pr = pr.reshape(( output_height ,  output_width , n_classes ) ).argmax( axis=2 )
-	seg_img = np.zeros( ( output_height , output_width , 3  ) )
-	for c in range(n_classes):
-		seg_img[:,:,0] += ( (pr[:,: ] == c )*( color_classes_int[str(c)][0] )).astype('uint8')
-		seg_img[:,:,1] += ((pr[:,: ] == c )*( color_classes_int[str(c)][1] )).astype('uint8')
-		seg_img[:,:,2] += ((pr[:,: ] == c )*( color_classes_int[str(c)][2] )).astype('uint8')
-	seg_img = cv2.resize(seg_img  , (input_width , input_height ))
-	cv2.imwrite(  outName , seg_img )
+    outName = imgName.replace( images_path ,  "data/predictions/" )
+    X = LoadBatches.getImageArr(imgName , input_width  , input_height)
+    pr = m.predict( np.array([X]) )[0]
+    pr = pr.reshape(( output_height ,  output_width , n_classes ) ).argmax( axis=2 )
+    seg_img = np.zeros( ( output_height , output_width , 3  ) )
+    for c in range(n_classes):
+        seg_img[:,:,0] += ( (pr[:,: ] == c )*( color_classes_int[str(c)][0] )).astype('uint8')
+        seg_img[:,:,1] += ((pr[:,: ] == c )*( color_classes_int[str(c)][1] )).astype('uint8')
+        seg_img[:,:,2] += ((pr[:,: ] == c )*( color_classes_int[str(c)][2] )).astype('uint8')
+    seg_img = cv2.resize(seg_img  , (input_width , input_height ))
+    cv2.imwrite(  outName , seg_img )
 

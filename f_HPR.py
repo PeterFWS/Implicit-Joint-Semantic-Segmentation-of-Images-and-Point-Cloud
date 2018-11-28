@@ -1,7 +1,7 @@
 import math
 import numpy as np
 from scipy.spatial import ConvexHull
-
+import time
 
 """
  * Hidden Point Removal
@@ -34,16 +34,17 @@ def convexHull(points):
     return hull
 
 
-def HPR(ex_data, my_xyz, labels):
+def HPR(ex_data, xyz_temp, label_temp, feature_temp, index_temp):
     """
     Main
     """
-    print("Hidden point removal... \n")
+    print("Hidden point removal... ")
+    start_time = time.time()
 
-    flag = np.zeros(len(my_xyz),int)  #  0 - Invisible; 1 - Visible.
+    flag = np.zeros(len(xyz_temp),int)  #  0 - Invisible; 1 - Visible.
     X_, Y_, Z_ = map(float, ex_data[1:4])
     C = np.array([[X_, Y_, Z_]])  # Center
-    flippedPoints = sphericalFlip(my_xyz, C, math.pi)
+    flippedPoints = sphericalFlip(xyz_temp, C, math.pi)
     myHull = convexHull(flippedPoints)
     visibleVertex = myHull.vertices[:-1]  # indexes of visible points
 
@@ -52,14 +53,23 @@ def HPR(ex_data, my_xyz, labels):
 
     myPoints = []
     mylabels = []
+    myfeatures = []
+    myindex = []
     for i in visibleId:
-        myPoints.append([my_xyz[i, 0], my_xyz[i, 1], my_xyz[i, 2]])
-        mylabels.append(labels[0, i])
+        myPoints.append([xyz_temp[i, 0], xyz_temp[i, 1], xyz_temp[i, 2]])
+        mylabels.append(label_temp[i])
+        myfeatures.append([_ for _ in feature_temp[i, :]])
+        myindex.append(index_temp[i])
 
     myPoints = np.matrix(myPoints)
-    mylabels = np.matrix(mylabels)
+    mylabels = np.asarray(mylabels)
+    myfeatures = np.asarray(myfeatures)
+    myindex = np.asarray(myindex)
 
-    return myPoints, mylabels
+    duration = time.time() - start_time
+    print(duration, "s\n")
+
+    return myPoints, mylabels, myfeatures, myindex
 
 
 

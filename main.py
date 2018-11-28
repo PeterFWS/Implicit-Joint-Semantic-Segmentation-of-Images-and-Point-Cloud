@@ -31,7 +31,7 @@ make_if_not_exists(save_path)
     * 3d point cloud with semantic label
     
    *Output:
-    * synthetic images with semantic label and depth information
+    * synthetic images
 """
 
 
@@ -40,9 +40,13 @@ print("Starting to read point cloud data!\n")
 start_time = time.time()
 pc_data = np.loadtxt(pointcloud_file)
 duration = time.time() - start_time
-print("Duration of reading point cloud: {0} s \n".format(duration))
+print("Duration of reading point cloud: {0}s \n".format(duration))
+
 xyz = pc_data[:, :3]
 labels = pc_data[:, -1]
+features = pc_data[:, 3:6]
+
+index = np.asarray([_ for _ in range(labels.shape[0])])
 
 # processing pip-line
 for img_name in os.listdir(imgs_path):
@@ -51,29 +55,22 @@ for img_name in os.listdir(imgs_path):
     img_name = "CF013540.jpg"
     """
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>processing {0}!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n".format(img_name))
-    start_time = time.time()
-
-    # img_name = "CF013540.jpg"
+    start_t = time.time()
     
     # get exterior orientation
     ex_data = f_go.get_exterior_orientation(img_name, extOri_file).split("\t")
 
     # frustum culling
-    xyz_temp, label_temp = f_fc.frustum_culling(ex_data, xyz, labels)
+    xyz_temp, label_temp, feature_temp, index_temp = f_fc.frustum_culling(ex_data, xyz, labels, features, index)
 
     # hidden point removal
-    myPoints, mylabels = f_HPR.HPR(ex_data, xyz_temp, label_temp)
+    myPoints, mylabels, myfeatures, myindex = f_HPR.HPR(ex_data, xyz_temp, label_temp, feature_temp, index_temp)
 
     # projection
     px, py, depth = f_p.pointcloud2pixelcoord(ex_data, myPoints)
 
     # generation of synthetic images
-    f_gsi.img_projected(px, py, depth, mylabels, my_parameters.color_classes, os.path.join(imgs_path, img_name), save_path)
+    f_gsi.img_projected(px, py, depth, myfeatures, mylabels, myindex, os.path.join(imgs_path, img_name), save_path)
 
-    duration = time.time() - start_time
-    print("Duration of processing one image: ", duration, " s \n")
-
-
-
-
-
+    d_t = time.time() - start_t
+    print("Duration of processing one image: ", d_t, "s\n")

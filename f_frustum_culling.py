@@ -2,7 +2,7 @@ import numpy as np
 import my_parameters
 from my_parameters import Vec3
 from my_parameters import Plane
-
+import time
 
 """
  * Geometric Approach for View Frustum Culling
@@ -78,11 +78,13 @@ def pointInFrustum(p=Vec3(), pl_TOP=Plane(), pl_BOTTOM=Plane(), pl_LEFT=Plane(),
 
 
 
-def frustum_culling(ex_data, xyz, labels):
+def frustum_culling(ex_data, xyz, labels, features, index):
     """
     Main
     """
-    print("Culling frustum... \n")
+    print("Culling frustum... ")
+    start_time = time.time()
+
     X_, Y_, Z_ = map(float, ex_data[1:4])
     nearD = abs(my_parameters.f)
     farD = Z_
@@ -92,21 +94,30 @@ def frustum_culling(ex_data, xyz, labels):
     pl_TOP, pl_BOTTOM, pl_LEFT, pl_RIGHT, pl_NEARP, pl_FARP = \
         setCamDef(nh, nw, fh, fw, nearD, farD, Vec3(0,0,0), Vec3(0,0,1), Vec3(0, 1, 0))
 
-
-    xyz_3d = []
-    label = []
+    xyz_temp = []
+    label_temp = []
+    feature_temp = []
+    index_temp = []
     for i in range(0, xyz.shape[0]):
         pt = Vec3(xyz[i, 0]-X_, xyz[i, 1]-Y_, xyz[i, 2]-Z_)
         flag = pointInFrustum(pt,
                        pl_TOP, pl_BOTTOM, pl_LEFT,
                        pl_RIGHT, pl_NEARP, pl_FARP)
         if flag == 1:
-            xyz_3d.append([xyz[i, 0], xyz[i, 1], xyz[i, 2]])
-            label.append(labels[i])
+            xyz_temp.append([xyz[i, 0], xyz[i, 1], xyz[i, 2]])
+            label_temp.append(labels[i])
+            feature_temp.append([_ for _ in features[i, :]])
+            index_temp.append(index[i])
 
-    xyz_3d = np.matrix(xyz_3d)
-    label = np.matrix(label)
-    return xyz_3d, label
+    xyz_temp = np.matrix(xyz_temp)
+    label_temp = np.asarray(label_temp)
+    feature_temp = np.asarray(feature_temp)
+    index_temp = np.asarray(index_temp)
+
+    duration = time.time() - start_time
+    print(duration, "s\n")
+
+    return xyz_temp, label_temp, feature_temp, index_temp
 
 
 
