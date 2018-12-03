@@ -1,6 +1,5 @@
 import numpy as np
 import os
-import my_parameters
 import time
 
 # self-define function

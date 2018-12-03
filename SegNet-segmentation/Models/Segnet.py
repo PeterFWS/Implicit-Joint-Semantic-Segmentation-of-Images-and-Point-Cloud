@@ -1,4 +1,3 @@
-
 # todo upgrade to keras 2.0
 from keras import backend as K
 
@@ -13,13 +12,12 @@ from keras.layers import Input
 from mylayers import MaxPoolingWithArgmax2D, MaxUnpooling2D
 
 
-def segnet(nClasses , optimizer=None , input_height=8708, input_width=11608): 
-
-	input_shape = (input_height, input_width, 3) 
-	n_labels = nClasses
-	kernel=3
-	pool_size=(2, 2)
-	output_mode="softmax"
+def segnet(n_labels, input_height=8708, input_width=11608):
+	nchannel = 7
+	input_shape = (input_height, input_width, nchannel)
+	kernel = 3
+	pool_size = (2, 2)
+	output_mode = "softmax"
 
 	# encoder
 	inputs = Input(shape=input_shape)
@@ -134,17 +132,16 @@ def segnet(nClasses , optimizer=None , input_height=8708, input_width=11608):
 
 	conv_26 = Convolution2D(n_labels, (1, 1), padding="valid")(conv_25)
 	conv_26 = BatchNormalization()(conv_26)
-	    
+
 	conv_26 = Reshape(
-	    (input_shape[0]*input_shape[1], n_labels),
-	    input_shape=(input_shape[0], input_shape[1], n_labels))(conv_26)
+		(input_shape[0] * input_shape[1], n_labels),
+		input_shape=(input_shape[0], input_shape[1], n_labels))(conv_26)
 
 	outputs = Activation(output_mode)(conv_26)
 	print("Build decoder done..")
 
 	model = Model(inputs=inputs, outputs=outputs, name="SegNet")
 
+	print("model.output_shape: ", model.output_shape, "\n")
+
 	return model
-
-
-    
