@@ -12,6 +12,7 @@ import cv2
 from tqdm import tqdm
 from scipy.interpolate import griddata
 
+
 def make_if_not_exists(dirPath):
     if not os.path.exists(dirPath):
         os.makedirs(dirPath)
@@ -33,25 +34,25 @@ def get_INTER_and_EXTER_Orientations(file_ori):
     for i in range(len(temp)):
         if "FocalLength" in temp[i].split("_"):  # [mm->m]
             f = - float(temp[i + 1]) / 1000  # different sign for aerial image
-            # print("f: {0}\n".format(f))
+            print("f: {0}\n".format(f))
 
         elif "PixelSize" in temp[i].split("_"):  # [mm->m]
             pixel_size_x = float(temp[i + 1].split("\t")[1]) / 1000
             pixel_size_y = float(temp[i + 1].split("\t")[2]) / 1000
-            # print("pixel_size_x: {0}\n".format(pixel_size_x))
-            # print("pixel_size_y: {0}\n".format(pixel_size_y))
+            print("pixel_size_x: {0}\n".format(pixel_size_x))
+            print("pixel_size_y: {0}\n".format(pixel_size_y))
 
         elif "SensorSize" in temp[i].split("_"):  # [pixel]
             img_width = int(temp[i + 1].split("\t")[1])
             img_height = int(temp[i + 1].split("\t")[2])
-            # print("img_width: {0}\n".format(img_width))
-            # print("img_height: {0}\n".format(img_height))
+            print("img_width: {0}\n".format(img_width))
+            print("img_height: {0}\n".format(img_height))
 
         elif "PrincipalPoint" in temp[i].split("_"):  # [pixel]
             x0 = float(temp[i + 1].split("\t")[1])
             y0 = float(temp[i + 1].split("\t")[2])
-            # print("x0: {0}\n".format(x0))
-            # print("y0: {0}\n".format(y0))
+            print("x0: {0}\n".format(x0))
+            print("y0: {0}\n".format(y0))
 
         elif "CameraMatrix" in temp[i].split("_"):  # [ImageCoordinateSystem]
             K = np.matrix([[float(temp[i + 1].split("\t")[1]), float(temp[i + 1].split("\t")[2]),
@@ -60,7 +61,7 @@ def get_INTER_and_EXTER_Orientations(file_ori):
                             float(temp[i + 2].split("\t")[3])],
                            [float(temp[i + 3].split("\t")[1]), float(temp[i + 3].split("\t")[2]),
                             float(temp[i + 3].split("\t")[3])]])
-            # print("K: {0}\n".format(K))
+            print("K: {0}\n".format(K))
 
         elif "RotationMatrix" in temp[i].split("_"):  # [World->ImageCoordinateSystem]
             R = np.matrix([[float(temp[i + 1].split("\t")[1]), float(temp[i + 1].split("\t")[2]),
@@ -69,17 +70,18 @@ def get_INTER_and_EXTER_Orientations(file_ori):
                             float(temp[i + 2].split("\t")[3])],
                            [float(temp[i + 3].split("\t")[1]), float(temp[i + 3].split("\t")[2]),
                             float(temp[i + 3].split("\t")[3])]])
-            # print("R: {0}\n".format(R))
+            print("R: {0}\n".format(R))
 
         elif "TranslationVector" in temp[i].split("_"):  # [WorldCoordinateSystem]
             Xc = float(temp[i + 1].split("\t")[1])
             Yc = float(temp[i + 1].split("\t")[2])
             Zc = float(temp[i + 1].split("\t")[3])
-            # print("Xc: {0}\n".format(Xc))
-            # print("Yc: {0}\n".format(Yc))
-            # print("Zc: {0}\n".format(Zc))
+            print("Xc: {0}\n".format(Xc))
+            print("Yc: {0}\n".format(Yc))
+            print("Zc: {0}\n".format(Zc))
 
-    return f, pixel_size_x, pixel_size_y, img_width, img_height, x0, y0, K, R, Xc, Yc, Zc
+
+    return f, pixel_size_x, img_width, img_height, K, R, Xc, Yc, Zc
 
 
 
@@ -273,6 +275,8 @@ def pointcloud2pixelcoord(R, K, Xc, Yc, Zc, myPoints):
     px = Pix_coor[0, :] / Pix_coor[2, :]
     py = Pix_coor[1, :] / Pix_coor[2, :]
 
+
+
     duration = time.time() - start_time
     print(duration, "s\n")
 
@@ -285,7 +289,22 @@ def pointcloud2pixelcoord(R, K, Xc, Yc, Zc, myPoints):
     ** Generation of synthetic images
 """
 
-def img_projected(px, py, depth, myfeatures, mylabels, myindex, img_path, save_path):
+color_classes = {
+    "0": (0, 0, 0),
+    "1": (255, 255, 255),
+    "2": (255, 255, 0),
+    "3": (255, 0, 255),
+    "4": (0, 255, 255),
+    "5": (0, 255, 0),
+    "6": (0, 0, 255),
+    "7": (239, 120, 76),
+    "8": (247, 238, 179),
+    "9": (0, 18, 114),
+    "10": (63, 34, 15)
+}
+
+
+def img_projected(px, py, myIndex, pt_labels, file_img, save_path, img_width, img_height):
     print("Generation of synthetic image... \n")
     start_time = time.time()
 
@@ -305,98 +324,91 @@ def img_projected(px, py, depth, myfeatures, mylabels, myindex, img_path, save_p
     # make_if_not_exists(save_path_feature3)
     # make_if_not_exists(save_path_index)
 
-    label_value = []
-    points = []
-    d = []
-    feature1 = []
-    feature2 = []
-    feature3 = []
-    id = []
-    img_temp = np.zeros((my_parameters.height, my_parameters.width, 3), np.uint8)
+    # label_value = []
+    # points = []
+    # id = []
+    img_temp = np.zeros((img_height, img_width, 3), np.uint8)
 
     for i in tqdm(range(0, px.shape[1])):
-       if my_parameters.width > px[0, i] > 0 and my_parameters.height > py[0, i] > 0:
-            label_value.append(int(mylabels[i]))
-            points.append([px[0, i], py[0, i]])
-            d.append(-depth[0, i])  # depth should > 0 here, we are in aerial image case
-            feature1.append(myfeatures[i, 0])
-            feature2.append(myfeatures[i, 1])
-            feature3.append(myfeatures[i, 2])
-            id.append(myindex[i])
+       if img_width > px[0, i] > 0 and img_height > py[0, i] > 0:
 
-            c = my_parameters.color_classes_int[str(int(mylabels[i]))]
-            cv2.circle(img_temp, (int(px[0, i]), int(py[0, i])), 5, c, -1)
-    cv2.imwrite(os.path.join(save_path_color, img_path.split("/")[-1]).replace(".jpg", "_gt_origin.jpg"), img_temp)
+            # points.append([px[0, i], py[0, i]])
+            # label_value.append(int(pt_labels[myIndex[i]]))
+            # id.append(myIndex[i])
 
-    points = np.array(points)
-    label_value = np.array(label_value)
-    d = np.array(d)
-    id = np.array(id)
-    feature1 = np.array(feature1)
-    feature2 = np.array(feature2)
-    feature3 = np.array(feature3)
+            c = color_classes[str(int(pt_labels[myIndex[i]]))]
+            cv2.circle(img_temp, (int(px[0, i]), int(py[0, i])), 1, c, -1)
+    cv2.imwrite(os.path.join(save_path_color, file_img.split("/")[-1]).replace(".tif", "_gt_origin.tif"), img_temp)
 
-    # ** generate featured image for training
-    X, Y = np.meshgrid(np.arange(0, my_parameters.width, 1), np.arange(0, my_parameters.height, 1))
-
-    # * labeled image
-    print("Generation of labeled image... \n")
-    int_im = griddata(points, label_value, (X, Y), method='nearest').astype(np.uint8)
-    kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (5,5))
-    closing = cv2.morphologyEx(int_im, cv2.MORPH_CLOSE, kernel).astype(np.uint8)
-
-    cv2.imwrite(os.path.join(save_path_grey, img_path.split("/")[-1]), closing)
-
-    # * depth image
-    print("Generation of depth image... \n")
-    depth_im = griddata(points, d, (X, Y), method='nearest')
-    closing = cv2.morphologyEx(depth_im, cv2.MORPH_CLOSE, kernel)
-
-    np.save(os.path.join(save_path_depth, img_path.split("/")[-1]).replace(".jpg", ""), closing)
-
-    # * image of feature no.1
-    print("Generation of image based on feature no.1 ... \n")
-    f1_im = griddata(points, feature1, (X, Y), method='nearest')
-    closing = cv2.morphologyEx(f1_im, cv2.MORPH_CLOSE, kernel)
-
-    np.save(os.path.join(save_path_feature1, img_path.split("/")[-1]).replace(".jpg", ""), closing)
-
-    # * image of feature no.2
-    print("Generation of image based on feature no.2 ... \n")
-    f2_im = griddata(points, feature2, (X, Y), method='nearest')
-    closing = cv2.morphologyEx(f2_im, cv2.MORPH_CLOSE, kernel)
-
-    np.save(os.path.join(save_path_feature2, img_path.split("/")[-1]).replace(".jpg", ""), closing)
-
-    # * image of feature no.3
-    print("Generation of image based on feature no.3 ... \n")
-    f3_im = griddata(points, feature3, (X, Y), method='nearest')
-    closing = cv2.morphologyEx(f3_im, cv2.MORPH_CLOSE, kernel)
-
-    np.save(os.path.join(save_path_feature3, img_path.split("/")[-1]).replace(".jpg", ""), closing)
-
-    # * index
-    print("Generation of index image ... \n")
-    index_im = griddata(points, id, (X, Y), method='nearest').astype(np.uint8)
-    closing = cv2.morphologyEx(index_im, cv2.MORPH_CLOSE, kernel)
-
-    np.save(os.path.join(save_path_index, img_path.split("/")[-1]).replace(".jpg", ""), closing)
-
-
-    # generate ground truth color image (only for visualization, command those code if not needed)
-    print("Generation of ground truth color image... \n")
-    img_color_labeled = np.zeros((my_parameters.height, my_parameters.width, 3), np.uint8)
-
-    for i in range(0, my_parameters.height):
-        for j in range(0, my_parameters.width):
-                if int(int_im[i,j]) == 12 or int(int_im[i,j]) == 13:
-                    int_im[i,j] = 11
-                r, g, b = my_parameters.color_classes_int[str(int(int_im[i,j]))]
-                img_color_labeled[i,j,0] = r
-                img_color_labeled[i,j,1] = g
-                img_color_labeled[i,j,2] = b
-
-    cv2.imwrite(os.path.join(save_path_color, img_path.split("/")[-1]).replace(".jpg", "_gt.jpg"), img_color_labeled)
-
-    duration = time.time() - start_time
-    print(duration, "s\n")
+    # points = np.array(points)
+    # label_value = np.array(label_value)
+    # d = np.array(d)
+    # id = np.array(id)
+    # feature1 = np.array(feature1)
+    # feature2 = np.array(feature2)
+    # feature3 = np.array(feature3)
+    #
+    # # ** generate featured image for training
+    # X, Y = np.meshgrid(np.arange(0, my_parameters.width, 1), np.arange(0, my_parameters.height, 1))
+    #
+    # # * labeled image
+    # print("Generation of labeled image... \n")
+    # int_im = griddata(points, label_value, (X, Y), method='nearest').astype(np.uint8)
+    # kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (5,5))
+    # closing = cv2.morphologyEx(int_im, cv2.MORPH_CLOSE, kernel).astype(np.uint8)
+    #
+    # cv2.imwrite(os.path.join(save_path_grey, img_path.split("/")[-1]), closing)
+    #
+    # # * depth image
+    # print("Generation of depth image... \n")
+    # depth_im = griddata(points, d, (X, Y), method='nearest')
+    # closing = cv2.morphologyEx(depth_im, cv2.MORPH_CLOSE, kernel)
+    #
+    # np.save(os.path.join(save_path_depth, img_path.split("/")[-1]).replace(".jpg", ""), closing)
+    #
+    # # * image of feature no.1
+    # print("Generation of image based on feature no.1 ... \n")
+    # f1_im = griddata(points, feature1, (X, Y), method='nearest')
+    # closing = cv2.morphologyEx(f1_im, cv2.MORPH_CLOSE, kernel)
+    #
+    # np.save(os.path.join(save_path_feature1, img_path.split("/")[-1]).replace(".jpg", ""), closing)
+    #
+    # # * image of feature no.2
+    # print("Generation of image based on feature no.2 ... \n")
+    # f2_im = griddata(points, feature2, (X, Y), method='nearest')
+    # closing = cv2.morphologyEx(f2_im, cv2.MORPH_CLOSE, kernel)
+    #
+    # np.save(os.path.join(save_path_feature2, img_path.split("/")[-1]).replace(".jpg", ""), closing)
+    #
+    # # * image of feature no.3
+    # print("Generation of image based on feature no.3 ... \n")
+    # f3_im = griddata(points, feature3, (X, Y), method='nearest')
+    # closing = cv2.morphologyEx(f3_im, cv2.MORPH_CLOSE, kernel)
+    #
+    # np.save(os.path.join(save_path_feature3, img_path.split("/")[-1]).replace(".jpg", ""), closing)
+    #
+    # # * index
+    # print("Generation of index image ... \n")
+    # index_im = griddata(points, id, (X, Y), method='nearest').astype(np.uint8)
+    # closing = cv2.morphologyEx(index_im, cv2.MORPH_CLOSE, kernel)
+    #
+    # np.save(os.path.join(save_path_index, img_path.split("/")[-1]).replace(".jpg", ""), closing)
+    #
+    #
+    # # generate ground truth color image (only for visualization, command those code if not needed)
+    # print("Generation of ground truth color image... \n")
+    # img_color_labeled = np.zeros((my_parameters.height, my_parameters.width, 3), np.uint8)
+    #
+    # for i in range(0, my_parameters.height):
+    #     for j in range(0, my_parameters.width):
+    #             if int(int_im[i,j]) == 12 or int(int_im[i,j]) == 13:
+    #                 int_im[i,j] = 11
+    #             r, g, b = my_parameters.color_classes_int[str(int(int_im[i,j]))]
+    #             img_color_labeled[i,j,0] = r
+    #             img_color_labeled[i,j,1] = g
+    #             img_color_labeled[i,j,2] = b
+    #
+    # cv2.imwrite(os.path.join(save_path_color, img_path.split("/")[-1]).replace(".jpg", "_gt.jpg"), img_color_labeled)
+    #
+    # duration = time.time() - start_time
+    # print(duration, "s\n")
