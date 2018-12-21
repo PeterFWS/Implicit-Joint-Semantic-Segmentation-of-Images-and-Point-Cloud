@@ -9,7 +9,6 @@ import math
 from scipy.spatial import ConvexHull
 
 import cv2
-from tqdm import tqdm
 from scipy.interpolate import griddata
 import tifffile
 
@@ -288,7 +287,7 @@ def pointcloud2pixelcoord(R, K, Xc, Yc, Zc, myPoints):
 """
 
 color_classes = {
-    "0": (0, 0, 0),
+    "0": (255, 0, 0),
     "1": (255, 255, 255),
     "2": (255, 255, 0),
     "3": (255, 0, 255),
@@ -301,28 +300,43 @@ color_classes = {
     "10": (63, 34, 15)
 }
 
+# color_classes = { # same color as Mr.Kolle, but not good for visualization
+#     "0": (245, 34, 0),
+#     "1": (181, 69, 15),
+#     "2": (122, 130, 56),
+#     "3": (78, 194, 89),
+#     "4": (76, 249, 188),
+#     "5": (77, 250, 139),
+#     "6": (79, 251, 187),
+#     "7": (84, 253, 246),
+#     "8": (68, 199, 247),
+#     "9": (52, 137, 240),
+#     "10": (40, 82, 236)
+# }
+
 def generation_syntheticImg(px, py, myIndex, pt_labels, pt_features, img_name, save_path, img_width, img_height):
     print("Generation of synthetic image... \n")
     start_time = time.time()
 
-    img_temp = np.zeros((img_height, img_width, 1), np.uint8)  # used for making a mask only
+    img_mask = np.zeros((img_height, img_width, 1), np.uint8)  # used for making a mask only
+    img_temp = np.zeros((img_height, img_width, 3), np.uint8)
     label_value = []
     points = []
     id = []
 
-    f_nDOM = []
-    f_I = []
-    f_Q_Pulse = []
-    f_prior = []
-
-    f_Q_N1 = []
-    f_Q_N2 = []
-    f_Q_N3 = []
-
-    f_Q_ES_1 = []
-    f_Q_ES_2 = []
-    f_Q_ES_3 = []
-
+    # f_nDOM = []
+    # f_I = []
+    # f_Q_Pulse = []
+    # f_prior = []
+    #
+    # f_Q_N1 = []
+    # f_Q_N2 = []
+    # f_Q_N3 = []
+    #
+    # f_Q_ES_1 = []
+    # f_Q_ES_2 = []
+    # f_Q_ES_3 = []
+    count = 0
     for i in range(0, px.shape[1]):
         if img_width > px[0, i] > 0 and img_height > py[0, i] > 0:
             # filter the points which are not in the FOV of this image
@@ -330,154 +344,167 @@ def generation_syntheticImg(px, py, myIndex, pt_labels, pt_features, img_name, s
             label_value.append(int(pt_labels[myIndex[i]]))
             id.append(myIndex[i])
 
-            f_nDOM.append(pt_features[myIndex[i], -4])
-            f_I.append(pt_features[myIndex[i], -3])
-            f_Q_Pulse.append(pt_features[myIndex[i], -2])
-            f_prior.append(pt_features[myIndex[i], -1])
+            # f_nDOM.append(pt_features[myIndex[i], -4])
+            # f_I.append(pt_features[myIndex[i], -3])
+            # f_Q_Pulse.append(pt_features[myIndex[i], -2])
+            # f_prior.append(pt_features[myIndex[i], -1])
+            #
+            # f_Q_N3.append(pt_features[myIndex[i], -5])
+            # f_Q_N2.append(pt_features[myIndex[i], -6])
+            # f_Q_N1.append(pt_features[myIndex[i], -7])
+            #
+            # f_Q_ES_3.append(pt_features[myIndex[i], -8])
+            # f_Q_ES_2.append(pt_features[myIndex[i], -9])
+            # f_Q_ES_1.append(pt_features[myIndex[i], -10])
 
-            f_Q_N3.append(pt_features[myIndex[i], -5])
-            f_Q_N2.append(pt_features[myIndex[i], -6])
-            f_Q_N1.append(pt_features[myIndex[i], -7])
+            r, g, b = color_classes[str(int(pt_labels[myIndex[i]]))]
+            img_temp[int(py[0, i]), int(px[0, i]), 0] = r
+            img_temp[int(py[0, i]), int(px[0, i]), 1] = g
+            img_temp[int(py[0, i]), int(px[0, i]), 2] = b
+            count +=1
 
-            f_Q_ES_3.append(pt_features[myIndex[i], -8])
-            f_Q_ES_2.append(pt_features[myIndex[i], -9])
-            f_Q_ES_1.append(pt_features[myIndex[i], -10])
+            cv2.circle(img_mask, (int(px[0, i]), int(py[0, i])), 2, (255,255,255), -1)
 
-            cv2.circle(img_temp, (int(px[0, i]), int(py[0, i])), 2, (255,255,255), -1)
+    if count > 100:
+        folder_path = os.path.join(save_path, "1_pointlabel")
+        make_if_not_exists(folder_path)
+        cv2.imwrite(os.path.join(folder_path, img_name.split("/")[-1]), img_temp)
 
-    points = np.array(points)
-    label_value = np.array(label_value)
-    id = np.array(id)
+        points = np.array(points)
+        label_value = np.array(label_value)
+        id = np.array(id)
 
-    f_nDOM = np.array(f_nDOM)
-    f_I = np.array(f_I)
-    f_Q_Pulse = np.array(f_Q_Pulse)
-    f_prior = np.array(f_prior)
-
-    f_Q_N3 = np.array(f_Q_N3)
-    f_Q_N2 = np.array(f_Q_N2)
-    f_Q_N1 = np.array(f_Q_N1)
-
-    f_Q_ES_3 = np.array(f_Q_ES_3)
-    f_Q_ES_2 = np.array(f_Q_ES_2)
-    f_Q_ES_1 = np.array(f_Q_ES_1)
-
-    # Generation of a mask, where no point is projected to pixel
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (6,6))
-    closing_img_temp = cv2.morphologyEx(img_temp, cv2.MORPH_CLOSE, kernel).astype(np.uint8)
-    folder_path = os.path.join(save_path, "mask")
-    make_if_not_exists(folder_path)
-    cv2.imwrite(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_mask.tif")), closing_img_temp)
-
-    mask = (closing_img_temp[:,:] != 0)
-
-    # Generation of synthetic image based on different feature
-    X, Y = np.meshgrid(np.arange(0, img_width, 1), np.arange(0, img_height, 1))
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2,2))
-
-    # * labeled image (grey, as ground truth for training)
-    print("Generation of labeled image... \n")
-    int_im = griddata(points, label_value, (X, Y), method='nearest').astype(np.uint8)
-    closing = cv2.morphologyEx(int_im, cv2.MORPH_CLOSE, kernel).astype(np.uint8)
-    closing[mask[:, :] == False] = 255 # label value 255 for unlabeled pixel
-    folder_path = os.path.join(save_path, "label")
-    make_if_not_exists(folder_path)
-    cv2.imwrite(os.path.join(folder_path, img_name.split("/")[-1]), closing)
-
-    ## * labeled image (color, only for visualization)
-    # img_color_labeled = np.zeros((img_height, img_width, 3), np.uint8)
-    # for i in range(0, img_height):
-    #         for j in range(0, img_width):
-    #                 if int(int_im[i,j]) == 11 or int(int_im[i,j]) == 12 or int(int_im[i,j])==13:
-    #                     int_im[i,j] = 10
+    # f_nDOM = np.array(f_nDOM)
+    # f_I = np.array(f_I)
+    # f_Q_Pulse = np.array(f_Q_Pulse)
+    # f_prior = np.array(f_prior)
     #
-    #                 if mask[i,j] == True:
-    #                     r, g, b = color_classes[str(int(int_im[i, j]))]
-    #                     img_color_labeled[i, j, 0] = r
-    #                     img_color_labeled[i, j, 1] = g
-    #                     img_color_labeled[i, j, 2] = b
-    # cv2.imwrite(os.path.join(save_path, img_name.replace(".tif", "_color.tif")), img_color_labeled)
+    # f_Q_N3 = np.array(f_Q_N3)
+    # f_Q_N2 = np.array(f_Q_N2)
+    # f_Q_N1 = np.array(f_Q_N1)
+    #
+    # f_Q_ES_3 = np.array(f_Q_ES_3)
+    # f_Q_ES_2 = np.array(f_Q_ES_2)
+    # f_Q_ES_1 = np.array(f_Q_ES_1)
 
-    # * feature map
-    # <entry val="_nDOM" format="3.4" invalidValue="0" externalType="float" />
-    f_nDOM_im = griddata(points, f_nDOM, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_nDOM_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_nDOM")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_nDOM.tif")), closing)
+        # Generation of a mask, where no point is projected to pixel
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (6,6))
+        closing_img_temp = cv2.morphologyEx(img_mask, cv2.MORPH_CLOSE, kernel).astype(np.uint8)
+        folder_path = os.path.join(save_path, "2_mask")
+        make_if_not_exists(folder_path)
+        cv2.imwrite(os.path.join(folder_path, img_name.split("/")[-1]), closing_img_temp)
 
-    # <entry val="_I" format="4.4" invalidValue="0" externalType="float" />
-    f_I_im = griddata(points, f_I, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_I_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_I")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_I.tif")), closing)
+        mask = (closing_img_temp[:,:] != 0)
 
-    # <entry val="_Q_Pulse" format="1.4" invalidValue="1" externalType="float" />
-    f_Q_Pulse_im = griddata(points, f_Q_Pulse, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_Q_Pulse_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_Q_Pulse")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_Pulse.tif")), closing)
+        # Generation of synthetic image based on different feature
+        X, Y = np.meshgrid(np.arange(0, img_width, 1), np.arange(0, img_height, 1))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2,2))
 
-    # <entry val="_prior" format="1.4" invalidValue="1" externalType="float" />
-    f_prior_im = griddata(points, f_prior, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_prior_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_prior")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_prior.tif")), closing)
+        # * labeled image (grey, as ground truth for training)
+        print("Generation of labeled image... \n")
+        int_im = griddata(points, label_value, (X, Y), method='nearest').astype(np.uint8)
+        closing = cv2.morphologyEx(int_im, cv2.MORPH_CLOSE, kernel).astype(np.uint8)
+        closing[mask[:, :] == False] = 255  # label value 255 for unlabeled pixel
+        folder_path = os.path.join(save_path, "3_greylabel")
+        make_if_not_exists(folder_path)
+        cv2.imwrite(os.path.join(folder_path, img_name.split("/")[-1]), closing)
 
-    # <entry val="_Q_N3" format="1.4" invalidValue="1" externalType="float" />
-    f_Q_N3_im = griddata(points, f_Q_N3, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_Q_N3_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_Q_N3")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_N3.tif")), closing)
+        # * labeled image (color, only for visualization)
+        img_color_labeled = np.zeros((img_height, img_width, 3), np.uint8)
+        for i in range(0, img_height):
+                for j in range(0, img_width):
+                        if int(int_im[i,j]) == 11 or int(int_im[i,j]) == 12 or int(int_im[i,j])==13:
+                            int_im[i,j] = 10
 
-    # <entry val="_Q_N2" format="1.4" invalidValue="1" externalType="float" />
-    f_Q_N2_im = griddata(points, f_Q_N2, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_Q_N2_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_Q_N2")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_N2.tif")), closing)
+                        if mask[i,j] == True:
+                            r, g, b = color_classes[str(int(int_im[i, j]))]
+                            img_color_labeled[i, j, 0] = r
+                            img_color_labeled[i, j, 1] = g
+                            img_color_labeled[i, j, 2] = b
+        folder_path = os.path.join(save_path, "4_colorlabel")
+        make_if_not_exists(folder_path)
+        cv2.imwrite(os.path.join(folder_path, img_name), img_color_labeled)
 
-    # <entry val="_Q_N1" format="1.4" invalidValue="1" externalType="float" />
-    f_Q_N1_im = griddata(points, f_Q_N1, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_Q_N1_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_Q_N1")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_N1.tif")), closing)
-
-    # <entry val="_Q_ES_3" format="1.4" invalidValue="0" externalType="float" />
-    f_Q_ES_3_im = griddata(points, f_Q_ES_3, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_Q_ES_3_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_Q_ES_3")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_ES_3.tif")), closing)
-
-    # entry val="_Q_ES_2" format="1.4" invalidValue="0" externalType="float" />
-    f_Q_ES_2_im = griddata(points, f_Q_ES_2, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_Q_ES_2_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_Q_ES_2")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_ES_2.tif")), closing)
-
-    # <entry val="_Q_ES_1" format="1.4" invalidValue="0" externalType="float" />
-    f_Q_ES_1_im = griddata(points, f_Q_ES_1, (X, Y), method='nearest').astype(np.float32)
-    closing = cv2.morphologyEx(f_Q_ES_1_im, cv2.MORPH_CLOSE, kernel)
-    closing[mask[:, :] == False] = np.nan
-    folder_path = os.path.join(save_path, "f_Q_ES_1")
-    make_if_not_exists(folder_path)
-    tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_ES_1.tif")), closing)
+    # # * feature map
+    # # <entry val="_nDOM" format="3.4" invalidValue="0" externalType="float" />
+    # f_nDOM_im = griddata(points, f_nDOM, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_nDOM_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_nDOM")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_nDOM.tif")), closing)
+    #
+    # # <entry val="_I" format="4.4" invalidValue="0" externalType="float" />
+    # f_I_im = griddata(points, f_I, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_I_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_I")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_I.tif")), closing)
+    #
+    # # <entry val="_Q_Pulse" format="1.4" invalidValue="1" externalType="float" />
+    # f_Q_Pulse_im = griddata(points, f_Q_Pulse, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_Q_Pulse_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_Q_Pulse")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_Pulse.tif")), closing)
+    #
+    # # <entry val="_prior" format="1.4" invalidValue="1" externalType="float" />
+    # f_prior_im = griddata(points, f_prior, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_prior_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_prior")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_prior.tif")), closing)
+    #
+    # # <entry val="_Q_N3" format="1.4" invalidValue="1" externalType="float" />
+    # f_Q_N3_im = griddata(points, f_Q_N3, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_Q_N3_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_Q_N3")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_N3.tif")), closing)
+    #
+    # # <entry val="_Q_N2" format="1.4" invalidValue="1" externalType="float" />
+    # f_Q_N2_im = griddata(points, f_Q_N2, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_Q_N2_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_Q_N2")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_N2.tif")), closing)
+    #
+    # # <entry val="_Q_N1" format="1.4" invalidValue="1" externalType="float" />
+    # f_Q_N1_im = griddata(points, f_Q_N1, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_Q_N1_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_Q_N1")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_N1.tif")), closing)
+    #
+    # # <entry val="_Q_ES_3" format="1.4" invalidValue="0" externalType="float" />
+    # f_Q_ES_3_im = griddata(points, f_Q_ES_3, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_Q_ES_3_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_Q_ES_3")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_ES_3.tif")), closing)
+    #
+    # # entry val="_Q_ES_2" format="1.4" invalidValue="0" externalType="float" />
+    # f_Q_ES_2_im = griddata(points, f_Q_ES_2, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_Q_ES_2_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_Q_ES_2")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_ES_2.tif")), closing)
+    #
+    # # <entry val="_Q_ES_1" format="1.4" invalidValue="0" externalType="float" />
+    # f_Q_ES_1_im = griddata(points, f_Q_ES_1, (X, Y), method='nearest').astype(np.float32)
+    # closing = cv2.morphologyEx(f_Q_ES_1_im, cv2.MORPH_CLOSE, kernel)
+    # closing[mask[:, :] == False] = np.nan
+    # folder_path = os.path.join(save_path, "f_Q_ES_1")
+    # make_if_not_exists(folder_path)
+    # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1].replace(".tif", "_Q_ES_1.tif")), closing)
 
 
     duration = time.time() - start_time

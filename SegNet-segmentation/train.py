@@ -61,7 +61,7 @@ if validate:
                              histogram_freq=0, write_graph=True, write_images=True)]
 
     m.fit_generator(G, steps_per_epoch=1513//train_batch_size, callbacks=callbacks,
-                    validation_data=G2, validation_steps=50, epochs=10000)
+                    validation_data=G2, validation_steps=440//val_batch_size, epochs=10000)
     m.save_weights(save_weights_path + "endtest.weights")
     m.save(save_weights_path + "endtest.model.weights")
 

@@ -17,33 +17,37 @@ from utilities import pointcloud2pixelcoord
 from utilities import generation_syntheticImg
 
 
-path_reference = "./results/for_LiDAR_5cm/selected_level3/color_labeled_points"
+# path_reference = "./results/for_LiDAR_30cm/level_3/training_set/1_pointlabel/"
 
 path_Imgs = "./data/ImgTexture/Level_3/"
 path_Ori = "./data/Ori/Level_3/"
 
-file_XYZ = "./data/features_dense_LiDAR_cloud_5cm/Data_xyz.txt"
-file_Features = "./data/features_dense_LiDAR_cloud_5cm/X.txt"
-file_Labels = "./data/features_dense_LiDAR_cloud_5cm/y.txt"
+file_XYZ = "./data/features_dense_LiDAR_cloud_30cm/xyz_test.txt"
+file_Features = "./data/features_dense_LiDAR_cloud_30cm/X_test.txt"
+file_Labels = "./data/features_dense_LiDAR_cloud_30cm/y_test.txt"
 
-save_path = "./results/for_LiDAR_5cm/selected_level3/label_img"
+save_path = "./results/for_LiDAR_30cm/level_3/test_set/"
 make_if_not_exists(save_path)
 
 print("reading data from txt file...")
 start_time = time.time()
 pt_xyz = np.loadtxt(file_XYZ)
-pt_features = np.loadtxt(file_Features)
+pt_features = [] #np.loadtxt(file_Features)
 pt_labels = np.loadtxt(file_Labels)
 duration = time.time() - start_time
 print("which costs {0}s\n".format(duration))
 
 index = np.asarray([_ for _ in range(pt_labels.shape[0])]).astype(np.int)
 
-img_list = os.listdir(path_reference)
+img_list = os.listdir(path_Imgs)
 for i in tqdm(range(len(img_list))):
 
     img_name = img_list[i]
     ori_name = img_name.replace("tif", "ori")
+
+    # img_name = "DSC04233.tif"
+    # ori_name = "DSC04233.ori"
+
 
     print("processing image: {0}\n".format(img_name))
 

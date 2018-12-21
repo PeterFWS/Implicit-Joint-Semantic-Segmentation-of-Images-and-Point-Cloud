@@ -32,7 +32,7 @@ input_width = 750
 m = Models.Segnet.segnet_level3(n_classes, input_height=input_height, input_width=input_width)
 m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/best_model.h5")
 m.compile(loss='categorical_crossentropy',
-          optimizer='sgd',
+          optimizer='adadelta',
           metrics=['accuracy'])
 
 output_height = input_height
