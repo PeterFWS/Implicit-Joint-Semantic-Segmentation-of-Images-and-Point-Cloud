@@ -19,28 +19,28 @@ conda_env/py2.yml and py3.yml
 
 #---------------------------Pre-processing part-----------------------------------#
 [1] main*.py 
-Pre-processing code for aerial imagery and LiDAR point cloud, 
+pre-processing code for aerial imagery and LiDAR point cloud, 
 including projection, frustum culling, Hidden-point-removal (HPR),
 gird interpoaltion and operator of Mophology.
 
 [2] utilities.py
-Functions of each of algorithms implemented in pre-processing.
+functions of each of algorithms implemented in pre-processing.
 
 [3] myClasses.py
-Some classes related to frustum culling, detailed explanation in OpenGL.
+some classes related to frustum culling, detailed explanation in OpenGL.
 
 [4] visualization.py
-Functions used to visualize data.
+functions used to visualize data.
 
 [5] statistics.py
-Functions used to calculate statistic value of the data.
+functions used to calculate statistic value of the data.
 
 [6] Generation_depth_img.py
-Code for generating depth image.
+code for generating depth image.
 
 #---------------------------Deep learning part-----------------------------------#
 folder: version_playground
-Old code backup.
+Old code backup, including point splatting achieved in C++ if you needed.
 
 folder: SegNet-segmentation
 [1] folder Models: 
