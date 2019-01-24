@@ -1,3 +1,7 @@
+"""
+    original test version
+"""
+
 import numpy as np
 import time
 import glob
@@ -14,6 +18,7 @@ from utilities import get_INTER_and_EXTER_Orientations
 from utilities import frustum_culling
 from utilities import HPR
 from utilities import pointcloud2pixelcoord
+
 from utilities import generation_syntheticImg
 
 
@@ -22,17 +27,16 @@ from utilities import generation_syntheticImg
 path_Imgs = "./data/ImgTexture/Level_3/"
 path_Ori = "./data/Ori/Level_3/"
 
-file_XYZ = "./data/features_dense_LiDAR_cloud_30cm/xyz_test.txt"
-file_Features = "./data/features_dense_LiDAR_cloud_30cm/X_test.txt"
-file_Labels = "./data/features_dense_LiDAR_cloud_30cm/y_test.txt"
-
-save_path = "./results/for_LiDAR_30cm/level_3/test_set/"
+file_XYZ = "./data/data_splits_10cm/xyz_10cm_val.txt"
+file_Features = "./data/data_splits_10cm/X_10cm_val.txt"
+file_Labels = "./data/data_splits_10cm/y_10cm_val.txt"
+save_path = "./results/validation_set/"
 make_if_not_exists(save_path)
 
 print("reading data from txt file...")
 start_time = time.time()
 pt_xyz = np.loadtxt(file_XYZ)
-pt_features = [] #np.loadtxt(file_Features)
+pt_features = np.loadtxt(file_Features)
 pt_labels = np.loadtxt(file_Labels)
 duration = time.time() - start_time
 print("which costs {0}s\n".format(duration))
@@ -54,7 +58,7 @@ for i in tqdm(range(len(img_list))):
     # get interior and exterior orientation
     f, pixel_size, img_width, img_height, K, R, Xc, Yc, Zc = get_INTER_and_EXTER_Orientations(os.path.join(path_Ori,ori_name))
 
-    # frustum culling (could be optimized)
+    # frustum culling (could be optimized for oblique image)
     # xyz_temp, index_temp = utilities.frustum_culling(Xc, Yc, Zc, f, img_height, img_width, pixel_size, pt_xyz, index)
 
     # hidden point removal

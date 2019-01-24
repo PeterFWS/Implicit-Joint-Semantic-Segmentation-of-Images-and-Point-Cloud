@@ -1,12 +1,12 @@
-# MasterThesis in Uni Stuttgart
-## Insititute of Photogrammetry
-keywords: 3d-2d segmantation, point clouds, cnn
+MasterThesis in University of Stuttgart, Germany
 
-using python3 to prepare data
-using python2 to run network
+Insititute of Photogrammetry (Ifp)
 
+Topic: Implicit Joint Segmentation of Images and Point Cloud
+keywords: semantic segmantation, point clouds, deep learning
 
-referrence:
-https://keras.io/metrics/
-https://keras.rstudio.com/index.html
-https://becominghuman.ai/cheat-sheets-for-ai-neural-networks-machine-learning-deep-learning-big-data-678c51b4b463
+framework: keras 2.0
+pre-processing: python3
+post-processing: python2
+
+End in 01.04.2018
