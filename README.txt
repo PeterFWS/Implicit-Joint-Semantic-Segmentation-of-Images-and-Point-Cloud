@@ -2,7 +2,7 @@ MasterThesis in University of Stuttgart, Germany
 Insititute of Photogrammetry (Ifp)
 
 Topic: Implicit Joint Segmentation of Images and Point Cloud
-keywords: semantic segmantation, point clouds, deep learning
+keywords: semantic segmantation, CNN, LiDAR point cloud, aerial imagery
 author: Fangwen Shu
 Betreuer: M.Sc. Dominik Laupheimer
 Prüfer: apl. Prof. Dr.-Ing. Norbert Haala
