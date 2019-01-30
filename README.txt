@@ -42,11 +42,11 @@ code for generating depth image.
 folder: version_playground
 Old code backup, including point splatting achieved in C++ if you needed.
 
-folder: SegNet-segmentation
+folder: semantic-segmentation
 [1] folder Models: 
-1. SegNet with indices pooling, fow now only works with image size dividable by 32.
-if you want use it for arbitrary size image, just crop it a little bit.
-2. SegNet with normal max pooling, add zeropadding for image size not dividable by 32.
+1. SegNet
+2. U-net
+3. TernausNet
 
 [2] folder board:
 save tensorboard file.
