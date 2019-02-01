@@ -5,17 +5,17 @@ Author: Fangwen Shu<br>
 Betreuer: M.Sc. Dominik Laupheimer<br>
 Prüfer: apl. Prof. Dr.-Ing. Norbert Haala<br>
 
-framework: keras 2.0
-pre-processing: python3
-semantic segmentation: python2
+framework: keras 2.0<br>
+pre-processing: python3<br>
+semantic segmentation: python2<br>
 
-End in 01.04.2018
+End in 01.04.2018<br>
 
-#---------------------------Configuration of conda env----------------------------#
+#---------------------------Configuration of conda env----------------------------#<br>
 
-conda_env/py2.yml and py3.yml
+conda_env/py2.yml and py3.yml<br>
 
-#---------------------------Pre-processing part-----------------------------------#
+#---------------------------Pre-processing part-----------------------------------#<br>
 [1] main*.py 
 pre-processing code for aerial imagery and LiDAR point cloud, 
 including projection, frustum culling, Hidden-point-removal (HPR),
@@ -36,11 +36,11 @@ functions used to calculate statistic value of the data.
 [6] Generation_depth_img.py
 code for generating depth image.
 
-#---------------------------Deep learning part-----------------------------------#
-folder: version_playground
-Old code backup, including point splatting achieved in C++ if you needed.
+#---------------------------Deep learning part-----------------------------------#<br>
+folder: version_playground<br>
+Old code backup, including point splatting achieved in C++ if you needed.<br>
 
-folder: semantic-segmentation
+folder: semantic-segmentation<br>
 [1] folder Models: 
 1. SegNet
 2. U-net
@@ -58,7 +58,7 @@ where you save trained weights.
 [5] pytorch_code:
 some dirty code of SegNet and pre-processing implemented in pytorch. 
 
-Code:
+Code:<br>
 [1] train.py and prediction.py
 train and prediction your data.
 
