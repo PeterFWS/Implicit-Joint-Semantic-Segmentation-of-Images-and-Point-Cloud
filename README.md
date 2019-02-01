@@ -1,11 +1,11 @@
-#MasterThesis in University of Stuttgart, Germany
-##Insititute of Photogrammetry (Ifp)
+# MasterThesis in University of Stuttgart, Germany
+## Insititute of Photogrammetry (Ifp)
 
-#Topic: Implicit Joint Semantic Segmentation of Images and Point Cloud
-keywords: semantic segmantation, CNN, LiDAR point cloud, aerial imagery
-author: Fangwen Shu
-Betreuer: M.Sc. Dominik Laupheimer
-Prüfer: apl. Prof. Dr.-Ing. Norbert Haala
+# Topic: Implicit Joint Semantic Segmentation of Images and Point Cloud
+## keywords: semantic segmantation, CNN, LiDAR point cloud, aerial imagery
+### author: Fangwen Shu
+### Betreuer: M.Sc. Dominik Laupheimer
+### Prüfer: apl. Prof. Dr.-Ing. Norbert Haala
 
 framework: keras 2.0
 pre-processing: python3
