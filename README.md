@@ -16,24 +16,24 @@ End in 01.04.2018<br>
 conda_env/py2.yml and py3.yml<br>
 
 #---------------------------Pre-processing part-----------------------------------#<br>
-[1] main*.py 
-pre-processing code for aerial imagery and LiDAR point cloud, 
-including projection, frustum culling, Hidden-point-removal (HPR),
+[1] main*.py <br>
+pre-processing code for aerial imagery and LiDAR point cloud, <br>
+including projection, frustum culling, Hidden-point-removal (HPR),<br>
 gird interpoaltion and operator of Mophology.
 
-[2] utilities.py
+[2] utilities.py <br>
 functions of each of algorithms implemented in pre-processing.
 
-[3] myClasses.py
+[3] myClasses.py <br>
 some classes related to frustum culling, detailed explanation in OpenGL.
 
-[4] visualization.py
-functions used to visualize data.
+[4] visualization.py <br>
+functions used to visualize data. 
 
-[5] statistics.py
+[5] statistics.py <br>
 functions used to calculate statistic value of the data.
 
-[6] Generation_depth_img.py
+[6] Generation_depth_img.py <br>
 code for generating depth image.
 
 #---------------------------Deep learning part-----------------------------------#<br>
@@ -46,28 +46,28 @@ folder: semantic-segmentation<br>
 2. U-net
 3. TernausNet
 
-[2] folder board:
+[2] folder board:<br>
 save tensorboard file.
 
-[3] folder data:
+[3] folder data:<br>
 where you save train/validation/test set and VGG pre-treained weights.
 
-[4] folder weights:
+[4] folder weights:<br>
 where you save trained weights.
 
-[5] pytorch_code:
+[5] pytorch_code:<br>
 some dirty code of SegNet and pre-processing implemented in pytorch. 
 
 Code:<br>
-[1] train.py and prediction.py
+[1] train.py and prediction.py <br>
 train and prediction your data.
 
-[2] LoadBatches.py
+[2] LoadBatches.py <br>
 loading data with pre-processing such as normalization.
 
-[3] chip.py
+[3] chip.py <br>
 cropping images if you need.
 
-[4] evaluation.py
+[4] evaluation.py <br>
 evaluation semantic result in 2D and 3D space.
 
