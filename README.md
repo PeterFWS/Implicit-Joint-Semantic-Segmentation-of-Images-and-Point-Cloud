@@ -1,9 +1,9 @@
 # Implicit Joint Semantic Segmentation of Images and Point Cloud
-MasterThesis in University of Stuttgart,Insititute of Photogrammetry (Ifp), Germany
-keywords: semantic segmantation, CNN, LiDAR point cloud, aerial imagery
-Author: Fangwen Shu
-Betreuer: M.Sc. Dominik Laupheimer
-Prüfer: apl. Prof. Dr.-Ing. Norbert Haala
+MasterThesis in University of Stuttgart,Insititute of Photogrammetry (Ifp), Germany<br>
+keywords: semantic segmantation, CNN, LiDAR point cloud, aerial imagery<br>
+Author: Fangwen Shu<br>
+Betreuer: M.Sc. Dominik Laupheimer<br>
+Prüfer: apl. Prof. Dr.-Ing. Norbert Haala<br>
 
 framework: keras 2.0
 pre-processing: python3
