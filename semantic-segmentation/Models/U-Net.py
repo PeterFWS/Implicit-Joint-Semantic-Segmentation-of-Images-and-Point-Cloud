@@ -4,7 +4,7 @@ from keras.models import Model
 from keras.layers import Input, Conv2D, Activation, MaxPooling2D, UpSampling2D, Reshape, ZeroPadding2D, Permute, Dropout, concatenate
 from keras.layers.normalization import BatchNormalization
 
-def U_Net(nClasses, input_height=480, input_width=736, nchannel=3)
+def U_Net(nClasses, input_height=480, input_width=736, nchannel=3):
     
     input_shape = (input_height, input_width, nchannel)
 
