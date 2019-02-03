@@ -13,14 +13,14 @@ from mylayers import MaxPoolingWithArgmax2D, MaxUnpooling2D
 
 def segnet_indices_pooling(nClasses, input_height=480, input_width=736, nchannel=3, pre_train=False):
 	"""
-		nClasses=12
-		input_height=480
-		input_width=736
-		nchannel = 3
+	nClasses=12
+	input_height=480
+	input_width=736
+	nchannel = 3
 		"""
 
 	input_shape = (input_height, input_width, nchannel)
-	kernel = 5
+	kernel = 3
 	pool_size = (2, 2)
 	output_mode = "softmax"
 
