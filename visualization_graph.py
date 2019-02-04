@@ -2,52 +2,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from matplotlib.ticker import FuncFormatter
+from open3d import *
 
-# file_Labels1 = "./data/features_dense_LiDAR_cloud_5cm/y.txt"
-# pt_labels1 = np.loadtxt(file_Labels1)
-
-pt_data_train = np.loadtxt("/home/fangwen/ShuFangwen/data/data_splits_5cm_onlylabel/train_xyz_y.txt")
-pt_data_test = np.loadtxt("/home/fangwen/ShuFangwen/data/data_splits_5cm_onlylabel/test_xyz_y.txt")
-pt_data_val = np.loadtxt("/home/fangwen/ShuFangwen/data/data_splits_5cm_onlylabel/val_xyz_y.txt")
+pt_data_train = np.loadtxt("/data/fangwen/data/data_splits_5cm_onlylabel/train_xyz_y.txt")
+pt_data_test = np.loadtxt("/data/fangwen/data/data_splits_5cm_onlylabel/val_xyz_y.txt")
+pt_data_val = np.loadtxt("/data/fangwen/data/data_splits_5cm_onlylabel/test_xyz_y.txt")
 
 
-# pt_labels2 = np.loadtxt(file_Labels2)
+data = np.concatenate((pt_data_train[:, :3], pt_data_test[:, :3], pt_data_val[:, :3]))
+label = np.concatenate((pt_data_train[:, 3], pt_data_test[:, 3], pt_data_val[:, 3]))
+
+
+l1 = np.loadtxt("/data/fangwen/data/data_splits_10cm/y_10cm_train.txt")
+l2 = np.loadtxt("/data/fangwen/data/data_splits_10cm/y_10cm_val.txt")
+l3 = np.loadtxt("/data/fangwen/data/data_splits_10cm/y_10cm_test.txt")
+label2 = np.concatenate((l1, l2, l3))
+
 
 # 11 classes
-num_eachClass = np.zeros((2,11), dtype=int)
+num_eachClass = np.zeros(11, dtype=int)
+num_eachClass2 = np.zeros(11, dtype=int)
 
-for i in tqdm(range(pt_labels1.shape[0])):
-    num_eachClass[0, int(pt_labels1[i])] += 1
+for i in tqdm(range(label.shape[0])):
+    num_eachClass[int(label[i])] += 1
 
-for i in tqdm(range(pt_labels2.shape[0])):
-    num_eachClass[1, int(pt_labels2[i])] += 1
+for i in tqdm(range(label2.shape[0])):
+    num_eachClass2[int(label[i])] += 1
 
-
-
-# data = {'PowerLine': num_eachClass[0,0],
-#         'Low Vegetation': num_eachClass[0,1],
-#         'Impervious Surface': num_eachClass[0,2],
-#         'Vehicles': num_eachClass[0,3],
-#         'Urban Furniture': num_eachClass[0,4],
-#         'Roof': num_eachClass[0,5],
-#         'Facade': num_eachClass[0,6],
-#         'Bush/Hedge': num_eachClass[0,7],
-#         'Tree': num_eachClass[0,8],
-#         'Dirt/Gravel': num_eachClass[0,9],
-#         'Vertical Surface': num_eachClass[0,10]}
-#
-# group_data = list(data.values())
-# group_names = list(data.keys())
-# # group_mean = np.mean(group_data)
-#
-# plt.rcParams.update({'figure.autolayout': True})
-# plt.style.use('fivethirtyeight')
-# fig, ax = plt.subplots()
-# ax.barh(group_names, group_data)
-# labels = ax.get_xticklabels()
-# plt.setp(labels, rotation=45, horizontalalignment='right')
-# ax.set(xlabel='Total number of points', ylabel='Classes',
-#        title='Number of points of each class (10cm LiDAR)')
+###########
 def autolabel(rects, xpos='center'):
     """
     Attach a text label above each bar in *rects*, displaying its height.
@@ -71,10 +53,10 @@ width = 0.35
 fig, ax = plt.subplots()
 labels = ax.get_xticklabels()
 plt.setp(labels, rotation=45, horizontalalignment='right')
-rects1 = ax.bar(ind - width/2, num_eachClass[0,:], width,
-                color='SkyBlue', label='5cm LiDAR')
-rects2 = ax.bar(ind + width/2, num_eachClass[1,:], width,
-                color='IndianRed', label='10cm LiDAR')
+rects1 = ax.bar(ind - width/2, num_eachClass[:], width,
+                color='SkyBlue', label='5cm density LiDAR point cloud')
+rects2 = ax.bar(ind + width/2, num_eachClass2[:], width,
+                color='IndianRed', label='10cm density LiDAR point cloud')
 
 
 # Add some text for labels, title and custom x-axis tick labels, etc.

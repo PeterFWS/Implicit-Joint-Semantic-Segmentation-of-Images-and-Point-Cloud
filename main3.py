@@ -26,14 +26,13 @@ from utilities import generation_syntheticImg_5cmbased
 from utilities import generation_syntheticImg_10cmbased
 
 
-path_Imgs = "./data/ImgTexture/Level_0_selected/"
-path_Ori = "./data/Ori/Level_0/"
+path_Imgs = "./data/Nadir_level3_level5/ImgTexture/Level_3/"
+path_Ori = "./data/Nadir_level3_level5/Ori/Level_3/"
 
 file_pc_5cm = "./data/data_splits_5cm_onlylabel/train_xyz_y.txt"
-
 file_XYZ = "./data/data_splits_10cm/xyz_10cm_train.txt"
 file_Features = "./data/data_splits_10cm/X_10cm_train.txt"
-save_path = "./results/level0/train_set/"
+save_path = "./results/level3_nadir/train_set/"
 make_if_not_exists(save_path)
 
 #
@@ -47,16 +46,22 @@ pt_features = np.loadtxt(file_Features)  # (9559941, 72)
 index2 = np.asarray([_ for _ in range(pt_xyz2.shape[0])]).astype(np.int)
 
 
-path_Imgs_referrence = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/train_set/1_pointlabel"
+referrence = "/data/fangwen/results/level3_nadir/train_set/1_pointlabel/"
+refer_list = os.listdir(referrence)
+img_list = os.listdir(path_Imgs)
 
-img_list = os.listdir(path_Imgs_referrence)
+for img in refer_list:
+        img_list.remove(img)
+
+print(len(img_list))
+
 for i in tqdm(range(len(img_list))):
 
     img_name = img_list[i]
     ori_name = img_name.replace("tif", "ori")
 
-    # img_name = "DSC04233.tif"
-    # ori_name = "DSC04233.ori"
+    # img_name = "CF013540.tif"
+    # ori_name = "CF013540.ori"
 
 
     print("processing image: {0}\n".format(img_name))

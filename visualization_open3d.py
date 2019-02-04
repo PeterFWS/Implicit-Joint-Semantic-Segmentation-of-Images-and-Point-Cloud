@@ -12,3 +12,23 @@ pcd_test.paint_uniform_color([0, 255, 0])
 
 pcd_val.paint_uniform_color([0, 0, 255])
 draw_geometries([pcd_train, pcd_test, pcd_val])
+
+
+
+
+
+import cv2
+def frange(start, stop, step):
+    i = start
+    while i < stop:
+        yield i
+        i += step
+
+
+image = cv2.imread('/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/train_set/rgb_img/DSC04320.tif')
+overlay = cv2.imread('/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/train_set/4_colorlabel/DSC04320.tif')
+output = image.copy()
+
+for alpha in frange(0, 1, 0.1):
+    cv2.addWeighted(overlay, alpha, image, 1-alpha, 0, output)
+    cv2.imwrite("./overlay_" + str(alpha) + ".tif", output)

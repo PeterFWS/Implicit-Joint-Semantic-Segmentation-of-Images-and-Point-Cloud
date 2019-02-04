@@ -26,14 +26,13 @@ from utilities import generation_syntheticImg_5cmbased
 from utilities import generation_syntheticImg_10cmbased
 
 
-path_Imgs = "./data/ImgTexture/Level_0_selected/"
-path_Ori = "./data/Ori/Level_0/"
+path_Imgs = "./data/Nadir_level3_level5/ImgTexture/Level_3/"
+path_Ori = "./data/Nadir_level3_level5/Ori/Level_3/"
 
-file_pc_5cm = "./data/data_splits_5cm_onlylabel/train_xyz_y.txt"
-
+file_pc_5cm = "./data/data_splits_5cm_onlylabel/test_xyz_y.txt"
 file_XYZ = "./data/data_splits_10cm/xyz_10cm_test.txt"
 file_Features = "./data/data_splits_10cm/X_10cm_test.txt"
-save_path = "./results/level0/test_set/"
+save_path = "./results/level3_nadir/test_set/"
 make_if_not_exists(save_path)
 
 #
@@ -46,9 +45,9 @@ pt_xyz2 = np.loadtxt(file_XYZ)  # (9559941, 3)
 pt_features = np.loadtxt(file_Features)  # (9559941, 72)
 index2 = np.asarray([_ for _ in range(pt_xyz2.shape[0])]).astype(np.int)
 
-path_Imgs_referrence = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/oblique_img/test_set/1_pointlabel"
+# path_Imgs_referrence = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/oblique_img/test_set/1_pointlabel"
 
-img_list = os.listdir(path_Imgs_referrence)
+img_list = os.listdir(path_Imgs)
 for i in tqdm(range(len(img_list))):
 
     img_name = img_list[i]

@@ -610,8 +610,8 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
             img_temp[int(py[0, i]), int(px[0, i]), 2] = b
             count += 1
 
-            # cv2.circle(img_mask, (int(px[0, i]), int(py[0, i])), 3, (255,255,255), -1)  # level3
-            cv2.circle(img_mask, (int(px[0, i]), int(py[0, i])), 6, (255, 255, 255), -1)  # level0
+            cv2.circle(img_mask, (int(px[0, i]), int(py[0, i])), 3, (255,255,255), -1)  # level3
+            # cv2.circle(img_mask, (int(px[0, i]), int(py[0, i])), 6, (255, 255, 255), -1)  # level0
 
             index_im2[int(py[0, i]), int(px[0, i])] = myIndex[i]  # point index, without interpolation
 
@@ -628,7 +628,7 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
 
         # mask, where no point is projected to pixel
         # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10,10))  # level3
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (80, 80))  # level0
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 20))  # level0
         closing_img_temp = cv2.morphologyEx(img_mask, cv2.MORPH_CLOSE, kernel).astype(np.uint8)
         folder_path = os.path.join(save_path, "2_mask")
         make_if_not_exists(folder_path)
@@ -655,6 +655,7 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
                 for j in range(0, img_width):
                         if int(int_im[i,j]) == 11 or int(int_im[i,j]) == 12 or int(int_im[i,j])==13:
                             int_im[i,j] = 10
+                            print("!!!!")
 
                         if mask[i,j] == True:
                             r, g, b = color_classes[str(int(int_im[i, j]))]
@@ -698,7 +699,8 @@ def generation_syntheticImg_10cmbased(mask, px2, py2, myIndex2, pt_features, img
     if count > 100:  # I suppose at least 20% of pixels in the image should receive 3d point
         # Generation of synthetic image based on different feature
         X, Y = np.meshgrid(np.arange(0, img_width, 1), np.arange(0, img_height, 1))
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
 
         # * feature map
         features = np.zeros((id2.shape[0], pt_features.shape[1]), np.float32)

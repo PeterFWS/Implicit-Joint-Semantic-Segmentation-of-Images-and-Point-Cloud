@@ -1,6 +1,4 @@
-# import argparse
 import Models, LoadBatches
-from keras.models import load_model
 import glob
 import cv2
 import numpy as np
@@ -12,7 +10,7 @@ def make_if_not_exists(dirPath):
     if not os.path.exists(dirPath):
         os.makedirs(dirPath)
 
-color_classes_int = { #BGR
+color_classes_int = {
     "0": (255, 0, 0),
     "1": (255, 255, 255),
     "2": (255, 255, 0),
@@ -31,33 +29,26 @@ n_classes = 12
 images_path = "/data/fangwen/results/level3/test_set/rgb_img/"
 masks_path = "/data/fangwen/results/level3/test_set/2_mask/"
 
-
-
-
 input_height = 480
 input_width = 736
+output_height = input_height
+output_width = input_width
+
 
 ##################
-train_mode = "RGB"
+train_mode = "BGR"
 ##################
-if train_mode == "RGB":
+if train_mode == "BGR":
     m = Models.Segnet.segnet_indices_pooling(n_classes, input_height=input_height, input_width=input_width,
                                              nchannel=3, pre_train=False)
-    m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/end_weights.h5")
-
     f_path = None
 
 elif train_mode == "multi_modality":
     m = Models.Segnet.segnet_indices_pooling(n_classes, input_height=input_height, input_width=input_width,
                                              nchannel=75, pre_train=False)
-    m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/bestweights.05-0.26.hdf5")
-
     f_path = "/data/fangwen/results/level3/test_set/"
 
-
-output_height = input_height
-output_width = input_width
-
+m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/weights.15-0.29.hdf5")
 
 assert images_path[-1] == '/'
 assert masks_path[-1] == '/'
@@ -84,7 +75,6 @@ else:
     f_folders = None
 
 zipped = itertools.cycle(zip(images, masks))
-
 for _ in range(0, len(images)):
     imgName, mask_imName = zipped.next()
     X = LoadBatches.getImageArr(imgName, mask_imName, f_folders, input_width, input_height)
@@ -96,7 +86,6 @@ for _ in range(0, len(images)):
         seg_img[:, :, 1] += ((pr[:, :] == c) * (color_classes_int[str(c)][1])).astype('uint8')
         seg_img[:, :, 2] += ((pr[:, :] == c) * (color_classes_int[str(c)][2])).astype('uint8')
     seg_img = cv2.resize(seg_img, (input_width, input_height))
-
-    save_path = "/data/fangwen/results/level3/predictions_end"
+    save_path = "/data/fangwen/results/level3/1_baseline/predictions_maskfirst"
     make_if_not_exists(save_path)
     cv2.imwrite(os.path.join(save_path, imgName.split("/")[-1]), seg_img)

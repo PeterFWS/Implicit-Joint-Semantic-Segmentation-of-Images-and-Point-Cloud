@@ -269,8 +269,8 @@ if __name__ == "__main__":
 
     start_time = time()
 
-    evaluation_2d(path_predictions, path_groundtruths, path_mask)
-    #evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label)
+    # evaluation_2d(path_predictions, path_groundtruths, path_mask)
+    evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label)
 
     duration = time() - start_time
     print("duration: {}s".format(duration))
