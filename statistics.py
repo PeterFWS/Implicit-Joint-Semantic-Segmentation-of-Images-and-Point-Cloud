@@ -65,34 +65,57 @@ np.savetxt('./max.out', max)
 np.savetxt('./min.out', min)
 
 ########  RGB
-path_level3_img = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/train_set/rgb_img"
+path_level3_img = "/data/fangwen/results/level3_nadir/chip_train_set/rgb_img"
 img_list = os.listdir(path_level3_img)
 
-# R = []
-# G = []
-# B = []
-# for name in img_list:
-#     img = cv2.imread(os.path.join(path_level3_img, name))
-#     temp_B = img[:,:,0].ravel()
-#     temp_G = img[:,:,1].ravel()
-#     temp_R = img[:,:,2].ravel()
-#
-#     R.append(temp_R)
-#     G.append(temp_G)
-#     B.append(temp_B)
-#
-# R_all = np.concatenate([_ for _ in R])
-# G_all = np.concatenate([_ for _ in G])
-# B_all = np.concatenate([_ for _ in B])
-#
-# mean_R = np.mean(R_all)
-# mean_G = np.mean(G_all)
-# mean_B = np.mean(B_all)
-#
-# std_R = np.std(R_all)
-# std_G = np.std(G_all)
-# std_B = np.std(B_all)
+R = []
+G = []
+B = []
+H = []
+S = []
+V = []
+for i in tqdm(range(len(img_list))):
+    name = img_list[i]
+    img = cv2.imread(os.path.join(path_level3_img, name))
+    temp_B = img[:,:,0].ravel()
+    temp_G = img[:,:,1].ravel()
+    temp_R = img[:,:,2].ravel()
 
+    temp_H = img[:,:,0].ravel() # B
+    temp_S = img[:,:,1].ravel() # G
+    temp_V = img[:,:,2].ravel() # R
+
+    R.append(temp_R)
+    G.append(temp_G)
+    B.append(temp_B)
+
+    H.append(temp_H)
+    S.append(temp_S)
+    V.append(temp_V)
+
+R_all = np.concatenate([_ for _ in R])
+G_all = np.concatenate([_ for _ in G])
+B_all = np.concatenate([_ for _ in B])
+
+mean_R = np.mean(R_all)
+mean_G = np.mean(G_all)
+mean_B = np.mean(B_all)
+
+std_R = np.std(R_all)
+std_G = np.std(G_all)
+std_B = np.std(B_all)
+
+H_all = np.concatenate([_ for _ in H])
+S_all = np.concatenate([_ for _ in S])
+V_all = np.concatenate([_ for _ in V])
+
+mean_H = np.mean(H_all)
+mean_S = np.mean(S_all)
+mean_V = np.mean(V_all)
+
+std_H = np.std(H_all)
+std_S = np.std(S_all)
+std_V = np.std(V_all)
 # H = []
 # S = []
 # V = []

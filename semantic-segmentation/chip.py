@@ -127,14 +127,13 @@ def chip(img, chip_size=(224, 224), overlap=0.5, nchannel=3, fg=False):
 
 if __name__ == "__main__":
 
-    reference = "/data/fangwen/results/level3_nadir/train_set/2_mask/"
+    reference = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/level3_oblique/test_set/2_mask"
 
-    data_path = "/data/fangwen/results/level3_nadir/train_set/"
+    data_path = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/level3_oblique/test_set"
     folders_list = os.listdir(data_path)
-    folders_list.remove("1_pointlabel")
     folders_list.remove("2_mask")
 
-    save_path = "/data/fangwen/results/level3_nadir/chip_train_set"
+    save_path = "/data/fangwen/results/level3/chip_test_set_oblique_only"
     make_if_not_exists(save_path)
 
 
@@ -155,12 +154,12 @@ if __name__ == "__main__":
             folder_path = os.path.join(data_path, folder)
             img_path = os.path.join(folder_path, name)
 
-            if folder_path.split("/")[-1].split("_")[-2] == "f" or folder_path.split("/")[-1].split("_")[-2] == "5":
+            if folder_path.split("/")[-1].split("_")[-1] == "68" or folder_path.split("/")[-1].split("_")[-2] == "5":
                 # read index image and feature image
                 img = tifffile.imread(img_path)
                 img_patchs = chip(img, chip_size=(224, 224), overlap=0.5, nchannel=1, fg=False)
 
-            elif folder_path.split("/")[-1].split("_")[-2] == "4" or folder_path.split("/")[-1].split("_")[-2] == "rgb":
+            elif folder_path.split("/")[-1].split("_")[-2] == "rgb":
                 # color and rgb
                 img = cv2.imread(img_path)
                 img_patchs = chip(img, chip_size=(224, 224), overlap=0.5, nchannel=3, fg=False)
@@ -171,7 +170,6 @@ if __name__ == "__main__":
                 img_patchs = chip(img, chip_size=(224, 224), overlap=0.5, nchannel=1, fg=False)
 
 
-
             for id in range(flag.shape[0]):
                 if flag[id] == 0:
 
@@ -180,19 +178,15 @@ if __name__ == "__main__":
                     make_if_not_exists(save_mask)
                     cv2.imwrite(os.path.join(save_mask, name.split(".")[-2] + "_" + str(id) +".tif"), mask_patchs[id])
 
-                    # save other images
-                    if folder_path.split("/")[-1].split("_")[-2] == "f" or folder_path.split("/")[-1].split("_")[
-                        -2] == "5":
+                    # # save other images
+                    if folder_path.split("/")[-1].split("_")[-1] == "68" or folder_path.split("/")[-1].split("_")[-2] == "5":
                         save_img = os.path.join(save_path, folder_path.split("/")[-1])
                         make_if_not_exists(save_img)
                         tifffile.imsave(os.path.join(save_img, name.split(".")[-2] + "_" + str(id) +".tif"), img_patchs[id])
-
-                    elif folder_path.split("/")[-1].split("_")[-2] == "4" or folder_path.split("/")[-1].split("_")[
-                        -2] == "rgb":
+                    if folder_path.split("/")[-1].split("_")[-2] == "rgb":
                         save_img = os.path.join(save_path, folder_path.split("/")[-1])
                         make_if_not_exists(save_img)
                         cv2.imwrite(os.path.join(save_img, name.split(".")[-2] + "_" + str(id) +".tif"), img_patchs[id])
-
                     elif folder_path.split("/")[-1].split("_")[-2] == "3":
                         save_img = os.path.join(save_path, folder_path.split("/")[-1])
                         make_if_not_exists(save_img)

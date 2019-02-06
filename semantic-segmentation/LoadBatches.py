@@ -61,6 +61,9 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 			std_H = 40.400934438326466
 			std_S = 38.57465872094216
 			std_V = 49.27051219866851
+			
+			% mixed data
+			
 		"""
 		# normalize BGR imagery
 		mean_B = 93.555
@@ -95,28 +98,28 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 
 	# train_mode = "multi_modality"
 	if f_folders is not None:
-		# count = 0
-		# for folder_path in f_folders:
-		# 	f_path = os.path.join(folder_path, im_path.split('/')[-1])
-		# 	f_img = tifffile.imread(f_path).astype(np.float32)
-		# 	where_are_NaNs = np.isnan(f_img)
-		# 	f_img[where_are_NaNs] = 0.0
-		# 	# according to Michael, no further normalization is need for feature map
-		# 	f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
-		#
-		# 	if count == 0:
-		# 		temp = np.dstack((img, f_img))
-		# 	if count > 0:
-		# 		temp = np.dstack((temp, f_img))
-		# 	count += 1
+		count = 0
+		for folder_path in f_folders:
+			f_path = os.path.join(folder_path, im_path.split('/')[-1])
+			f_img = tifffile.imread(f_path).astype(np.float32)
+			where_are_NaNs = np.isnan(f_img)
+			f_img[where_are_NaNs] = 0.0
+			# according to Michael, no further normalization is need for feature map
+			f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
 
-		folder_path = f_folders[65]  # nDSM
-		f_path = os.path.join(folder_path, im_path.split('/')[-1])
-		f_img = tifffile.imread(f_path).astype(np.float32)
-		where_are_NaNs = np.isnan(f_img)
-		f_img[where_are_NaNs] = 0.0
-		f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
-		temp = np.dstack((img, f_img))
+			if count == 0:
+				temp = np.dstack((img, f_img))
+			if count > 0:
+				temp = np.dstack((temp, f_img))
+			count += 1
+
+		# folder_path = f_folders[65]  # nDSM
+		# f_path = os.path.join(folder_path, im_path.split('/')[-1])
+		# f_img = tifffile.imread(f_path).astype(np.float32)
+		# where_are_NaNs = np.isnan(f_img)
+		# f_img[where_are_NaNs] = 0.0
+		# f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
+		# temp = np.dstack((img, f_img))
 
 		if rotation_index is not None:
 			temp = rotate_image_random(temp, rotation_index)
@@ -189,9 +192,8 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 		Y = []
 		for _ in range(batch_size):
 			im, seg, mask = zipped.next()
-			# add random rotation
+			# random rotation
 			rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
-
 			X.append(getImageArr(im, mask, f_folders, input_width, input_height, rotation_index))
 			Y.append(getSegmentationArr(seg, n_classes, output_width, output_height, rotation_index))
 		yield np.array(X), np.array(Y)

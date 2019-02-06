@@ -26,11 +26,11 @@ color_classes_int = {
 }
 
 n_classes = 12
-images_path = "/data/fangwen/results/level3/test_set/rgb_img/"
-masks_path = "/data/fangwen/results/level3/test_set/2_mask/"
+images_path = "/data/fangwen/results/level3/chip_test_set_oblique_only/rgb_img/"
+masks_path = "/data/fangwen/results/level3/chip_test_set_oblique_only/2_mask/"
 
-input_height = 480
-input_width = 736
+input_height = 224
+input_width = 224
 output_height = input_height
 output_width = input_width
 
@@ -48,7 +48,7 @@ elif train_mode == "multi_modality":
                                              nchannel=75, pre_train=False)
     f_path = "/data/fangwen/results/level3/test_set/"
 
-m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/weights.15-0.29.hdf5")
+m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/crop_baseline1/weights.45-1.73.hdf5", by_name=True)
 
 assert images_path[-1] == '/'
 assert masks_path[-1] == '/'
@@ -86,6 +86,6 @@ for _ in range(0, len(images)):
         seg_img[:, :, 1] += ((pr[:, :] == c) * (color_classes_int[str(c)][1])).astype('uint8')
         seg_img[:, :, 2] += ((pr[:, :] == c) * (color_classes_int[str(c)][2])).astype('uint8')
     seg_img = cv2.resize(seg_img, (input_width, input_height))
-    save_path = "/data/fangwen/results/level3/1_baseline/predictions_maskfirst"
+    save_path = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/predictions_crop_RGB"
     make_if_not_exists(save_path)
     cv2.imwrite(os.path.join(save_path, imgName.split("/")[-1]), seg_img)
