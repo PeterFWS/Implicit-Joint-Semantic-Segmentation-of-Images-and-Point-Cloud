@@ -4,6 +4,7 @@ import glob
 import itertools
 import tifffile
 import os
+from sklearn.utils import shuffle
 
 import random
 
@@ -167,6 +168,10 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 	masks.sort()
 	assert len(images) == len(segmentations)
 	assert len(images) == len(masks)
+
+	# shuffle without disrupting the mapping
+	images, segmentations, masks = shuffle(images, segmentations, masks, random_state=0)
+
 	for im, seg in zip(images, segmentations):
 		assert (im.split('/')[-1].split(".")[0] == seg.split('/')[-1].split(".")[0])
 	for im, mask in zip(images, masks):
@@ -177,14 +182,16 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 		assert f_path[-1] == '/'
 		f_folders = glob.glob(f_path + "f_*" + "/")
 		f_folders.sort()
-		for folder_path in f_folders:
-			f_imgs = glob.glob(folder_path + "*.JPG") + glob.glob(folder_path + "*.tif")
-			f_imgs.sort()
-			assert len(images) == len(f_imgs)
-			for im, f_img in zip(images, f_imgs):
-				assert (im.split('/')[-1].split(".")[0] == f_img.split('/')[-1].split(".")[0])
+		# for folder_path in f_folders:
+		# 	f_imgs = glob.glob(folder_path + "*.JPG") + glob.glob(folder_path + "*.tif")
+		# 	f_imgs.sort()
+		# 	assert len(images) == len(f_imgs)
+		# 	for im, f_img in zip(images, f_imgs):
+		# 		assert (im.split('/')[-1].split(".")[0] == f_img.split('/')[-1].split(".")[0])
+
 	else:
 		f_folders = None
+
 
 	zipped = itertools.cycle(zip(images, segmentations, masks))
 	while True:

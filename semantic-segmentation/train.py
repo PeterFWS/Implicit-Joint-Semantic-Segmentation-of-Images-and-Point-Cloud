@@ -17,7 +17,7 @@ save_weights_path = "./weights/"
 input_height = 224
 input_width = 224
 n_classes = 12  # 11 classes + 1 un-classified class
-train_batch_size = 6
+train_batch_size = 8
 
 
 ##################
@@ -52,7 +52,7 @@ if validate:
     val_segs_path = "/data/fangwen/results/level3_nadir/chip_validation_set/3_greylabel/"
     val_mask_path = "/data/fangwen/results/level3_nadir/chip_validation_set/2_mask/"
 
-    val_batch_size = 6
+    val_batch_size = 8
 
     G2 = LoadBatches.imageSegmentationGenerator(val_images_path, val_segs_path, val_mask_path,
                                                 val_f_path,

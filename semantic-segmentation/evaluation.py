@@ -180,7 +180,9 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
     for pred_img, index in zip(pred_imgs, point_indexs):
         assert (pred_img.split('/')[-1].split(".")[0] == index.split('/')[-1].split(".")[0])
 
-    gt_label_3d = np.loadtxt(path_pointcloud_label)[:, -1]
+    data = np.loadtxt(path_pointcloud_label)
+    gt_xyz = data[:, :3]
+    gt_label_3d = data[:, -1]
 
     # processing
     pt_recorder = []
@@ -233,8 +235,22 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
     precentage = float(index_ignore2.shape[0]) / float(gt_label_3d.shape[0]) * 100
     print("how many points in test-set will not be evaluated: {}%".format(precentage))
 
+
+    # for i in tqdm(range(index_ignore2.shape[0])):
+    #     pt_label_majority[index_ignore2[i]] = 255
+    #
+    # saved_data_predicted = np.concatenate((gt_xyz, np.asmatrix(pt_label_majority).astype(np.uint8).T), axis=1)
+    #
+    # np.savetxt("./saved_data_predicted.txt",saved_data_predicted)
+
+
+
     predictions = np.delete(pt_label_majority, index_ignore2)
     gts = np.delete(gt_label_3d, index_ignore2)
+
+    # gts_xyz_new = np.delete(gt_xyz, index_ignore2, axis=0)
+    # saved_data_predicted_part = np.concatenate((gts_xyz_new, np.asmatrix(predictions).astype(np.uint8).T), axis=1)
+    # np.savetxt("./saved_data_predicted_part.txt", saved_data_predicted_part)
 
     cm = confusion_matrix(gts, predictions, range(len(LABELS)))
 
@@ -258,12 +274,12 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
 
 if __name__ == "__main__":
 
-    path_predictions = "/data/fangwen/results/level3/1_baseline/predictions/"
-    path_groundtruths = "/data/fangwen/results/level3/test_set/3_greylabel/"
-    path_mask = "/data/fangwen/results/level3/test_set/2_mask/"
-    path_index = "/data/fangwen/results/level3/test_set/5_index/"
+    path_predictions = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/predictions_1_baseline/"
+    path_groundtruths = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/3_greylabel/"
+    path_mask = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/2_mask/"
+    path_index = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/5_index/"
 
-    path_pointcloud_label = "/data/fangwen/data/data_splits_5cm_onlylabel/train_xyz_y.txt"
+    path_pointcloud_label = "/home/fangwen/ShuFangwen/data/data_splits_5cm_onlylabel/train_xyz_y.txt"
 
 
 
