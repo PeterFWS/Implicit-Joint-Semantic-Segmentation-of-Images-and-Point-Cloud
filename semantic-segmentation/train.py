@@ -17,7 +17,7 @@ save_weights_path = "./weights/"
 input_height = 224
 input_width = 224
 n_classes = 12  # 11 classes + 1 un-classified class
-train_batch_size = 8
+train_batch_size = 10
 
 
 ##################
@@ -38,7 +38,7 @@ elif train_mode == "multi_modality":
 
 # compile model
 m.compile(loss="categorical_crossentropy",
-          optimizer=optimizers.SGD(lr=0.1, momentum=0.95),
+          optimizer=optimizers.SGD(lr=0.1, decay=0.0005, momentum=0.95),
           metrics=["accuracy"])
 G = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, train_mask_path,
                                            train_f_path,
@@ -52,7 +52,7 @@ if validate:
     val_segs_path = "/data/fangwen/results/level3_nadir/chip_validation_set/3_greylabel/"
     val_mask_path = "/data/fangwen/results/level3_nadir/chip_validation_set/2_mask/"
 
-    val_batch_size = 8
+    val_batch_size = 10
 
     G2 = LoadBatches.imageSegmentationGenerator(val_images_path, val_segs_path, val_mask_path,
                                                 val_f_path,
