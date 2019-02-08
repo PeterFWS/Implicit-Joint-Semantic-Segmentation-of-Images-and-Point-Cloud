@@ -1,17 +1,16 @@
 name: py3
 channels:
+  - conda-forge
+  - open3d-admin
   - anaconda
   - defaults
 dependencies:
-  - ca-certificates=2018.03.07=0
-  - certifi=2018.10.15=py37_0
-  - olefile=0.46=py37_0
-  - openssl=1.0.2p=h14c3975_0
-  - pillow=5.3.0=py37h34e0f95_0
   - blas=1.0=mkl
   - bzip2=1.0.6=h14c3975_5
+  - ca-certificates=2018.03.07=0
   - cairo=1.14.12=h8948797_3
   - cycler=0.10.0=py37_0
+  - cython=0.29=py37he6710b0_0
   - dbus=1.13.2=h714fa37_1
   - expat=2.2.6=he6710b0_0
   - ffmpeg=4.0=hcdf2ecd_0
@@ -24,18 +23,14 @@ dependencies:
   - gstreamer=1.14.0=hb453b48_1
   - harfbuzz=1.8.8=hffaf4a1_0
   - hdf5=1.10.2=hba1933b_1
-  - icu=58.2=h9c2bf20_1
   - intel-openmp=2018.0.3=0
   - jasper=2.0.14=h07fcdf6_1
-  - jpeg=9b=h024ee3a_2
   - kiwisolver=1.0.1=py37hf484d3e_0
   - libedit=3.1.20170329=h6b74fdf_2
-  - libffi=3.2.1=hd88cf55_4
   - libgcc-ng=8.2.0=hdf63c60_1
   - libgfortran-ng=7.3.0=hdf63c60_0
   - libglu=9.0.0=hf484d3e_1
   - libopencv=3.4.2=hb342d67_1
-  - libopus=1.2.1=hb9ed12e_0
   - libpng=1.6.34=hb9fc6fc_0
   - libstdcxx-ng=8.2.0=hdf63c60_1
   - libtiff=4.0.9=he85c1e1_2
@@ -50,10 +45,11 @@ dependencies:
   - ncurses=6.1=hf484d3e_0
   - numpy=1.15.1=py37h1d66e8a_0
   - numpy-base=1.15.1=py37h81de0dd_0
+  - olefile=0.46=py37_0
   - opencv=3.4.2=py37h6fd60c2_1
   - pcre=8.42=h439df22_0
+  - pillow=5.3.0=py37h34e0f95_0
   - pip=10.0.1=py37_0
-  - pixman=0.34.0=hceecf20_3
   - py-opencv=3.4.2=py37hb342d67_1
   - pyparsing=2.2.2=py37_0
   - pyqt=5.9.2=py37h05f1152_2
@@ -72,5 +68,55 @@ dependencies:
   - tqdm=4.25.0=py37h28b3542_0
   - wheel=0.31.1=py37_0
   - xz=5.2.4=h14c3975_4
+  - tifffile=0.15.1=py37h7eb728f_1
+  - backcall=0.1.0=py37_0
+  - bleach=3.1.0=py37_0
+  - certifi=2018.10.15=py37_0
+  - decorator=4.3.0=py37_0
+  - entrypoints=0.3=py37_0
+  - gmp=6.1.2=h6c8ec71_1
+  - icu=58.2=h9c2bf20_1
+  - ipykernel=5.1.0=py37h39e3cac_0
+  - ipython=7.2.0=py37h39e3cac_0
+  - ipython_genutils=0.2.0=py37_0
+  - ipywidgets=7.4.2=py37_0
+  - jedi=0.13.2=py37_0
+  - jinja2=2.10=py37_0
+  - jpeg=9b=h024ee3a_2
+  - jsonschema=2.6.0=py37_0
+  - jupyter_client=5.2.4=py37_0
+  - jupyter_core=4.4.0=py37_0
+  - libffi=3.2.1=hd88cf55_4
+  - libopus=1.2.1=hb9ed12e_0
+  - libsodium=1.0.16=h1bed415_0
+  - markupsafe=1.1.0=py37h7b6447c_0
+  - mistune=0.8.4=py37h7b6447c_0
+  - nbconvert=5.3.1=py37_0
+  - nbformat=4.4.0=py37_0
+  - notebook=5.7.4=py37_0
+  - openssl=1.0.2p=h14c3975_0
+  - pandoc=2.2.3.2=0
+  - pandocfilters=1.4.2=py37_1
+  - parso=0.3.1=py37_0
+  - pexpect=4.6.0=py37_0
+  - pickleshare=0.7.5=py37_0
+  - pixman=0.34.0=hceecf20_3
+  - prometheus_client=0.5.0=py37_0
+  - prompt_toolkit=2.0.7=py37_0
+  - ptyprocess=0.6.0=py37_0
+  - pygments=2.3.1=py37_0
+  - pyzmq=17.1.2=py37h14c3975_0
+  - send2trash=1.5.0=py37_0
+  - terminado=0.8.1=py37_1
+  - testpath=0.4.2=py37_0
+  - traitlets=4.3.2=py37_0
+  - wcwidth=0.1.7=py37_0
+  - webencodings=0.5.1=py37_1
+  - widgetsnbextension=3.4.2=py37_0
+  - zeromq=4.2.5=hf484d3e_1
   - zlib=1.2.11=ha838bed_2
+  - open3d=0.5.0.0=py37_0
+  - pip:
+    - open3d-python==0.3.0.0
 prefix: /home/fangwen/anaconda2/envs/py3
+
