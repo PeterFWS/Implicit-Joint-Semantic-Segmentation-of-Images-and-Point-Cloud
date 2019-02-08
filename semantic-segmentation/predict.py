@@ -10,19 +10,20 @@ def make_if_not_exists(dirPath):
     if not os.path.exists(dirPath):
         os.makedirs(dirPath)
 
-color_classes_int = {
-    "0": (255, 0, 0),
-    "1": (255, 255, 255),
-    "2": (255, 255, 0),
-    "3": (255, 0, 255),
-    "4": (0, 255, 255),
-    "5": (0, 255, 0),
-    "6": (0, 0, 255),
-    "7": (239, 120, 76),
-    "8": (247, 238, 179),
-    "9": (0, 18, 114),
-    "10": (63, 34, 15),
-    "11": (0, 0, 0)  # number 11 indicts for nothing
+
+palette = {  # BGR
+    0: (255, 0, 0),      # Powerline
+    1: (255, 255, 255),  # Low Vegetation
+    2: (255, 255, 0),    # Impervious Surface
+    3: (255, 0, 255),    # Vehicles
+    4: (0, 255, 255),    # Urban Furniture
+    5: (0, 255, 0),      # Roof
+    6: (0, 0, 255),      # Facade
+    7: (239, 120, 76),   # Bush/Hedge
+    8: (247, 238, 179),  # Tree
+    9: (0, 18, 114),     # Dirt/Gravel
+    10: (63, 34, 15),    # Vertical Surface
+    11: (0, 0, 0)        # Void
 }
 
 n_classes = 12
@@ -82,9 +83,9 @@ for _ in range(0, len(images)):
     pr = pr.reshape((output_height, output_width, n_classes)).argmax(axis=2)
     seg_img = np.zeros((output_height, output_width, 3))
     for c in range(n_classes-1):
-        seg_img[:, :, 0] += ((pr[:, :] == c) * (color_classes_int[str(c)][0])).astype('uint8')
-        seg_img[:, :, 1] += ((pr[:, :] == c) * (color_classes_int[str(c)][1])).astype('uint8')
-        seg_img[:, :, 2] += ((pr[:, :] == c) * (color_classes_int[str(c)][2])).astype('uint8')
+        seg_img[:, :, 0] += ((pr[:, :] == c) * (palette[c][0])).astype('uint8')
+        seg_img[:, :, 1] += ((pr[:, :] == c) * (palette[c][1])).astype('uint8')
+        seg_img[:, :, 2] += ((pr[:, :] == c) * (palette[c][2])).astype('uint8')
     seg_img = cv2.resize(seg_img, (input_width, input_height))
     save_path = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/predictions_crop_RGB"
     make_if_not_exists(save_path)

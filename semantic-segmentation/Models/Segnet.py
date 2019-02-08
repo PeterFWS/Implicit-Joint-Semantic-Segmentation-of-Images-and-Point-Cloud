@@ -1,23 +1,12 @@
-# todo upgrade to keras 2.0
 from keras import backend as K
 from keras.models import Model
-from keras.layers import Input, Conv2D, Activation, MaxPooling2D, UpSampling2D, Reshape, Dropout
+from keras.layers import Input, Conv2D, Activation, Reshape, Dropout
 from keras.layers.normalization import BatchNormalization
-from keras.initializers import orthogonal, he_normal
-from keras.regularizers import l2
 from keras.constraints import MaxNorm
-
 
 from mylayers import MaxPoolingWithArgmax2D, MaxUnpooling2D
 
-
 def segnet_indices_pooling(nClasses, input_height=480, input_width=736, nchannel=3, pre_train=False):
-	"""
-nClasses=12
-input_height=224
-input_width=224
-nchannel = 3
-		"""
 
 	input_shape = (input_height, input_width, nchannel)
 	kernel = 3
@@ -26,7 +15,7 @@ nchannel = 3
 
 	rate = 0.5
 
-	# encoder, which is the convolution part of VGG16, without top(the fc layers)
+	# Encoder
 	inputs = Input(shape=input_shape)
 
 	conv_1 = Conv2D(64, (kernel, kernel), padding="same", kernel_constraint=MaxNorm(max_value=4, axis=[0, 1, 2]))(inputs)
@@ -88,8 +77,7 @@ nchannel = 3
 
 	print("Build enceder done..")
 
-
-	# decoder
+	# Decoder
 	unpool_1 = MaxUnpooling2D(pool_size)([pool_5, mask_5])
 
 	conv_14 = Conv2D(512, (kernel, kernel), padding="same", kernel_constraint=MaxNorm(max_value=4, axis=[0, 1, 2]))(unpool_1)
@@ -160,9 +148,9 @@ nchannel = 3
 		model.load_weights(vgg_weight_path, by_name=True)
 		print("Load VGG weight success..\n")
 		# freeze the VGG layers
-		for layer in model.layers[:45]:  # 45 without dropout, 59 with
-			if str(layer.name).split("_")[-2] == "conv2d":
-				layer.trainable = False
+		# for layer in model.layers[:45]:  # 45 without dropout, 59 with
+		# 	if str(layer.name).split("_")[-2] == "conv2d":
+		# 		layer.trainable = False
 	else:
 		model = Model(inputs=inputs, outputs=outputs, name="SegNet")
 

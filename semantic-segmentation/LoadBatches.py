@@ -5,7 +5,6 @@ import itertools
 import tifffile
 import os
 from sklearn.utils import shuffle
-
 import random
 
 def rotate_image_random(img, rotation_index):
@@ -27,14 +26,14 @@ def rotate_image_random(img, rotation_index):
 	else:
 		return img
 
-def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normalization", rotation_index=None):
+def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean", rotation_index=None):
 	# read mask
 	mask = cv2.imread(mask_path, 0)
 	# read rgb image
 	img = cv2.imread(im_path, 1).astype(np.float32)
 
 	##################
-	attacth_HSV = True
+	attacth_HSV = False
 	##################
 	if attacth_HSV is not False:
 		# transfer color space
@@ -108,11 +107,7 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 			# according to Michael, no further normalization is need for feature map
 			f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
 
-			if count == 0:
-				temp = np.dstack((img, f_img))
-			if count > 0:
-				temp = np.dstack((temp, f_img))
-			count += 1
+			img = np.dstack((img, f_img))
 
 		# folder_path = f_folders[65]  # nDSM
 		# f_path = os.path.join(folder_path, im_path.split('/')[-1])
@@ -120,16 +115,12 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 		# where_are_NaNs = np.isnan(f_img)
 		# f_img[where_are_NaNs] = 0.0
 		# f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
-		# temp = np.dstack((img, f_img))
+		# img = np.dstack((img, f_img))
 
-		if rotation_index is not None:
-			temp = rotate_image_random(temp, rotation_index)
-		return temp
+	if rotation_index is not None:
+		img = rotate_image_random(img, rotation_index)
 
-	else:
-		if rotation_index is not None:
-			img = rotate_image_random(img, rotation_index)
-		return img
+	return img
 
 
 def getSegmentationArr(path, nClasses, width, height, rotation_index=None):
@@ -155,6 +146,19 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 							   f_path,
 							   batch_size, n_classes, input_height, input_width,
 							   output_height, output_width):
+	"""
+		images_path = "/data/fangwen/results/level3_nadir/chip_train_set/rgb_img/"
+		segs_path = "/data/fangwen/results/level3_nadir/chip_train_set/3_greylabel/"
+		mask_path ="/data/fangwen/results/level3_nadir/chip_train_set/2_mask/"
+		f_path = None
+		input_width = 224
+		input_height = 224
+		output_width =224
+		output_height=224
+		n_classes=12
+		f_folders = None
+		batch_size = 8
+	"""
 
 	assert images_path[-1] == '/'
 	assert segs_path[-1] == '/'
@@ -169,7 +173,7 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 	assert len(images) == len(segmentations)
 	assert len(images) == len(masks)
 
-	# shuffle without disrupting the mapping
+	# shuffle whole dataset ordering, without disrupting the mapping
 	images, segmentations, masks = shuffle(images, segmentations, masks, random_state=0)
 
 	for im, seg in zip(images, segmentations):
@@ -194,13 +198,15 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 
 
 	zipped = itertools.cycle(zip(images, segmentations, masks))
+
 	while True:
 		X = []
 		Y = []
 		for _ in range(batch_size):
 			im, seg, mask = zipped.next()
-			# random rotation
+			# add random rotation
 			rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
 			X.append(getImageArr(im, mask, f_folders, input_width, input_height, rotation_index))
 			Y.append(getSegmentationArr(seg, n_classes, output_width, output_height, rotation_index))
+
 		yield np.array(X), np.array(Y)

@@ -53,19 +53,32 @@ from sklearn.utils import class_weight
 
 label_img_list = os.listdir("/data/fangwen/results/level3_nadir/chip_train_set/3_greylabel")
 
-all_label = []
+# all_label = []
+num_classes = np.zeros(12, int)
 for i in tqdm(range(len(label_img_list))):
     name = label_img_list[i]
     path = os.path.join("/data/fangwen/results/level3_nadir/chip_train_set/3_greylabel", name)
     img = cv2.imread(path).ravel()
 
-    all_label.append(img)
+    for j in range(len(img)):
+        if img[j] != 255:
+            num_classes[img[j]] += 1
+        elif img[j] == 255:
+            num_classes[11] += 1
 
-y_train = np.concatenate([p for p in all_label])
+    # all_label.append(img)
 
-class_weights = class_weight.compute_class_weight('balanced',
-                                                 np.array([0,1,2,3,4,5,6,7,8,9,10,255]),
-                                                 y_train)
+total = sum(num_classes)
+
+frequency = num_classes / float(total)
+
+inverse = 1/ frequency
+
+# y_train = np.concatenate([p for p in all_label])
+#
+# class_weights = class_weight.compute_class_weight('balanced',
+#                                                  np.array([0,1,2,3,4,5,6,7,8,9,10,255]),
+#                                                  y_train)
 
 
 
