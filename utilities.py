@@ -17,8 +17,6 @@ def make_if_not_exists(dirPath):
         os.makedirs(dirPath)
 
 
-
-
 """
     ** return Interior/Exterior Orientations of corresponding image
 """
@@ -79,8 +77,8 @@ def get_INTER_and_EXTER_Orientations(file_ori):
             # print("Yc: {0}\n".format(Yc))
             # print("Zc: {0}\n".format(Zc))
 
-
     return f, pixel_size_x, img_width, img_height, K, R, Xc, Yc, Zc
+
 
 # for nadir image
 def get_exterior_orientation(img_name, extOri_file):
@@ -198,8 +196,6 @@ def frustum_culling(Xc, Yc, Zc, f, img_height, img_width, pixel_size, pt_xyz, in
     return xyz_temp, index_temp
 
 
-
-
 """
     ** Hidden Point Removal
 """
@@ -219,12 +215,14 @@ def sphericalFlip(points, center, param):
 
     return flippedPoints
 
+
 def convexHull(points):
     # Function used to Obtain the Convex hull
     points = np.append(points, [[0, 0, 0]], axis=0)  # All points plus origin
     hull = ConvexHull(points)  # Visibal points plus possible origin. Use its vertices property.
 
     return hull
+
 
 def HPR(Xc, Yc, Zc, xyz_temp, index_temp):
     print("Hidden point removal... ")
@@ -274,7 +272,8 @@ def pointcloud2pixelcoord(R, K, Xc, Yc, Zc, myPoints):
 
     # calculate pixel points
     myPoints = myPoints.T
-    myPoints = np.concatenate((np.mat(myPoints), np.full((1, myPoints.shape[1]), 1)), axis=0)  # using homogeneous coord (4, 14129889)
+    # using homogeneous coord (4, 14129889)
+    myPoints = np.concatenate((np.mat(myPoints), np.full((1, myPoints.shape[1]), 1)), axis=0)
     Pix_coor = np.dot(P, myPoints)
 
     # Normalization of pixel points
@@ -293,19 +292,21 @@ def pointcloud2pixelcoord(R, K, Xc, Yc, Zc, myPoints):
     ** Generation of synthetic images
 """
 
-color_classes = {
-    "0": (255, 0, 0),
-    "1": (255, 255, 255),
-    "2": (255, 255, 0),
-    "3": (255, 0, 255),
-    "4": (0, 255, 255),
-    "5": (0, 255, 0),
-    "6": (0, 0, 255),
-    "7": (239, 120, 76),
-    "8": (247, 238, 179),
-    "9": (0, 18, 114),
-    "10": (63, 34, 15)
+palette = {  # BGR
+    0: (255, 0, 0),      # Powerline
+    1: (255, 255, 255),  # Low Vegetation
+    2: (255, 255, 0),    # Impervious Surface
+    3: (255, 0, 255),    # Vehicles
+    4: (0, 255, 255),    # Urban Furniture
+    5: (0, 255, 0),      # Roof
+    6: (0, 0, 255),      # Facade
+    7: (239, 120, 76),   # Bush/Hedge
+    8: (247, 238, 179),  # Tree
+    9: (0, 18, 114),     # Dirt/Gravel
+    10: (63, 34, 15),    # Vertical Surface
+    11: (0, 0, 0)        # Void
 }
+
 
 # the original function
 def generation_syntheticImg(px, py, myIndex, pt_labels, pt_features, img_name, save_path, img_width, img_height):
@@ -327,7 +328,7 @@ def generation_syntheticImg(px, py, myIndex, pt_labels, pt_features, img_name, s
             label_value.append(int(pt_labels[myIndex[i]]))
             id.append(myIndex[i])
 
-            r, g, b = color_classes[str(int(pt_labels[myIndex[i]]))]
+            r, g, b = palette[int(pt_labels[myIndex[i]])]
             img_temp[int(py[0, i]), int(px[0, i]), 0] = r
             img_temp[int(py[0, i]), int(px[0, i]), 1] = g
             img_temp[int(py[0, i]), int(px[0, i]), 2] = b
@@ -374,7 +375,7 @@ def generation_syntheticImg(px, py, myIndex, pt_labels, pt_features, img_name, s
                             int_im[i,j] = 10
 
                         if mask[i,j] == True:
-                            r, g, b = color_classes[str(int(int_im[i, j]))]
+                            r, g, b = palette[int(int_im[i, j])]
                             img_color_labeled[i, j, 0] = r
                             img_color_labeled[i, j, 1] = g
                             img_color_labeled[i, j, 2] = b
@@ -408,6 +409,7 @@ def generation_syntheticImg(px, py, myIndex, pt_labels, pt_features, img_name, s
 
     duration = time.time() - start_time
     print(duration, "s\n")
+
 
 # used in "main2", cropping image strategy of nadir image
 def generation_syntheticImg_nadir(px, py, myIndex, pt_labels, pt_features, img_name, save_path, img_width, img_height):
@@ -452,7 +454,7 @@ def generation_syntheticImg_nadir(px, py, myIndex, pt_labels, pt_features, img_n
             f_Q_ES_2.append(pt_features[myIndex[i], -9])
             f_Q_ES_1.append(pt_features[myIndex[i], -10])
 
-            c = color_classes[str(int(pt_labels[myIndex[i]]))]
+            c = palette[int(pt_labels[myIndex[i]])]
             cv2.circle(img_temp, (int(px[0, i]), int(py[0, i])), 5, c, -1)
             count += 1
 
@@ -496,7 +498,7 @@ def generation_syntheticImg_nadir(px, py, myIndex, pt_labels, pt_features, img_n
                         if int(int_im[i,j]) == 11 or int(int_im[i,j]) == 12 or int(int_im[i,j])==13:
                             int_im[i,j] = 10
 
-                        r, g, b = color_classes[str(int(int_im[i, j]))]
+                        r, g, b = palette[int(int_im[i, j])]
                         img_color_labeled[i, j, 0] = r
                         img_color_labeled[i, j, 1] = g
                         img_color_labeled[i, j, 2] = b
@@ -509,9 +511,6 @@ def generation_syntheticImg_nadir(px, py, myIndex, pt_labels, pt_features, img_n
         folder_path = os.path.join(save_path, "5_index")
         make_if_not_exists(folder_path)
         cv2.imwrite(os.path.join(folder_path, img_name.split("/")[-1]), index_im)
-
-
-
 
         # # <entry val="_nDOM" format="3.4" invalidValue="0" externalType="float" />
         f_nDOM_im = griddata(points, f_nDOM, (X, Y), method='linear').astype(np.float32)
@@ -583,6 +582,7 @@ def generation_syntheticImg_nadir(px, py, myIndex, pt_labels, pt_features, img_n
         make_if_not_exists(folder_path)
         tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1]), closing)
 
+
 # * the 2 functions blow are used in "main3", generation of 5cm-based label image, 10cm-based feature map
 # 5cm only generate index image and label image
 def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_path, img_width, img_height):
@@ -604,7 +604,7 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
             label_value.append(int(pt_labels[myIndex[i]]))
             id.append(myIndex[i])
 
-            r, g, b = color_classes[str(int(pt_labels[myIndex[i]]))]
+            r, g, b = palette[int(pt_labels[myIndex[i]])]
             img_temp[int(py[0, i]), int(px[0, i]), 0] = r
             img_temp[int(py[0, i]), int(px[0, i]), 1] = g
             img_temp[int(py[0, i]), int(px[0, i]), 2] = b
@@ -658,7 +658,7 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
                             print("!!!!")
 
                         if mask[i,j] == True:
-                            r, g, b = color_classes[str(int(int_im[i, j]))]
+                            r, g, b = palette[int(int_im[i, j])]
                             img_color_labeled[i, j, 0] = r
                             img_color_labeled[i, j, 1] = g
                             img_color_labeled[i, j, 2] = b
@@ -678,7 +678,8 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
         tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1]), index_im2)
 
         return mask
-    
+
+
 # 10cm only generate feature map, here, 72 feature maps
 def generation_syntheticImg_10cmbased(mask, px2, py2, myIndex2, pt_features, img_name, save_path, img_width, img_height):
 
@@ -708,7 +709,6 @@ def generation_syntheticImg_10cmbased(mask, px2, py2, myIndex2, pt_features, img
         for i in range(0, features.shape[1]):
             for j in range(0, features.shape[0]):
                 features[j, i] = pt_features[id2[j], i]
-
 
         for i in range(0, features.shape[1]):
             f_im = griddata(points2, features[:,i], (X, Y), method='linear').astype(np.float32)

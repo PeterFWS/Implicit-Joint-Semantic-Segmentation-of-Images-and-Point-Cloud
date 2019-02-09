@@ -5,7 +5,6 @@ import itertools
 import os
 from tqdm import tqdm
 import tifffile
-from time import time
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report
 
@@ -28,6 +27,7 @@ palette = {  # BGR
     10: (63, 34, 15),    # Vertical Surface
     11: (0, 0, 0)        # Void
 }
+
 invert_palette = {v: k for k, v in palette.items()}
 
 
@@ -142,7 +142,6 @@ def evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=Fa
     all_gts = []
 
     for i in tqdm(range(0, len(pred_imgs))):
-
         pred_img = convert_from_color(cv2.imread(pred_imgs[i], 1))
         gt_img = cv2.imread(gt_imgs[i], 0)[:pred_img.shape[0], :pred_img.shape[1]]
         gt_img[(gt_img == 255)] = 11
@@ -152,7 +151,6 @@ def evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=Fa
         if ignore_void is not False:
             index = []  # index of void pixels
             [index.append(_) for _ in range(mask.shape[0]) if mask[_] == 0]
-
             pred_img = np.delete(pred_img.ravel(), index)
             gt_img = np.delete(gt_img.ravel(), index)
         else:
@@ -192,7 +190,7 @@ def evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=Fa
 
 
 # Evaluation in 3D object space
-def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label):
+def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label, save_3D=False):
 
     # read image data, sorted, and check if those data is matched to each other
     pred_imgs = glob.glob(path_predictions + "*.JPG") + glob.glob(path_predictions + "*.tif")
@@ -216,10 +214,10 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
     data = np.loadtxt(path_pointcloud_label)
     gt_label_3d = data[:, -1]
 
-    # processing
     pt_recorder = []
     for i in range(gt_label_3d.shape[0]):
-        pt_recorder.append([])  # create a list of lists, each single list save the predicted label, used for majority vote
+        # create a lists of list, each single list save the predicted label, used for majority vote
+        pt_recorder.append([])
     pt_label_majority = np.zeros(gt_label_3d.shape[0])  # save the label after majority vote
 
     for i in tqdm(range(0, len(pred_imgs))):
@@ -237,10 +235,8 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
         # index, where the pixel is invalid and corresponding pixel will be deleted
         index_ignore = []
         [index_ignore.append(j) for j in range(mask.shape[0]) if mask[j] == 0]
-
         pt_index = np.delete(pt_index.ravel(), index_ignore)
         pred_img = np.delete(pred_img.ravel(), index_ignore)
-
 
         # since one 3d point shows up in different image, save the predicted label from different image
         for k in range(pt_index.shape[0]):
@@ -252,7 +248,7 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
                 except IndexError:
                     continue
 
-    # index2, which 3d point is not projected
+    # index2, where 3d point is not projected
     index_ignore2 = []
     # majority vote in 3d object space
     for i in range(len(pt_recorder)):
@@ -265,27 +261,15 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
             # find the value which shows up most
             for predicted_label in pt_recorder[i]:
                 recorder[predicted_label, 0] += 1
-            amax_label = np.argmax(recorder)  # this will be the true predicted label of this point
+            amax_label = np.argmax(recorder)  # the majority label of this point
             pt_label_majority[i] = amax_label
     index_ignore2 = np.asarray(index_ignore2)
 
     precentage = float(index_ignore2.shape[0]) / float(gt_label_3d.shape[0]) * 100
-    print("how many points in test-set will not be evaluated: {}%".format(precentage))
+    print("{}% 3D points (5cm density point cloud) are not evaluated due to occlusion".format(precentage))
 
     predictions = np.delete(pt_label_majority, index_ignore2)
     gts = np.delete(gt_label_3d, index_ignore2)
-
-    gt_xyz = data[:, :3]
-    for i in tqdm(range(index_ignore2.shape[0])):
-        pt_label_majority[index_ignore2[i]] = 255
-
-    saved_data_predicted = np.concatenate((gt_xyz, np.asmatrix(pt_label_majority).astype(np.uint8).T), axis=1)
-
-    np.savetxt("./saved_data_predicted.txt",saved_data_predicted)
-
-    gts_xyz_new = np.delete(gt_xyz, index_ignore2, axis=0)
-    saved_data_predicted_part = np.concatenate((gts_xyz_new, np.asmatrix(predictions).astype(np.uint8).T), axis=1)
-    np.savetxt("./saved_data_predicted_part.txt", saved_data_predicted_part)
 
     cm = confusion_matrix(y_true=gts, y_pred=predictions, labels=range(len(LABELS)))
 
@@ -311,6 +295,18 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
                           flag_normalize=True, title='Normalized Confusion Matrix of 3D space evaluation',
                           cmap='plt.cm.Blues')
 
+    if save_3D is not False:
+        # save the semantic result, including the points which are not projected, with void label=255
+        gt_xyz = data[:, :3]
+        for i in tqdm(range(index_ignore2.shape[0])):
+            pt_label_majority[index_ignore2[i]] = 255
+        saved_data_predicted = np.concatenate((gt_xyz, np.asmatrix(pt_label_majority).astype(np.uint8).T), axis=1)
+        np.savetxt("./saved_data_predicted.txt", saved_data_predicted)
+
+        # save the semantic result, only those points are projected and evaluated
+        gts_xyz_part = np.delete(gt_xyz, index_ignore2, axis=0)
+        saved_data_predicted_part = np.concatenate((gts_xyz_part, np.asmatrix(predictions).astype(np.uint8).T), axis=1)
+        np.savetxt("./saved_data_predicted_part.txt", saved_data_predicted_part)
 
 
 if __name__ == "__main__":
@@ -322,11 +318,8 @@ if __name__ == "__main__":
 
     path_pointcloud_label = "/home/fangwen/ShuFangwen/data/data_splits_5cm_onlylabel/test_xyz_y.txt"
 
-    start_time = time()
-
     # evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=False)
-    evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label)
 
-    duration = time() - start_time
-    print("duration: {}s".format(duration))
+    evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label, save_3D=False)
+
 
