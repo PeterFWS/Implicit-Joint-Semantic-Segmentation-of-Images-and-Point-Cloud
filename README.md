@@ -22,14 +22,14 @@ End in 01.04.2018
 ./conda_env/py3.yml <br>
 
 ```
-conda env export > py2.yml <br>
+conda env export > py2.yml
 conda env create -f py2.yml
 ```
 
 
 ## Pre-processing part
-```buildoutcfg
-main.py
+```
+./main.py
 ```
 pre-processing code for aerial imagery and LiDAR point cloud, including 3D-2D projection, frustum culling, 
 Hidden-point-removal (HPR), gird interpolation and operator of Morphology.
@@ -60,37 +60,57 @@ functions used to calculate statistic information of the data.
 code for generating depth image.
 
 ## Deep learning part
-./version_playground <br>
+```
+./version_playground
+```
 Old code backup, including point splatting achieved in C++ if you needed.<br>
 
-./semantic-segmentation <br>
-[1] ./semantic-segmentation/Models/: 
-1. SegNet (main model used in thesis)
-2. U-net (not test)
-3. TernausNet (not test)
+```
+./semantic-segmentation/Models/
+```
+* SegNet (main model used in thesis)
+* U-net (not test)
+* TernausNet (not test)
 
-[2] ./semantic-segmentation/board/: <br>
+```
+./semantic-segmentation/board/
+```
 where you save tensorboard file.
 
-[3] ./semantic-segmentation/data/: <br>
+```
+./semantic-segmentation/data/
+```
 where you save train/validation/test-set and VGG pre-treained weights.
 
-[4] ./semantic-segmentation/weights/: <br>
+```
+./semantic-segmentation/weights/
+```
 where you save trained weights.
 
-[5] ./semantic-segmentation/pytorch_code/: <br>
+```
+./semantic-segmentation/pytorch_code/
+```
 some dirty code of SegNet and pre-processing implemented in pytorch. 
 
-Code:<br>
-[1] train.py and prediction.py <br>
+### Code:
+```
+./semantic-segmentation/train.py
+./semantic-segmentation/prediction.py
+```
 train and prediction your data.
 
-[2] LoadBatches.py <br>
-loading data with pre-processing such as normalization.
+```
+./semantic-segmentation/LoadBatches.py
+```
+data generator with pre-processing such as normalization, random rotation, random cropping
 
-[3] chip.py <br>
+```
+./semantic-segmentation/chip.py
+```
 cropping images if you need.
 
-[4] evaluation.py <br>
+```
+./semantic-segmentation/evaluation.py
+```
 evaluation semantic result in 2D and 3D space.
 
