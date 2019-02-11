@@ -12,7 +12,7 @@ semantic segmentation: python2
 
 End in 01.04.2018
 ```
-
+## Implemented Pipeline
 <img src="https://github.com/PeterFWS/masterThesis_BK/blob/master/imgs/pipline.png" width="600">
 
 
