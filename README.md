@@ -1,23 +1,29 @@
 ## Implicit Joint Semantic Segmentation of Images and Point Cloud
 ##### keywords: Deep learning, semantic segmentation, ALS point cloud, aerial imagery
-MasterThesis in University of Stuttgart,Insititute of Photogrammetry (Ifp), Germany <br>
-Author: Fangwen Shu <br>
-Betreuer: M.Sc. Dominik Laupheimer <br>
-Prüfer: apl. Prof. Dr.-Ing. Norbert Haala <br>
+```
+MasterThesis in University of Stuttgart,Insititute of Photogrammetry (Ifp), Germany
+Author: Fangwen Shu
+Betreuer: M.Sc. Dominik Laupheimer
+Prüfer: apl. Prof. Dr.-Ing. Norbert Haala
 
-framework: keras 2.0 <br>
-pre-processing: python3 <br>
-semantic segmentation: python2 <br>
+framework: keras 2.0
+pre-processing: python3
+semantic segmentation: python2
 
-End in 01.04.2018 <br>
+End in 01.04.2018
+```
+
 
 ## Configuration of conda env
 
 ./conda_env/py2.yml <br>
 ./conda_env/py3.yml <br>
 
+```
 conda env export > py2.yml <br>
 conda env create -f py2.yml
+```
+
 
 ## Pre-processing part
 [1] main.py <br>
