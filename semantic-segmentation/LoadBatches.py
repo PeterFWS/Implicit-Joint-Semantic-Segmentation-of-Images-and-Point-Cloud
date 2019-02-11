@@ -26,7 +26,19 @@ def rotate_image_random(img, rotation_index):
 	else:
 		return img
 
-def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean", rotation_index=None):
+def get_random_pos(img, window_shape=(512, 512)):
+	""" Extract of 2D random patch of shape window_shape in the image """
+	h, w = window_shape
+	H = img.shape[0]
+	W = img.shape[1]
+	x1 = random.randint(0, W - w - 1)
+	x2 = x1 + w
+	y1 = random.randint(0, H - h - 1)
+	y2 = y1 + h
+	return x1, x2, y1, y2
+
+
+def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normalization", rotation_index=None):
 	# read mask
 	mask = cv2.imread(mask_path, 0)
 	# read rgb image
@@ -98,16 +110,17 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean"
 
 	# train_mode = "multi_modality"
 	if f_folders is not None:
-		count = 0
 		for folder_path in f_folders:
-			f_path = os.path.join(folder_path, im_path.split('/')[-1])
-			f_img = tifffile.imread(f_path).astype(np.float32)
-			where_are_NaNs = np.isnan(f_img)
-			f_img[where_are_NaNs] = 0.0
-			# according to Michael, no further normalization is need for feature map
-			f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
+			# tell nadir or oblique image
+			if folder_path.split("/")[-4] == im_path.split("/")[-4]:
+				f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
+				f_img = tifffile.imread(f_img_path).astype(np.float32)
+				where_are_NaNs = np.isnan(f_img)
+				f_img[where_are_NaNs] = 0.0
+				# according to Michael, no further normalization is need for feature map
+				f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
 
-			img = np.dstack((img, f_img))
+				img = np.dstack((img, f_img))
 
 		# folder_path = f_folders[65]  # nDSM
 		# f_path = os.path.join(folder_path, im_path.split('/')[-1])
@@ -120,6 +133,8 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean"
 	if rotation_index is not None:
 		img = rotate_image_random(img, rotation_index)
 
+	x1, x2, y1, y2 = get_random_pos(img, window_shape=(height, width))
+	img = img[y1:y2, x1:x2, :]
 	return img
 
 
@@ -134,10 +149,14 @@ def getSegmentationArr(path, nClasses, width, height, rotation_index=None):
 	if rotation_index is not None:
 		img = rotate_image_random(img, rotation_index)
 
+	x1, x2, y1, y2 = get_random_pos(img, window_shape=(height, width))
+	img = img[y1:y2, x1:x2]
+
 	for c in range(nClasses):
 		seg_labels[:, :, c] = (img == c).astype(int)  # on-hot coding
 
-	seg_labels = np.reshape(seg_labels, (width * height, nClasses))
+
+	seg_labels = np.reshape(seg_labels, (width * height, nClasses)).astype(int)
 
 	return seg_labels
 
@@ -147,29 +166,38 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 							   batch_size, n_classes, input_height, input_width,
 							   output_height, output_width):
 	"""
-		images_path = "/data/fangwen/results/level3_nadir/chip_train_set/rgb_img/"
-		segs_path = "/data/fangwen/results/level3_nadir/chip_train_set/3_greylabel/"
-		mask_path ="/data/fangwen/results/level3_nadir/chip_train_set/2_mask/"
-		f_path = None
-		input_width = 224
-		input_height = 224
-		output_width =224
-		output_height=224
+		images_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/rgb_img/",
+                     "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/rgb_img/"]
+		segs_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/3_greylabel/",
+                   "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/3_greylabel/"]
+		mask_path =["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/2_mask/",
+                   "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/2_mask/"]
+		f_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/",
+                    "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/"]
+		input_width = 512
+		input_height = 512
+		output_width =512
+		output_height=512
 		n_classes=12
-		f_folders = None
 		batch_size = 8
+
+		f_folders=None
 	"""
+	images = []
+	segmentations = []
+	masks = []
 
-	assert images_path[-1] == '/'
-	assert segs_path[-1] == '/'
-	assert mask_path[-1] == '/'
+	for diff_path in range(len(images_path)):
+		assert images_path[diff_path][-1] == '/'
+		assert segs_path[diff_path][-1] == '/'
+		assert mask_path[diff_path][-1] == '/'
+		images += glob.glob(images_path[diff_path] + "*.JPG") + glob.glob(images_path[diff_path] + "*.tif")
+		images.sort()
+		segmentations += glob.glob(segs_path[diff_path] + "*.JPG") + glob.glob(segs_path[diff_path] + "*.tif")
+		segmentations.sort()
+		masks += glob.glob(mask_path[diff_path] + "*.JPG") + glob.glob(mask_path[diff_path] + "*.tif")
+		masks.sort()
 
-	images = glob.glob(images_path + "*.JPG") + glob.glob(images_path + "*.tif")
-	images.sort()
-	segmentations = glob.glob(segs_path + "*.JPG") + glob.glob(segs_path + "*.tif")
-	segmentations.sort()
-	masks = glob.glob(mask_path + "*.JPG") + glob.glob(mask_path + "*.tif")
-	masks.sort()
 	assert len(images) == len(segmentations)
 	assert len(images) == len(masks)
 
@@ -183,9 +211,11 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 
 	# train_mode = "multi_modality"
 	if f_path is not None:
-		assert f_path[-1] == '/'
-		f_folders = glob.glob(f_path + "f_*" + "/")
-		f_folders.sort()
+		f_folders = []
+		for diff_path in range(len(f_path)):
+			assert f_path[diff_path][-1] == '/'
+			f_folders += glob.glob(f_path[diff_path] + "f_*" + "/")
+			f_folders.sort()
 		# for folder_path in f_folders:
 		# 	f_imgs = glob.glob(folder_path + "*.JPG") + glob.glob(folder_path + "*.tif")
 		# 	f_imgs.sort()
@@ -203,10 +233,10 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 		X = []
 		Y = []
 		for _ in range(batch_size):
-			im, seg, mask = zipped.next()
+			im, seg, mk = zipped.next()
 			# add random rotation
 			rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
-			X.append(getImageArr(im, mask, f_folders, input_width, input_height, rotation_index))
+			X.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index))
 			Y.append(getSegmentationArr(seg, n_classes, output_width, output_height, rotation_index))
 
 		yield np.array(X), np.array(Y)

@@ -8,19 +8,25 @@ import numpy as np
 
 # Global parameters
 # TODO: attention!!! path has to end with "/"
-train_images_path = "/data/fangwen/results/level3_nadir/chip_train_set/rgb_img/"
-train_segs_path = "/data/fangwen/results/level3_nadir/chip_train_set/3_greylabel/"
-train_mask_path = "/data/fangwen/results/level3_nadir/chip_train_set/2_mask/"
+train_images_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/rgb_img/",
+                     "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/rgb_img/"]
+
+train_segs_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/3_greylabel/",
+                   "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/3_greylabel/"]
+
+train_mask_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/2_mask/",
+                   "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/2_mask/"]
+
 save_weights_path = "./weights/"
 
-input_height = 224
-input_width = 224
+input_height = 512
+input_width = 512
 n_classes = 12  # 11 classes + 1 un-classified class
 train_batch_size = 8
 
 # Training mode
 # TODO: define your training mode
-train_mode = "BGR"
+train_mode = "multi_modality"
 validate = True
 
 if train_mode == "BGR":
@@ -31,9 +37,12 @@ if train_mode == "BGR":
 
 elif train_mode == "multi_modality":
     m = Models.Segnet.segnet_indices_pooling(n_classes, input_height=input_height, input_width=input_width,
-                                             nchannel=7, pre_train=True)
-    train_f_path = "/data/fangwen/results/level3_nadir/chip_train_set/"
-    val_f_path = "/data/fangwen/results/level3_nadir/chip_validation_set/"
+                                             nchannel=75, pre_train=False)
+    train_f_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/",
+                    "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/"]
+
+    val_f_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/validation_set/",
+                  "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/validation_set/"]
 
 
 # compile model
@@ -46,9 +55,14 @@ G = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, t
                                            output_height=input_height, output_width=input_width)
 
 if validate:
-    val_images_path = "/data/fangwen/results/level3_nadir/chip_validation_set/rgb_img/"
-    val_segs_path = "/data/fangwen/results/level3_nadir/chip_validation_set/3_greylabel/"
-    val_mask_path = "/data/fangwen/results/level3_nadir/chip_validation_set/2_mask/"
+    val_images_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/validation_set/rgb_img/",
+                       "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/validation_set/rgb_img/"]
+
+    val_segs_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/validation_set/3_greylabel/",
+                     "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/validation_set/3_greylabel/"]
+
+    val_mask_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/validation_set/2_mask/",
+                     "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/validation_set/2_mask/"]
 
     val_batch_size = 8
 
@@ -81,10 +95,10 @@ if validate:
        7.69343735e+00, 8.11473337e+00, 1.63582187e+02, 1.21130335e+01])
 
     m.fit_generator(G,
-                    steps_per_epoch=105160//train_batch_size,
+                    steps_per_epoch=3090//train_batch_size,
                     callbacks=callbacks,
                     validation_data=G2,
-                    validation_steps=19555//val_batch_size,
+                    validation_steps=1071//val_batch_size,
                     epochs=10000,
                     class_weight=class_weights)
     m.save_weights(save_weights_path + "end_weights.hdf5")
