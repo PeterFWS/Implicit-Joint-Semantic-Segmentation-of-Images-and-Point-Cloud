@@ -1,7 +1,7 @@
 ## Implicit Joint Semantic Segmentation of Images and Point Cloud
 ##### keywords: Deep learning, semantic segmentation, ALS point cloud, aerial imagery
 ```
-MasterThesis in University of Stuttgart,Insititute of Photogrammetry (Ifp), Germany
+Master Thesis in University of Stuttgart,Insititute of Photogrammetry (Ifp), Germany
 Author: Fangwen Shu
 Betreuer: M.Sc. Dominik Laupheimer
 Prüfer: apl. Prof. Dr.-Ing. Norbert Haala
@@ -28,23 +28,35 @@ conda env create -f py2.yml
 
 
 ## Pre-processing part
-[1] main.py <br>
+```buildoutcfg
+main.py
+```
 pre-processing code for aerial imagery and LiDAR point cloud, including 3D-2D projection, frustum culling, 
 Hidden-point-removal (HPR), gird interpolation and operator of Morphology.
 
-[2] utilities.py <br>
+```
+./utilities.py
+```
 functions of each of algorithms implemented in pre-processing.
 
-[3] myClasses.py <br>
-some classes related to frustum culling, detailed explanation in OpenGL.
+```
+./myClasses.py
+```
+some classes related to frustum culling, traslated from C++ code, detailed explanation in OpenGL.
 
-[4] visualization.py <br>
+```
+./visualization.py
+```
 functions used to visualize data. 
 
-[5] statistics.py <br>
-functions used to calculate statistic value of the data.
+```
+./statistics.py
+```
+functions used to calculate statistic information of the data.
 
-[6] Generation_depth_img.py <br>
+```
+./Generation_depth_img.py
+```
 code for generating depth image.
 
 ## Deep learning part
