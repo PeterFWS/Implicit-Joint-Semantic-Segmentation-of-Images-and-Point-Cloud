@@ -7,6 +7,7 @@ import os
 from sklearn.utils import shuffle
 import random
 
+
 def rotate_image_random(img, rotation_index):
 
 	deg_dict = {
@@ -26,11 +27,11 @@ def rotate_image_random(img, rotation_index):
 	else:
 		return img
 
-def get_random_pos(img, window_shape=(512, 512)):
+
+def get_random_pos(img_shape, window_shape=(512, 512)):
 	""" Extract of 2D random patch of shape window_shape in the image """
 	h, w = window_shape
-	H = img.shape[0]
-	W = img.shape[1]
+	H, W = img_shape
 	x1 = random.randint(0, W - w - 1)
 	x2 = x1 + w
 	y1 = random.randint(0, H - h - 1)
@@ -38,7 +39,7 @@ def get_random_pos(img, window_shape=(512, 512)):
 	return x1, x2, y1, y2
 
 
-def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normalization", rotation_index=None):
+def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normalization", rotation_index=None, random_crop=None):
 	# read mask
 	mask = cv2.imread(mask_path, 0)
 	# read rgb image
@@ -133,12 +134,14 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 	if rotation_index is not None:
 		img = rotate_image_random(img, rotation_index)
 
-	x1, x2, y1, y2 = get_random_pos(img, window_shape=(height, width))
-	img = img[y1:y2, x1:x2, :]
+	if random_crop is not None:
+		x1, x2, y1, y2 = random_crop
+		img = img[y1:y2, x1:x2, :]
+
 	return img
 
 
-def getSegmentationArr(path, nClasses, width, height, rotation_index=None):
+def getSegmentationArr(path, nClasses, width, height, rotation_index=None, random_crop=None):
 
 	seg_labels = np.zeros((height, width, nClasses))
 
@@ -149,8 +152,9 @@ def getSegmentationArr(path, nClasses, width, height, rotation_index=None):
 	if rotation_index is not None:
 		img = rotate_image_random(img, rotation_index)
 
-	x1, x2, y1, y2 = get_random_pos(img, window_shape=(height, width))
-	img = img[y1:y2, x1:x2]
+	if random_crop is not None:
+		x1, x2, y1, y2 = random_crop
+		img = img[y1:y2, x1:x2]
 
 	for c in range(nClasses):
 		seg_labels[:, :, c] = (img == c).astype(int)  # on-hot coding
@@ -226,17 +230,26 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 	else:
 		f_folders = None
 
-
 	zipped = itertools.cycle(zip(images, segmentations, masks))
 
 	while True:
 		X = []
 		Y = []
+
 		for _ in range(batch_size):
+
 			im, seg, mk = zipped.next()
 			# add random rotation
 			rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
-			X.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index))
-			Y.append(getSegmentationArr(seg, n_classes, output_width, output_height, rotation_index))
+			# add random cropping
+			if im.split('/')[-4].split('_')[-1] == "nadir":
+				H = 1089
+				W = 1451
+			elif im.split('/')[-4].split('_')[-1] == "oblique":
+				H = 500
+				W = 750
+			x1, x2, y1, y2 = get_random_pos(img_shape=(H, W), window_shape=(input_height, input_width))
+			X.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index, random_crop=(x1, x2, y1, y2)))
+			Y.append(getSegmentationArr(seg, n_classes, output_width, output_height, rotation_index, random_crop=(x1, x2, y1, y2)))
 
 		yield np.array(X), np.array(Y)

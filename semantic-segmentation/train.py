@@ -64,7 +64,7 @@ if validate:
     val_mask_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/validation_set/2_mask/",
                      "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/validation_set/2_mask/"]
 
-    val_batch_size = 8
+    val_batch_size = train_batch_size
 
     G2 = LoadBatches.imageSegmentationGenerator(val_images_path, val_segs_path, val_mask_path,
                                                 val_f_path,
@@ -90,9 +90,22 @@ if validate:
     #          96768021, 1306817526])
     # mix of nadir/ oblique imagery
     # inverse of frequency
-    class_weights = np.array([6.99894968e+03, 3.43545920e+00, 4.64465600e+00, 1.27711667e+02,
-       4.06013265e+01, 1.16238079e+01, 9.83406274e+01, 4.36058686e+01,
-       7.69343735e+00, 8.11473337e+00, 1.63582187e+02, 1.21130335e+01])
+    # class_weights = np.array([6.99894968e+03, 3.43545920e+00, 4.64465600e+00, 1.27711667e+02,
+    #    4.06013265e+01, 1.16238079e+01, 9.83406274e+01, 4.36058686e+01,
+    #    7.69343735e+00, 8.11473337e+00, 1.63582187e+02, 1.21130335e+01])
+    class_weights = np.array([6998.94968,  # Powerline
+                              3.43545920,  # Low Vegetation
+                              4.64465600,  # Impervious Surface
+                              127.711667,  # Vehicles
+                              40.6013265,  # Urban Furniture
+                              11.6238079,  # Roof
+                              98.3406274,  # Facade
+                              43.6058686,  # Bush/Hedge
+                              7.69343735,  # Tree
+                              8.11473337,  # Dirt/Gravel
+                              163.582187,  # Vertical Surface
+                              12.1130335]  # Void
+                             )
 
     m.fit_generator(G,
                     steps_per_epoch=3090//train_batch_size,
