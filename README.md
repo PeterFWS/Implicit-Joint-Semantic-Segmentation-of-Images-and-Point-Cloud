@@ -13,7 +13,7 @@ semantic segmentation: python2
 End in 01.04.2018
 ```
 
-![pipline](https://github.com/PeterFWS/masterThesis_BK/blob/master/imgs/pipline.png)
+<img src="https://github.com/PeterFWS/masterThesis_BK/blob/master/imgs/pipline.png" width="300">
 
 
 ## Configuration of conda env
