@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="78ee27b0-6418-41a1-9437-c0862a560f0a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/semantic-segmentation/chip.py" beforeDir="false" afterPath="$PROJECT_DIR$/semantic-segmentation/chip.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/semantic-segmentation/chip.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+            <state relative-caret-position="1200">
+              <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -214,7 +213,14 @@
       <option name="project" value="LOCAL" />
       <updated>1549925047082</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="updated">
+      <created>1549960643141</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1549960643142</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TodoView">
@@ -230,9 +236,9 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49879518" visible="true" weight="0.19309373" />
-      <window_info id="Structure" order="1" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
-      <window_info id="Favorites" order="2" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
+      <window_info id="Structure" order="0" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
+      <window_info id="Favorites" order="1" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
+      <window_info active="true" content_ui="combo" id="Project" order="2" sideWeight="0.49879518" visible="true" weight="0.19309373" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -475,8 +481,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/semantic-segmentation/chip.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+        <state relative-caret-position="1200">
+          <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
