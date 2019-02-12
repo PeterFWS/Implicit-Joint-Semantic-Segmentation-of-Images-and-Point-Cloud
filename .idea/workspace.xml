@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="78ee27b0-6418-41a1-9437-c0862a560f0a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/semantic-segmentation/chip.py" beforeDir="false" afterPath="$PROJECT_DIR$/semantic-segmentation/chip.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,15 +15,15 @@
     <favorites_list name="masterThesis_BK" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="210">
-                <caret line="14" column="3" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
-              </first_editor>
-              <second_editor />
+        <entry file="file://$PROJECT_DIR$/semantic-segmentation/chip.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -38,16 +38,16 @@
       <list>
         <option value="$PROJECT_DIR$/Generation_depth_Img.py" />
         <option value="$PROJECT_DIR$/statistics.py" />
-        <option value="$PROJECT_DIR$/semantic-segmentation/chip.py" />
         <option value="$PROJECT_DIR$/semantic-segmentation/evaluation.py" />
         <option value="$PROJECT_DIR$/utilities.py" />
         <option value="$PROJECT_DIR$/semantic-segmentation/train.py" />
         <option value="$PROJECT_DIR$/semantic-segmentation/LoadBatches.py" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/semantic-segmentation/chip.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="x" value="44" />
     <option name="y" value="23" />
     <option name="width" value="1396" />
@@ -65,6 +65,11 @@
             <path>
               <item name="masterThesis_BK" type="b2602c69:ProjectViewProjectNode" />
               <item name="masterThesis_BK" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="masterThesis_BK" type="b2602c69:ProjectViewProjectNode" />
+              <item name="masterThesis_BK" type="462c0819:PsiDirectoryNode" />
+              <item name="semantic-segmentation" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="masterThesis_BK" type="b2602c69:ProjectViewProjectNode" />
@@ -202,7 +207,14 @@
       <option name="project" value="LOCAL" />
       <updated>1549924987747</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="updated">
+      <created>1549925047082</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1549925047082</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TodoView">
@@ -215,10 +227,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="44" y="23" width="1396" height="877" extended-state="0" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49879518" visible="true" weight="0.20072727" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49879518" visible="true" weight="0.19309373" />
       <window_info id="Structure" order="1" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
       <window_info id="Favorites" order="2" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -428,16 +440,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/semantic-segmentation/chip.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-65">
-          <caret line="60" column="9" lean-forward="true" selection-start-line="60" selection-start-column="9" selection-end-line="60" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/semantic-segmentation/LoadBatches.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="558">
@@ -468,6 +470,16 @@
             <caret line="14" column="3" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/semantic-segmentation/chip.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -14,7 +14,7 @@ def make_if_not_exists(dirPath):
 def chip(img, chip_size=(224, 224), overlap=0.5, nchannel=3, fg=False):
 
     if nchannel == 3:
-        height, width = img.shape
+        height, width, nchannel = img.shape
         hn, wn = chip_size
         num_chipped = (int(height / (hn * overlap)) - 1) * (int(width / (wn * overlap)) - 1)
 
