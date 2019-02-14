@@ -590,7 +590,7 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
     img_mask = np.zeros((img_height, img_width, 1), np.uint8)  # used for making a mask only
     img_temp = np.zeros((img_height, img_width, 3), np.uint8)  # used for point level labeled image only
 
-    index_im2 = np.zeros((img_height, img_width), np.float32)  # point index, without interpolation
+    # index_im2 = np.zeros((img_height, img_width), np.float32)  # point index, without interpolation
 
     label_value = []
     points = []
@@ -613,7 +613,7 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
             cv2.circle(img_mask, (int(px[0, i]), int(py[0, i])), 3, (255,255,255), -1)  # level3
             # cv2.circle(img_mask, (int(px[0, i]), int(py[0, i])), 6, (255, 255, 255), -1)  # level0
 
-            index_im2[int(py[0, i]), int(px[0, i])] = myIndex[i]  # point index, without interpolation
+            # index_im2[int(py[0, i]), int(px[0, i])] = myIndex[i]  # point index, without interpolation
 
 
     points = np.array(points)
@@ -638,8 +638,8 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
 
         # Generation of synthetic image based on different feature
         X, Y = np.meshgrid(np.arange(0, img_width, 1), np.arange(0, img_height, 1))
-        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2,2))  # level3
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))  # level0
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2,2))  # level3
+        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))  # level0
 
         # * labeled image (grey, as ground truth for training)
         int_im = griddata(points, label_value, (X, Y), method='nearest').astype(np.uint8)
@@ -672,10 +672,10 @@ def generation_syntheticImg_5cmbased(px, py, myIndex, pt_labels, img_name, save_
         make_if_not_exists(folder_path)
         tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1]), index_im)
 
-        # * index image, without interpolation
-        folder_path = os.path.join(save_path, "6_pointindex")
-        make_if_not_exists(folder_path)
-        tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1]), index_im2)
+        # # * index image, without interpolation
+        # folder_path = os.path.join(save_path, "6_pointindex")
+        # make_if_not_exists(folder_path)
+        # tifffile.imsave(os.path.join(folder_path, img_name.split("/")[-1]), index_im2)
 
         return mask
 
@@ -700,8 +700,8 @@ def generation_syntheticImg_10cmbased(mask, px2, py2, myIndex2, pt_features, img
     if count > 100:  # I suppose at least 20% of pixels in the image should receive 3d point
         # Generation of synthetic image based on different feature
         X, Y = np.meshgrid(np.arange(0, img_width, 1), np.arange(0, img_height, 1))
-        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
 
         # * feature map
         features = np.zeros((id2.shape[0], pt_features.shape[1]), np.float32)

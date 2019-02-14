@@ -113,15 +113,15 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 	if f_folders is not None:
 		for folder_path in f_folders:
 			# tell nadir or oblique image
-			if folder_path.split("/")[-4] == im_path.split("/")[-4]:
-				f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
-				f_img = tifffile.imread(f_img_path).astype(np.float32)
-				where_are_NaNs = np.isnan(f_img)
-				f_img[where_are_NaNs] = 0.0
-				# according to Michael, no further normalization is need for feature map
-				f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
+			# if folder_path.split("/")[-4] == im_path.split("/")[-4]:
+			f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
+			f_img = tifffile.imread(f_img_path).astype(np.float32)
+			where_are_NaNs = np.isnan(f_img)
+			f_img[where_are_NaNs] = 0.0
+			# according to Michael, no further normalization is need for feature map
+			f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
 
-				img = np.dstack((img, f_img))
+			img = np.dstack((img, f_img))
 
 		# folder_path = f_folders[65]  # nDSM
 		# f_path = os.path.join(folder_path, im_path.split('/')[-1])
@@ -169,24 +169,7 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 							   f_path,
 							   batch_size, n_classes, input_height, input_width,
 							   output_height, output_width):
-	"""
-		images_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/rgb_img/",
-                     "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/rgb_img/"]
-		segs_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/3_greylabel/",
-                   "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/3_greylabel/"]
-		mask_path =["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/2_mask/",
-                   "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/2_mask/"]
-		f_path = ["/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/",
-                    "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/train_set/"]
-		input_width = 512
-		input_height = 512
-		output_width =512
-		output_height=512
-		n_classes=12
-		batch_size = 8
 
-		f_folders=None
-	"""
 	images = []
 	segmentations = []
 	masks = []
@@ -240,16 +223,21 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 
 			im, seg, mk = zipped.next()
 			# add random rotation
-			rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
+			# rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
+
 			# add random cropping
-			if im.split('/')[-4].split('_')[-1] == "nadir":
-				H = 1089
-				W = 1451
-			elif im.split('/')[-4].split('_')[-1] == "oblique":
-				H = 500
-				W = 750
-			x1, x2, y1, y2 = get_random_pos(img_shape=(H, W), window_shape=(input_height, input_width))
-			X.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index, random_crop=(x1, x2, y1, y2)))
-			Y.append(getSegmentationArr(seg, n_classes, output_width, output_height, rotation_index, random_crop=(x1, x2, y1, y2)))
+			# if im.split('/')[-4].split('_')[-1] == "nadir":
+			# 	H = 1089
+			# 	W = 1451
+			# elif im.split('/')[-4].split('_')[-1] == "oblique":
+			# 	H = 500
+			# 	W = 750
+			# x1, x2, y1, y2 = get_random_pos(img_shape=(H, W), window_shape=(input_height, input_width))
+
+			rotation_index = None
+			random_crop = None
+
+			X.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index, random_crop))
+			Y.append(getSegmentationArr(seg, n_classes, output_width, output_height, rotation_index, random_crop))
 
 		yield np.array(X), np.array(Y)

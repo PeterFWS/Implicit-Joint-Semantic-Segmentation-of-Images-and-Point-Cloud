@@ -26,13 +26,14 @@ from utilities import generation_syntheticImg_5cmbased
 from utilities import generation_syntheticImg_10cmbased
 
 
-path_Imgs = "./data/Nadir_level3_level5/ImgTexture/Level_3/"
-path_Ori = "./data/Nadir_level3_level5/Ori/Level_3/"
+path_Imgs = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Nadir_level3_level4_level5/ImgTexture/Level_4/"
+path_Ori = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Nadir_level3_level4_level5/Ori/Level_4/"
 
-file_pc_5cm = "./data/data_splits_5cm_onlylabel/test_xyz_y.txt"
-file_XYZ = "./data/data_splits_10cm/xyz_10cm_test.txt"
-file_Features = "./data/data_splits_10cm/X_10cm_test.txt"
-save_path = "./results/level3_nadir/test_set/"
+file_pc_5cm = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Data_11_1_19_5cm/test_xyz_y.txt"
+file_XYZ = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/features_dense_LiDAR_cloud_10cm/data_splits/xyz_10cm_test.txt"
+file_Features = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/features_dense_LiDAR_cloud_10cm/data_splits/X_10cm_test.txt"
+
+save_path = "/data/fangwen/results/test_set/"
 make_if_not_exists(save_path)
 
 #
@@ -45,9 +46,11 @@ pt_xyz2 = np.loadtxt(file_XYZ)  # (9559941, 3)
 pt_features = np.loadtxt(file_Features)  # (9559941, 72)
 index2 = np.asarray([_ for _ in range(pt_xyz2.shape[0])]).astype(np.int)
 
-# path_Imgs_referrence = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/oblique_img/test_set/1_pointlabel"
+referrence = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/test_set/1_pointlabel/"
 
-img_list = os.listdir(path_Imgs)
+img_list = os.listdir(referrence)
+
+
 for i in tqdm(range(len(img_list))):
 
     img_name = img_list[i]
