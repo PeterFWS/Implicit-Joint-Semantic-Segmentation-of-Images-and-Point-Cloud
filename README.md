@@ -3,6 +3,7 @@
 ```
 Master Thesis in University of Stuttgart, Insititute of Photogrammetry (Ifp), Germany
 Author: Fangwen Shu
+Betreuer: M.Sc. Dominik Laupheimer
 Prüfer: apl. Prof. Dr.-Ing. Norbert Haala
 
 framework: keras 2.0
