@@ -1,7 +1,7 @@
 1-baseline (old)
 
 ----------------------------2D------------------------------
-void pixels in 2D image space are NOT ingored
+void pixels in 2D image space are NOT ignored
 
 345154560 pixels processed
 
@@ -29,8 +29,32 @@ Impervious Surface       0.59      0.60      0.59  20679623
       weighted avg       0.85      0.86      0.85 345154560
 
 
+----------------------------2D------------------------------
+void pixels in 2D image space are ignored
+
+93789761 pixels processed
+Total accuracy : 47.518858695%
+
+         PowerLine       0.00      0.00      0.00    131857
+    Low Vegetation       0.65      0.60      0.62  24956461
+Impervious Surface       0.60      0.60      0.60  20679623
+          Vehicles       0.00      0.00      0.00    886706
+   Urban Furniture       0.28      0.00      0.00   3656145
+              Roof       0.46      0.73      0.56  14137544
+            Facade       0.23      0.30      0.26   4300930
+        Bush/Hedge       0.05      0.00      0.00   2459671
+              Tree       0.28      0.43      0.34  12918267
+       Dirt/Gravel       0.50      0.02      0.03   7237834
+  Vertical Surface       0.00      0.00      0.00   2424723
+
+              Void       0.00      0.00      0.00         0
+         micro avg       0.48      0.48      0.48  93789761
+         macro avg       0.25      0.22      0.20  93789761
+      weighted avg       0.47      0.48      0.44  93789761
+
+
 ----------------------------3D------------------------------
-void pixels in 2D image space are ingored
+void pixels in 2D image space are ignored
 
 21364837 pixels processed
 46.6328586432% 3D points (5cm density point cloud) are not evaluated due to occlusion
