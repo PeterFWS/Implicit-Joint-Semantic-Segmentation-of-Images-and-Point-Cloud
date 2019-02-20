@@ -9,15 +9,15 @@ import numpy as np
 # Global parameters
 # TODO: attention!!! path has to end with "/"
 # TODO: In case you have data saved in different folder, we use "list" to save path here
-train_images_path = ["/data/fangwen/results/level3_nadir/chip_train_set/rgb_img/"]
-train_segs_path = ["/data/fangwen/results/level3_nadir/chip_train_set/3_greylabel/"]
-train_mask_path = ["/data/fangwen/results/level3_nadir/chip_train_set/2_mask/"]
+train_images_path = ["/data/fangwen/mix_train/rgb_img/"]
+train_segs_path = ["/data/fangwen/mix_train/3_greylabel/"]
+train_mask_path = ["/data/fangwen/mix_train/2_mask/"]
 save_weights_path = "./weights/"
 
 input_height = 480
 input_width = 480
 n_classes = 12  # 11 classes + 1 un-classified class
-train_batch_size = 4
+train_batch_size = 2
 
 train_mode = "BGR"
 validate = True
@@ -31,15 +31,19 @@ if train_mode == "BGR":
     val_f_path = None
 
 elif train_mode == "multi_modality":
-    nchannel = 75
+    nchannel = 4
     pre_train = False
 
-    train_f_path = ["/data/fangwen/results/level3_nadir/chip_train_set/"]
-    val_f_path = ["/data/fangwen/results/level3_nadir/chip_validation_set/"]
+    train_f_path = ["/data/fangwen/mix_train/"]
+    val_f_path = ["/data/fangwen/mix_validation/"]
 
 
 m = Models.Segnet.segnet_indices_pooling(n_classes, input_height=input_height, input_width=input_width,
                                              nchannel=nchannel, pre_train=pre_train)
+
+# m = Models.UNet.U_Net(n_classes, input_height=input_height, input_width=input_width, nchannel=nchannel)
+
+# m = Models.TernausNet.get_unet_pre_trained(n_classes, input_height=input_height, input_width=input_width, nchannel=nchannel)
 
 m.compile(loss="categorical_crossentropy",
           optimizer=optimizers.SGD(lr=0.01, decay=0.0005, momentum=0.9),
@@ -51,11 +55,11 @@ G = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, t
                                            output_height=input_height, output_width=input_width)
 
 if validate:
-    val_images_path = ["/data/fangwen/results/level3_nadir/chip_validation_set/rgb_img/"]
+    val_images_path = ["/data/fangwen/mix_validation/rgb_img/"]
 
-    val_segs_path = ["/data/fangwen/results/level3_nadir/chip_validation_set/3_greylabel/"]
+    val_segs_path = ["/data/fangwen/mix_validation/3_greylabel/"]
 
-    val_mask_path = ["/data/fangwen/results/level3_nadir/chip_validation_set/2_mask/"]
+    val_mask_path = ["/data/fangwen/mix_validation/2_mask/"]
 
     val_batch_size = train_batch_size
 
@@ -67,9 +71,8 @@ if validate:
     callbacks = [EarlyStopping(monitor='val_loss', patience=50),
                  ModelCheckpoint(filepath=os.path.join(save_weights_path, 'weights.{epoch:02d}-{val_loss:.2f}.hdf5'),
                                  monitor='val_loss', save_best_only=True),
-                 ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, min_lr=0.0001),
-                 TensorBoard(log_dir='./board',
-                             histogram_freq=0, write_graph=True, write_images=True)]
+                 ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=10, min_lr=0.0001),
+                 TensorBoard(log_dir='./board', histogram_freq=0, write_graph=True, write_images=True)]
 
     # used for weighting the loss function (during training only)
     # oblique image only
@@ -78,35 +81,36 @@ if validate:
 
 
     # num_classes
-    # array([   2261700, 4607688099, 3408115581,  123947364,  389877027,
-    #        1361819178,  160966275,  363013626, 2057536023, 1950714060,
-    #          96768021, 1306817526])
+    # array([631779, 653834019, 433645557, 15504741, 53812335, 201591354,
+    #        31051623, 63456546, 317269386, 263706855, 18279714, 689206491])
+
     # mix of nadir/ oblique imagery
     # inverse of frequency
-    # class_weights = np.array([6.99894968e+03, 3.43545920e+00, 4.64465600e+00, 1.27711667e+02,
-    #    4.06013265e+01, 1.16238079e+01, 9.83406274e+01, 4.36058686e+01,
-    #    7.69343735e+00, 8.11473337e+00, 1.63582187e+02, 1.21130335e+01])
-    # class_weights = np.array([6998.94968,  # Powerline
-    #                           3.43545920,  # Low Vegetation
-    #                           4.64465600,  # Impervious Surface
-    #                           127.711667,  # Vehicles
-    #                           40.6013265,  # Urban Furniture
-    #                           11.6238079,  # Roof
-    #                           98.3406274,  # Facade
-    #                           43.6058686,  # Bush/Hedge
-    #                           7.69343735,  # Tree
-    #                           8.11473337,  # Dirt/Gravel
-    #                           163.582187,  # Vertical Surface
-    #                           12.1130335]  # Void
-    #                          )
+    # class_weights = array([4.34011007e+03, 4.19371021e+00, 6.32311425e+00, 1.76848514e+02,
+    #        5.09546817e+01, 1.36017262e+01, 8.83042539e+01, 4.32105208e+01,
+    #        8.64246763e+00, 1.03978730e+01, 1.50001822e+02, 3.97847443e+00])
+
+    class_weights = np.array([4340.11,  # Powerline
+                              4.19,  # Low Vegetation
+                              6.32,  # Impervious Surface
+                              176.84,  # Vehicles
+                              50.95,  # Urban Furniture
+                              13.60,  # Roof
+                              88.30,  # Facade
+                              43.21,  # Bush/Hedge
+                              8.64,  # Tree
+                              10.39,  # Dirt/Gravel
+                              150.00,  # Vertical Surface
+                              1.0]  # Void
+                             )
 
     m.fit_generator(G,
-                    steps_per_epoch=105160//train_batch_size,
+                    steps_per_epoch=3967//train_batch_size,
                     callbacks=callbacks,
                     validation_data=G2,
-                    validation_steps=19555//val_batch_size,
-                    epochs=10000)
-                    # class_weight=class_weights)
+                    validation_steps=789//val_batch_size,
+                    epochs=10000,
+                    class_weight=class_weights)
     m.save_weights(save_weights_path + "end_weights.hdf5")
 
 else:

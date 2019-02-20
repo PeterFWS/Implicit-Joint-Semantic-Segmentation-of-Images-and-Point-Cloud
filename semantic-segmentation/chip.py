@@ -64,13 +64,13 @@ def chip(img, chip_size=(224, 224), overlap=0.5, nchannel=3, fg=False):
 
 if __name__ == "__main__":
 
-    reference = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set/2_mask"
-    data_path = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/train_set"
+    reference = "/data/fangwen/results/validation_set/2_mask"
+    data_path = "/data/fangwen/results/validation_set"
     folders_list = os.listdir(data_path)
     folders_list.remove("2_mask")
-    folders_list.remove("1_pointlabel")
+    # folders_list.remove("1_pointlabel")
 
-    save_path = "/data/fangwen/nadir_train"
+    save_path = "/data/fangwen/results/chip_validation"
     make_if_not_exists(save_path)
 
     mask_list = os.listdir(reference)

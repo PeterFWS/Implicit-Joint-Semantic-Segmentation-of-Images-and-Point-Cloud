@@ -316,10 +316,10 @@ if __name__ == "__main__":
     path_mask = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/2_mask/"
     path_index = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/5_index/"
 
-    path_pointcloud_label = "/home/fangwen/ShuFangwen/data/data_splits_5cm_onlylabel/test_xyz_y.txt"
+    path_pointcloud_label = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Data_11_1_19_5cm/test_xyz_y.txt"
 
-    # evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=False)
+    evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=True)
 
-    evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label, save_3D=False)
+    # evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label, save_3D=False)
 
 

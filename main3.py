@@ -51,6 +51,13 @@ referrence = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/S
 
 img_list = os.listdir(referrence)
 
+path_2 = "/data/fangwen/results/train_set/1_pointlabel"
+lis = os.listdir(path_2)
+
+for name in lis:
+    if name in img_list:
+        img_list.remove(name)
+
 
 
 for i in tqdm(range(len(img_list))):

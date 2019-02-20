@@ -65,7 +65,7 @@ np.savetxt('./max.out', max)
 np.savetxt('./min.out', min)
 
 ########  RGB
-path_level3_img = "/data/fangwen/results/level3_nadir/chip_train_set/rgb_img"
+path_level3_img = "/data/fangwen/mix_train/rgb_img"
 img_list = os.listdir(path_level3_img)
 
 R = []
@@ -77,13 +77,14 @@ V = []
 for i in tqdm(range(len(img_list))):
     name = img_list[i]
     img = cv2.imread(os.path.join(path_level3_img, name))
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     temp_B = img[:,:,0].ravel()
     temp_G = img[:,:,1].ravel()
     temp_R = img[:,:,2].ravel()
 
-    temp_H = img[:,:,0].ravel() # B
-    temp_S = img[:,:,1].ravel() # G
-    temp_V = img[:,:,2].ravel() # R
+    temp_H = hsv[:,:,0].ravel() # B
+    temp_S = hsv[:,:,1].ravel() # G
+    temp_V = hsv[:,:,2].ravel() # R
 
     R.append(temp_R)
     G.append(temp_G)

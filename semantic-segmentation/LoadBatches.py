@@ -39,15 +39,13 @@ def get_random_pos(img_shape, window_shape=(512, 512)):
 	return x1, x2, y1, y2
 
 
-def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normalization", rotation_index=None, random_crop=None):
+def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean", rotation_index=None, random_crop=None):
 	# read mask
 	mask = cv2.imread(mask_path, 0)
 	# read rgb image
 	img = cv2.imread(im_path, 1).astype(np.float32)
 
-	##################
 	attacth_HSV = False
-	##################
 	if attacth_HSV is not False:
 		# transfer color space
 		hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype(np.float32)
@@ -55,51 +53,49 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 	if imgNorm == "sub_mean":
 		# Mean subtraction: sub mean value of the statistic result from VGG, aiming at zero centered
 		# https://gist.github.com/ksimonyan/211839e770f7b538e2d8
-		img[:, :, 0] -= 103.939
-		img[:, :, 1] -= 116.779
-		img[:, :, 2] -= 123.68
+		img[:, :, 0] -= 86.036
+		img[:, :, 1] -= 104.410
+		img[:, :, 2] -= 106.238
 	elif imgNorm == "normalization":
 		"""
-			% Level3 based on training set
-			mean_B = 93.55575820215054
-			mean_G = 109.91111718537634
-			mean_R = 116.77154769032258
-			std_B = 45.41826739260701
-			std_G = 45.72733518845752
-			std_R = 50.29461861852277
+			% level3 oblique, lvl4 nadir, mixed data
+			mean_B = 86.03683144186063
+			mean_G = 104.41009599486563
+			mean_R = 106.23806209277757
+			std_B = 35.62713577360674
+			std_G = 36.16029762168641
+			std_R = 42.036553263043025
 			
-			mean_H = 41.07548142795699
-			mean_S = 64.7442760051613
-			mean_V = 121.00639388043011
-			std_H = 40.400934438326466
-			std_S = 38.57465872094216
-			std_V = 49.27051219866851
-			
-			% mixed data
+			mean_H = 44.84928057625584
+			mean_S = 65.80051215168368
+			mean_V = 111.44715719026587
+			std_H = 34.782884719640094
+			std_S = 36.31946981587768
+			std_V = 39.70288297338553
 			
 		"""
 		# normalize BGR imagery
-		mean_B = 93.555
-		mean_G = 109.911
-		mean_R = 116.771
-		std_B = 45.418
-		std_G = 45.727
-		std_R = 50.294
+		mean_B = 86.036
+		mean_G = 104.410
+		mean_R = 106.238
+		std_B = 35.627
+		std_G = 36.160
+		std_R = 42.036
 		img[:, :, 0] = (img[:, :, 0] - mean_B) / std_B
-		img[:, :, 1] = (img[:, :, 0] - mean_G) / std_G
-		img[:, :, 2] = (img[:, :, 0] - mean_R) / std_R
+		img[:, :, 1] = (img[:, :, 1] - mean_G) / std_G
+		img[:, :, 2] = (img[:, :, 2] - mean_R) / std_R
 
 		if attacth_HSV is not False:
 			# normalize HSV imagery
-			mean_H = 41.075
-			mean_S = 64.744
-			mean_V = 121.006
-			std_H = 40.400
-			std_S = 38.574
-			std_V = 49.270
+			mean_H = 44.849
+			mean_S = 65.800
+			mean_V = 111.447
+			std_H = 34.782
+			std_S = 36.319
+			std_V = 39.702
 			hsv[:, :, 0] = (hsv[:, :, 0] - mean_H) / std_H
-			hsv[:, :, 1] = (hsv[:, :, 0] - mean_S) / std_S
-			hsv[:, :, 2] = (hsv[:, :, 0] - mean_V) / std_V
+			hsv[:, :, 1] = (hsv[:, :, 1] - mean_S) / std_S
+			hsv[:, :, 2] = (hsv[:, :, 2] - mean_V) / std_V
 	elif imgNorm == "divide":
 		img = img / 255.0
 
@@ -111,25 +107,28 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 
 	# train_mode = "multi_modality"
 	if f_folders is not None:
-		for folder_path in f_folders:
+		# for folder_path in f_folders:
 			# tell nadir or oblique image
 			# if folder_path.split("/")[-4] == im_path.split("/")[-4]:
-			f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
-			f_img = tifffile.imread(f_img_path).astype(np.float32)
-			where_are_NaNs = np.isnan(f_img)
-			f_img[where_are_NaNs] = 0.0
-			# according to Michael, no further normalization is need for feature map
-			f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
+			# f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
+			# f_img = tifffile.imread(f_img_path).astype(np.float32)
+			# where_are_NaNs = np.isnan(f_img)
+			# f_img[where_are_NaNs] = 0.0
+			# # according to Michael, no further normalization is need for feature map
+			# f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
+			#
+			# img = np.dstack((img, f_img))
 
-			img = np.dstack((img, f_img))
-
-		# folder_path = f_folders[65]  # nDSM
-		# f_path = os.path.join(folder_path, im_path.split('/')[-1])
-		# f_img = tifffile.imread(f_path).astype(np.float32)
-		# where_are_NaNs = np.isnan(f_img)
-		# f_img[where_are_NaNs] = 0.0
-		# f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
-		# img = np.dstack((img, f_img))
+		# folder_path = "/data/fangwen/mix_train/f_68/"  # nDSM
+		for folder_path in f_folders:
+			# print(folder_path)
+			if folder_path.split('/')[-2] == "f_68":
+				f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
+				f_img = tifffile.imread(f_img_path).astype(np.float32)
+				where_are_NaNs = np.isnan(f_img)
+				f_img[where_are_NaNs] = 0.0
+				f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
+				img = np.dstack((img, f_img))
 
 	if rotation_index is not None:
 		img = rotate_image_random(img, rotation_index)
@@ -223,7 +222,7 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 
 			im, seg, mk = zipped.next()
 			# add random rotation
-			# rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
+			rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
 
 			# add random cropping
 			# if im.split('/')[-4].split('_')[-1] == "nadir":
@@ -234,7 +233,7 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 			# 	W = 750
 			# x1, x2, y1, y2 = get_random_pos(img_shape=(H, W), window_shape=(input_height, input_width))
 
-			rotation_index = None
+			# rotation_index = None
 			random_crop = None
 
 			X.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index, random_crop))

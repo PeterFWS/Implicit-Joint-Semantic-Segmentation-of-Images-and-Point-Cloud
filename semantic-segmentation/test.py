@@ -21,11 +21,11 @@ import shutil
 
 
 ## copy corresponding BGR images
-# img_list = os.listdir("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/validation_set/2_mask")
-# for img_name in img_list:
-#     src = os.path.join("/home/fangwen/ShuFangwen/data/Nadir_level3_level5/ImgTexture/Level_3", img_name)
-#     dst = os.path.join("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_nadir/validation_set/rgb_img", img_name)
-#     shutil.copyfile(src, dst)
+img_list = os.listdir("/data/fangwen/results/validation_set/2_mask")
+for img_name in img_list:
+    src = os.path.join("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Nadir_level3_level4_level5/ImgTexture/Level_4", img_name)
+    dst = os.path.join("/data/fangwen/results/validation_set/rgb_img", img_name)
+    shutil.copyfile(src, dst)
 
 
 # clean redundant imgs
@@ -53,13 +53,13 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.utils import class_weight
 #
-label_img_list = os.listdir("/data/fangwen/oblique_train/3_greylabel")
+label_img_list = os.listdir("/data/fangwen/mix_train/3_greylabel")
 #
 # # all_label = []
 num_classes = np.zeros(12, int)
 for i in tqdm(range(len(label_img_list))):
     name = label_img_list[i]
-    path = os.path.join("/data/fangwen/oblique_train/3_greylabel", name)
+    path = os.path.join("/data/fangwen/mix_train/3_greylabel", name)
     img = cv2.imread(path).ravel()
 
     for j in range(len(img)):
@@ -70,11 +70,11 @@ for i in tqdm(range(len(label_img_list))):
 #
 #     # all_label.append(img)
 #
-# total = sum(num_classes)
+total = sum(num_classes)
 #
-# frequency = num_classes / float(total)
+frequency = num_classes / float(total)
 #
-# inverse = 1/ frequency
+inverse = 1/ frequency
 
 # y_train = np.concatenate([p for p in all_label])
 #
@@ -141,12 +141,13 @@ def make_if_not_exists(dirPath):
     if not os.path.exists(dirPath):
         os.makedirs(dirPath)
 
-path = "/data/fangwen/oblique_train/3_greylabel"
+path = "/data/fangwen/mix_train/3_greylabel"
 
-path2 = "/data/fangwen/oblique_train"
+path2 = "/data/fangwen/mix_train"
 floder_list = os.listdir(path2)
 
 save_path = "/data/fangwen/sythetic"
+make_if_not_exists(save_path)
 
 img_list = os.listdir(path)
 for _ in tqdm(range(len(img_list))):
@@ -156,24 +157,25 @@ for _ in tqdm(range(len(img_list))):
 
     count_0 = 0 # powerline
     count_3 = 0 # car
-    # count_4 = 0 # urban furniture
-    # count_6 = 0 # facade
-    # count_10 = 0 # vertical surface
+    count_4 = 0 # urban furniture
+    count_6 = 0 # facade
+    count_10 = 0 # vertical surface
     for i in range(len(img)):
+
         if img[i] == 0:
             count_0 += 1
 
         elif img[i] == 3:
             count_3 += 1
-        #
-        # elif img[i] == 4:
-        #     count_4 += 1
-        #
-        # elif img[i] == 6:
-        #     count_6 += 1
-        #
-        # elif img[i] == 10:
-        #     count_10 += 1
+
+        elif img[i] == 4:
+            count_4 += 1
+
+        elif img[i] == 6:
+            count_6 += 1
+
+        elif img[i] == 10:
+            count_10 += 1
 
     if count_0 >= 20:
         for floder in floder_list:
@@ -194,6 +196,36 @@ for _ in tqdm(range(len(img_list))):
             make_if_not_exists(save_path2)
 
             shutil.copyfile(f_img_path, os.path.join(save_path2, name.split(".")[-2]+"_vehicle"+".tif"))
+
+    elif count_4 >= 20:
+        for floder in floder_list:
+            folder_path = os.path.join(path2, floder)
+            f_img_path = os.path.join(folder_path, name)
+
+            save_path2 = os.path.join(save_path, floder)
+            make_if_not_exists(save_path2)
+
+            shutil.copyfile(f_img_path, os.path.join(save_path2, name.split(".")[-2]+"_urbanfurniture"+".tif"))
+
+    elif count_6 >= 20:
+        for floder in floder_list:
+            folder_path = os.path.join(path2, floder)
+            f_img_path = os.path.join(folder_path, name)
+
+            save_path2 = os.path.join(save_path, floder)
+            make_if_not_exists(save_path2)
+
+            shutil.copyfile(f_img_path, os.path.join(save_path2, name.split(".")[-2]+"_facade"+".tif"))
+
+    elif count_10 >= 20:
+        for floder in floder_list:
+            folder_path = os.path.join(path2, floder)
+            f_img_path = os.path.join(folder_path, name)
+
+            save_path2 = os.path.join(save_path, floder)
+            make_if_not_exists(save_path2)
+
+            shutil.copyfile(f_img_path, os.path.join(save_path2, name.split(".")[-2]+"_vertical_surface"+".tif"))
 
 
 
