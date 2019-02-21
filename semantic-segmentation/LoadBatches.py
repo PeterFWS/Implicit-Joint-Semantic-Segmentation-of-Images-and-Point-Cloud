@@ -222,7 +222,7 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 
 			im, seg, mk = zipped.next()
 			# add random rotation
-			rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
+			# rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
 
 			# add random cropping
 			# if im.split('/')[-4].split('_')[-1] == "nadir":
@@ -233,7 +233,7 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 			# 	W = 750
 			# x1, x2, y1, y2 = get_random_pos(img_shape=(H, W), window_shape=(input_height, input_width))
 
-			# rotation_index = None
+			rotation_index = None
 			random_crop = None
 
 			X.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index, random_crop))

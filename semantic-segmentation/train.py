@@ -46,7 +46,7 @@ m = Models.Segnet.segnet_indices_pooling(n_classes, input_height=input_height, i
 # m = Models.TernausNet.get_unet_pre_trained(n_classes, input_height=input_height, input_width=input_width, nchannel=nchannel)
 
 m.compile(loss="categorical_crossentropy",
-          optimizer=optimizers.SGD(lr=0.01, decay=0.0005, momentum=0.9),
+          optimizer=optimizers.SGD(lr=0.1, decay=0.0005, momentum=0.9),
           metrics=["accuracy"])
 
 G = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, train_mask_path,
@@ -70,8 +70,8 @@ if validate:
 
     callbacks = [EarlyStopping(monitor='val_loss', patience=50),
                  ModelCheckpoint(filepath=os.path.join(save_weights_path, 'weights.{epoch:02d}-{val_loss:.2f}.hdf5'),
-                                 monitor='val_loss', save_best_only=True),
-                 ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=10, min_lr=0.0001),
+                                    monitor='val_loss', save_best_only=True),
+                 ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, min_lr=0.0001),
                  TensorBoard(log_dir='./board', histogram_freq=0, write_graph=True, write_images=True)]
 
     # used for weighting the loss function (during training only)

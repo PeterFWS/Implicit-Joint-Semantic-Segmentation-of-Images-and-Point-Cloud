@@ -12,7 +12,6 @@ def make_if_not_exists(dirPath):
 
 
 def chip(img, chip_size=(224, 224), overlap=0.5, nchannel=3, fg=False):
-
     if nchannel == 3:
         height, width, nchannel = img.shape
         hn, wn = chip_size
@@ -62,73 +61,105 @@ def chip(img, chip_size=(224, 224), overlap=0.5, nchannel=3, fg=False):
         return image_patchs
 
 
+def rotate_image_random(img, rotation_index):
+    deg_dict = {
+        1: 0,
+        2: 90,
+        3: 180,
+        4: 270
+    }
+
+    rows = img.shape[0]
+    cols = img.shape[1]
+
+    if deg_dict[rotation_index] != 0:
+        M = cv2.getRotationMatrix2D(((cols - 1) / 2.0, (rows - 1) / 2.0), deg_dict[rotation_index], 1)
+        dst = cv2.warpAffine(img, M, (cols, rows))
+        return dst
+    else:
+        return img
+
+
 if __name__ == "__main__":
 
-    reference = "/data/fangwen/results/validation_set/2_mask"
-    data_path = "/data/fangwen/results/validation_set"
+    reference = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/lvl4_nadir/test_set/2_mask"
+    data_path = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/lvl4_nadir/test_set"
     folders_list = os.listdir(data_path)
     folders_list.remove("2_mask")
+    folders_list.remove("not_use_feature")
     # folders_list.remove("1_pointlabel")
 
-    save_path = "/data/fangwen/results/chip_validation"
+    save_path = "/data/fangwen/mix_test"
     make_if_not_exists(save_path)
+
+    size = (480, 480)
 
     mask_list = os.listdir(reference)
     length = len(mask_list)
     for l in tqdm(range(length)):
 
-        name = mask_list[l]
+        for rotation_index in range(1, 5):
 
-        mask_path = os.path.join(reference, name)
-        # name = "DSC03717.tif"
-        # mask_path ='/data/fangwen/results/level3/test_set/2_mask/DSC03717.tif'
-        mask = cv2.imread(mask_path, 0)
-        mask_patchs, flag = chip(mask, chip_size=(480,480), overlap=0.5, nchannel=1, fg=True)
+            name = mask_list[l]
 
-        # based on this flag, we chip other image
-        for folder in folders_list:
-            folder_path = os.path.join(data_path, folder)
-            img_path = os.path.join(folder_path, name)
+            mask_path = os.path.join(reference, name)
+            # name = "DSC03717.tif"
+            # mask_path ='/data/fangwen/results/level3/test_set/2_mask/DSC03717.tif'
+            mask = cv2.imread(mask_path, 0)
+            mask = rotate_image_random(mask, rotation_index)
 
-            if folder_path.split("/")[-1].split("_")[-2] == "f" or folder_path.split("/")[-1].split("_")[-2] == "5":
-                # read index image and feature image
-                img = tifffile.imread(img_path)
-                img_patchs = chip(img, chip_size=(480,480), overlap=0.5, nchannel=1, fg=False)
+            mask_patchs, flag = chip(mask, chip_size=size, overlap=0.5, nchannel=1, fg=True)
 
-            elif folder_path.split("/")[-1].split("_")[-2] == "rgb" or folder_path.split("/")[-1].split("_")[-2] == "4":
-                # rgb
-                img = cv2.imread(img_path)
-                img_patchs = chip(img, chip_size=(480,480), overlap=0.5, nchannel=3, fg=False)
+            # based on this flag, we chip other image
+            for folder in folders_list:
+                folder_path = os.path.join(data_path, folder)
+                img_path = os.path.join(folder_path, name)
 
-            elif folder_path.split("/")[-1].split("_")[-2] == "3":
-                # grey
-                img = cv2.imread(img_path, 0)
-                img_patchs = chip(img, chip_size=(480,480), overlap=0.5, nchannel=1, fg=False)
+                if folder_path.split("/")[-1].split("_")[-2] == "f" or folder_path.split("/")[-1].split("_")[-2] == "5":
+                    # read index image and feature image
+                    img = tifffile.imread(img_path)
+                    img = rotate_image_random(img, rotation_index)
+                    img_patchs = chip(img, chip_size=size, overlap=0.5, nchannel=1, fg=False)
 
-            for id in range(flag.shape[0]):
+                elif folder_path.split("/")[-1].split("_")[-2] == "rgb" or folder_path.split("/")[-1].split("_")[
+                    -2] == "4":
+                    # rgb
+                    img = cv2.imread(img_path)
+                    img = rotate_image_random(img, rotation_index)
+                    img_patchs = chip(img, chip_size=size, overlap=0.5, nchannel=3, fg=False)
 
-                if flag[id] == 0:
-                    # save masks
-                    save_mask = os.path.join(save_path, "2_mask")
-                    make_if_not_exists(save_mask)
-                    cv2.imwrite(os.path.join(save_mask, name.split(".")[-2] + "_" + str(id) + ".tif"), mask_patchs[id])
+                elif folder_path.split("/")[-1].split("_")[-2] == "3":
+                    # grey
+                    img = cv2.imread(img_path, 0)
+                    img = rotate_image_random(img, rotation_index)
+                    img_patchs = chip(img, chip_size=size, overlap=0.5, nchannel=1, fg=False)
 
-                    # save other images
-                    if folder_path.split("/")[-1].split("_")[-2] == "f" or folder_path.split("/")[-1].split("_")[
-                        -2] == "5":
-                        save_img = os.path.join(save_path, folder_path.split("/")[-1])
-                        make_if_not_exists(save_img)
-                        tifffile.imsave(os.path.join(save_img, name.split(".")[-2] + "_" + str(id) + ".tif"),
+                for id in range(flag.shape[0]):
+
+                    if flag[id] == 0:
+                        # save masks
+                        save_mask = os.path.join(save_path, "2_mask")
+                        make_if_not_exists(save_mask)
+                        cv2.imwrite(os.path.join(save_mask, name.split(".")[-2] + "_" + str(id) + '_r' + str(rotation_index) + ".tif"),
+                                    mask_patchs[id])
+
+                        # save other images
+                        if folder_path.split("/")[-1].split("_")[-2] == "f" or folder_path.split("/")[-1].split("_")[
+                            -2] == "5":
+                            save_img = os.path.join(save_path, folder_path.split("/")[-1])
+                            make_if_not_exists(save_img)
+                            tifffile.imsave(os.path.join(save_img, name.split(".")[-2] + "_" + str(id) + '_r' + str(rotation_index) + ".tif"),
+                                            img_patchs[id])
+
+                        if folder_path.split("/")[-1].split("_")[-2] == "rgb" or folder_path.split("/")[-1].split("_")[
+                            -2] == "4":
+                            save_img = os.path.join(save_path, folder_path.split("/")[-1])
+                            make_if_not_exists(save_img)
+                            cv2.imwrite(os.path.join(save_img, name.split(".")[-2] + "_" + str(id) + '_r' + str(rotation_index) + ".tif"),
                                         img_patchs[id])
 
-                    if folder_path.split("/")[-1].split("_")[-2] == "rgb" or folder_path.split("/")[-1].split("_")[-2] == "4":
-                        save_img = os.path.join(save_path, folder_path.split("/")[-1])
-                        make_if_not_exists(save_img)
-                        cv2.imwrite(os.path.join(save_img, name.split(".")[-2] + "_" + str(id) + ".tif"),
-                                    img_patchs[id])
-
-                    elif folder_path.split("/")[-1].split("_")[-2] == "3":
-                        save_img = os.path.join(save_path, folder_path.split("/")[-1])
-                        make_if_not_exists(save_img)
-                        cv2.imwrite(os.path.join(save_img, name.split(".")[-2] + "_" + str(id) + ".tif"),
-                                    img_patchs[id])
+                        elif folder_path.split("/")[-1].split("_")[-2] == "3":
+                            save_img = os.path.join(save_path, folder_path.split("/")[-1])
+                            make_if_not_exists(save_img)
+                            cv2.imwrite(os.path.join(save_img, name.split(".")[-2] + "_" + str(id) + '_r' + str(rotation_index) + ".tif"),
+                                        img_patchs[id])
