@@ -10,3 +10,6 @@ http://lamda.nju.edu.cn/weixs/project/CNNTricks/CNNTricks.html
 
 How to increase your small image dataset using Keras ImageDataGenerator
 https://medium.com/@arindambaidya168/https-medium-com-arindambaidya168-using-keras-imagedatagenerator-b94a87cdefad
+
+Data Augmentation
+https://towardsdatascience.com/image-augmentation-for-deep-learning-using-keras-and-histogram-equalization-9329f6ae5085
