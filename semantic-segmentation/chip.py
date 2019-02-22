@@ -5,6 +5,11 @@ import os
 import cv2
 import tifffile
 
+import numpy as np
+from PIL import Image
+import tensorflow as tf
+from PIL import Image, ImageDraw
+import skimage.filters as filters
 
 def make_if_not_exists(dirPath):
     if not os.path.exists(dirPath):
@@ -69,25 +74,31 @@ def rotate_image_random(img, rotation_index):
         4: 270
     }
 
-    rows = img.shape[0]
-    cols = img.shape[1]
+    # rows = img.shape[0]
+    # cols = img.shape[1]
+    #
+    # deg = deg_dict[rotation_index]
 
-    if deg_dict[rotation_index] != 0:
-        M = cv2.getRotationMatrix2D(((cols - 1) / 2.0, (rows - 1) / 2.0), deg_dict[rotation_index], 1)
-        dst = cv2.warpAffine(img, M, (cols, rows))
+    if rotation_index != 1:
+        # M = cv2.getRotationMatrix2D(((cols - 1) / 2.0, (rows - 1) / 2.0), deg, 1)
+        # dst = cv2.warpAffine(img, M, (cols, rows))
+
+        dst = np.rot90(img, rotation_index-1)
+
         return dst
+
     else:
         return img
 
 
 if __name__ == "__main__":
 
-    reference = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/lvl4_nadir/test_set/2_mask"
-    data_path = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/lvl4_nadir/test_set"
+    reference = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/2_mask"
+    data_path = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set"
     folders_list = os.listdir(data_path)
     folders_list.remove("2_mask")
     folders_list.remove("not_use_feature")
-    # folders_list.remove("1_pointlabel")
+    folders_list.remove("1_pointlabel")
 
     save_path = "/data/fangwen/mix_test"
     make_if_not_exists(save_path)

@@ -6,7 +6,7 @@ from keras.constraints import MaxNorm
 
 from mylayers import MaxPoolingWithArgmax2D, MaxUnpooling2D
 
-def segnet_indices_pooling(nClasses, input_height=480, input_width=736, nchannel=3, pre_train=False):
+def segnet_indices_pooling(nClasses, input_height=480, input_width=480, nchannel=3, pre_train=False):
 
 	input_shape = (input_height, input_width, nchannel)
 	kernel = 3
@@ -49,7 +49,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=736, nchannel
 	conv_7 = Activation("relu")(conv_7)
 
 	pool_3, mask_3 = MaxPoolingWithArgmax2D(pool_size)(conv_7)
-	# pool_3 = Dropout(rate)(pool_3)
+
 
 	conv_8 = Conv2D(512, (kernel, kernel), padding="same")(pool_3)
 	conv_8 = BatchNormalization()(conv_8)
@@ -62,38 +62,37 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=736, nchannel
 	conv_10 = Activation("relu")(conv_10)
 
 	pool_4, mask_4 = MaxPoolingWithArgmax2D(pool_size)(conv_10)
-	# pool_4 = Dropout(rate)(pool_4)
 
-	# conv_11 = Conv2D(512, (kernel, kernel), padding="same")(pool_4)
-	# conv_11 = BatchNormalization()(conv_11)
-	# conv_11 = Activation("relu")(conv_11)
-	# conv_12 = Conv2D(512, (kernel, kernel), padding="same")(conv_11)
-	# conv_12 = BatchNormalization()(conv_12)
-	# conv_12 = Activation("relu")(conv_12)
-	# conv_13 = Conv2D(512, (kernel, kernel), padding="same")(conv_12)
-	# conv_13 = BatchNormalization()(conv_13)
-	# conv_13 = Activation("relu")(conv_13)
-	#
-	# pool_5, mask_5 = MaxPoolingWithArgmax2D(pool_size)(conv_13)
-	# pool_5 = Dropout(rate)(pool_5)
+
+	conv_11 = Conv2D(512, (kernel, kernel), padding="same")(pool_4)
+	conv_11 = BatchNormalization()(conv_11)
+	conv_11 = Activation("relu")(conv_11)
+	conv_12 = Conv2D(512, (kernel, kernel), padding="same")(conv_11)
+	conv_12 = BatchNormalization()(conv_12)
+	conv_12 = Activation("relu")(conv_12)
+	conv_13 = Conv2D(512, (kernel, kernel), padding="same")(conv_12)
+	conv_13 = BatchNormalization()(conv_13)
+	conv_13 = Activation("relu")(conv_13)
+
+	pool_5, mask_5 = MaxPoolingWithArgmax2D(pool_size)(conv_13)
 
 	print("Build enceder done..")
 
 	# Decoder
-	# unpool_1 = MaxUnpooling2D(pool_size)([pool_5, mask_5])
-	#
-	# conv_14 = Conv2D(512, (kernel, kernel), padding="same")(unpool_1)
-	# conv_14 = BatchNormalization()(conv_14)
-	# conv_14 = Activation("relu")(conv_14)
-	# conv_15 = Conv2D(512, (kernel, kernel), padding="same")(conv_14)
-	# conv_15 = BatchNormalization()(conv_15)
-	# conv_15 = Activation("relu")(conv_15)
-	# conv_16 = Conv2D(512, (kernel, kernel), padding="same")(conv_15)
-	# conv_16 = BatchNormalization()(conv_16)
-	# conv_16 = Activation("relu")(conv_16)
-	# conv_16 = Dropout(rate)(conv_16)
+	unpool_1 = MaxUnpooling2D(pool_size)([pool_5, mask_5])
 
-	unpool_2 = MaxUnpooling2D(pool_size)([pool_4, mask_4])
+	conv_14 = Conv2D(512, (kernel, kernel), padding="same")(unpool_1)
+	conv_14 = BatchNormalization()(conv_14)
+	conv_14 = Activation("relu")(conv_14)
+	conv_15 = Conv2D(512, (kernel, kernel), padding="same")(conv_14)
+	conv_15 = BatchNormalization()(conv_15)
+	conv_15 = Activation("relu")(conv_15)
+	conv_16 = Conv2D(512, (kernel, kernel), padding="same")(conv_15)
+	conv_16 = BatchNormalization()(conv_16)
+	conv_16 = Activation("relu")(conv_16)
+
+
+	unpool_2 = MaxUnpooling2D(pool_size)([conv_16, mask_4])
 
 	conv_17 = Conv2D(512, (kernel, kernel), padding="same")(unpool_2)
 	conv_17 = BatchNormalization()(conv_17)
@@ -104,7 +103,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=736, nchannel
 	conv_19 = Conv2D(256, (kernel, kernel), padding="same")(conv_18)
 	conv_19 = BatchNormalization()(conv_19)
 	conv_19 = Activation("relu")(conv_19)
-	# conv_19 = Dropout(rate)(conv_19)
+
 
 	unpool_3 = MaxUnpooling2D(pool_size)([conv_19, mask_3])
 
@@ -117,7 +116,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=736, nchannel
 	conv_22 = Conv2D(128, (kernel, kernel), padding="same")(conv_21)
 	conv_22 = BatchNormalization()(conv_22)
 	conv_22 = Activation("relu")(conv_22)
-	# conv_22 = Dropout(rate)(conv_22)
+
 
 	unpool_4 = MaxUnpooling2D(pool_size)([conv_22, mask_2])
 
@@ -147,7 +146,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=736, nchannel
 	if pre_train is not False:
 		vgg_weight_path = "./data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5"
 		model = Model(inputs=inputs, outputs=outputs, name="SegNet")
-		# model.load_weights(vgg_weight_path, by_name=True)
+		model.load_weights(vgg_weight_path, by_name=True)
 		print("Load VGG weight success..\n")
 		# freeze the VGG layers
 		# for layer in model.layers[:45]:  # 45 without dropout, 59 with
