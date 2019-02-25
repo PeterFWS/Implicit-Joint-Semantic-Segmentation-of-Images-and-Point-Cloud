@@ -28,3 +28,10 @@ https://stackoverflow.com/questions/41990250/what-is-cross-entropy <br>
 https://ml-cheatsheet.readthedocs.io/en/latest/loss_functions.html <br>
 https://rdipietro.github.io/friendly-intro-to-cross-entropy-loss/ <br>
 https://stackoverflow.com/questions/34240703/what-is-logits-softmax-and-softmax-cross-entropy-with-logits/39499486#39499486 <br>
+
+#### Newton’s method and SGD
+https://stats.stackexchange.com/questions/253632/why-is-newtons-method-not-widely-used-in-machine-learning <br>
+https://stackoverflow.com/questions/12066761/what-is-the-difference-between-gradient-descent-and-newtons-gradient-descent <br>
+https://dinh-hung-tu.github.io/gradient-descent-vs-newton-method/ <br>
+http://sofasofa.io/forum_main_post.php?postid=1001010
+https://blog.csdn.net/lsgqjh/article/details/79168095
