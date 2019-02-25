@@ -22,3 +22,8 @@ https://www.researchgate.net/post/How_backpropagation_works_for_learning_filters
 
 #### VGG Convolutional Neural Networks Practical
 http://www.robots.ox.ac.uk/~vgg/practicals/cnn/ <br>
+
+#### What is cross-entropy?
+https://stackoverflow.com/questions/41990250/what-is-cross-entropy <br>
+https://ml-cheatsheet.readthedocs.io/en/latest/loss_functions.html <br>
+https://rdipietro.github.io/friendly-intro-to-cross-entropy-loss/ <br>
