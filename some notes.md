@@ -27,3 +27,4 @@ http://www.robots.ox.ac.uk/~vgg/practicals/cnn/ <br>
 https://stackoverflow.com/questions/41990250/what-is-cross-entropy <br>
 https://ml-cheatsheet.readthedocs.io/en/latest/loss_functions.html <br>
 https://rdipietro.github.io/friendly-intro-to-cross-entropy-loss/ <br>
+https://stackoverflow.com/questions/34240703/what-is-logits-softmax-and-softmax-cross-entropy-with-logits/39499486#39499486 <br>
