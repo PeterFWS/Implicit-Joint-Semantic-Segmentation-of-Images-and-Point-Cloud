@@ -311,12 +311,12 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
 
 if __name__ == "__main__":
 
-    path_predictions = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/predictions_1_baseline/"
-    path_groundtruths = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/3_greylabel/"
-    path_mask = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/2_mask/"
-    path_index = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/5_index/"
+    path_predictions = "/data/fangwen/predictions_RGB_11_classes_baseline3/"
+    path_groundtruths = "/data/fangwen/mix_test/3_greylabel/"
+    path_mask = "/data/fangwen/mix_test/2_mask/"
+    path_index = "/data/fangwen/mix_test/5_index/"
 
-    path_pointcloud_label = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Data_11_1_19_5cm/test_xyz_y.txt"
+    path_pointcloud_label = "/data/fangwen/test_xyz_y.txt"
 
     evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=True)
 

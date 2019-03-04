@@ -1,0 +1,77 @@
+----------------------------2D------------------------------
+void pixels in 2D image space are NOT ignored
+
+1234944000 pixels processed
+Total accuracy : 53.6047211048%
+Kappa: 0.39273546691318506
+
+                    precision    recall  f1-score   support
+         PowerLine       0.00      0.00      0.00    323830
+    Low Vegetation       0.50      0.69      0.58 258547649
+Impervious Surface       0.74      0.09      0.16 184745122
+          Vehicles       0.01      0.00      0.00   6180025
+   Urban Furniture       0.09      0.02      0.03  28955142
+              Roof       0.90      0.10      0.18 123466217
+            Facade       0.65      0.01      0.01  26140858
+        Bush/Hedge       0.01      0.06      0.02  17300015
+              Tree       0.30      0.31      0.31 105798985
+       Dirt/Gravel       0.18      0.11      0.14  57954472
+  Vertical Surface       0.07      0.03      0.04   9784102
+              Void       0.70      0.99      0.82 415747583
+
+         micro avg       0.54      0.54      0.54 1234944000
+         macro avg       0.35      0.20      0.19 1234944000
+      weighted avg       0.59      0.54      0.47 1234944000
+
+
+----------------------------2D------------------------------
+void pixels in 2D image space are ignored
+
+819196417 pixels processed
+Total accuracy : 30.483197902%
+Kappa: 0.1625956973809954
+
+                    precision    recall  f1-score   support
+         PowerLine       0.00      0.00      0.00    323830
+    Low Vegetation       0.50      0.69      0.58 258547649
+Impervious Surface       0.75      0.09      0.16 184745122
+          Vehicles       0.01      0.00      0.00   6180025
+   Urban Furniture       0.09      0.02      0.03  28955142
+              Roof       0.90      0.10      0.18 123466217
+            Facade       0.66      0.01      0.01  26140858
+        Bush/Hedge       0.01      0.06      0.02  17300015
+              Tree       0.30      0.31      0.31 105798985
+       Dirt/Gravel       0.18      0.11      0.14  57954472
+  Vertical Surface       0.07      0.03      0.04   9784102
+
+              Void       0.00      0.00      0.00         0
+         micro avg       0.30      0.30      0.30 819196417
+         macro avg       0.29      0.12      0.12 819196417
+      weighted avg       0.54      0.30      0.30 819196417
+
+----------------------------3D------------------------------
+void pixels in 2D image space are ignored
+
+39.8705944983% 3D points (5cm density point cloud) are not evaluated due to occlusion
+24072021 pixels processed
+Total accuracy : 42.1655124013%
+Kappa: 0.19911643025987955
+
+                    precision    recall  f1-score   support
+
+         PowerLine       0.00      0.00      0.00       571
+    Low Vegetation       0.65      0.81      0.72  11183823
+Impervious Surface       0.84      0.07      0.12   4395717
+          Vehicles       0.00      0.00      0.00     88079
+   Urban Furniture       0.04      0.00      0.01    471146
+              Roof       0.98      0.09      0.17   2817605
+            Facade       0.90      0.00      0.00    534588
+        Bush/Hedge       0.00      0.01      0.00    189466
+              Tree       0.16      0.32      0.22   1192986
+       Dirt/Gravel       0.51      0.06      0.11   2943442
+  Vertical Surface       0.05      0.00      0.00    254598
+              Void       0.00      0.00      0.00         0
+
+         micro avg       0.42      0.42      0.42  24072021
+         macro avg       0.35      0.11      0.11  24072021
+      weighted avg       0.66      0.42      0.40  24072021

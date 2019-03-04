@@ -19,28 +19,24 @@ input_width = 480
 n_classes = 12  # 11 classes + 1 un-classified class
 batch_size = 2
 
-train_mode = "BGR"
+# train_mode = "multi_modality"
 validate = True
 
 # compile model
-if train_mode == "BGR":
-    nchannel = 3
-    pre_train = True
+# if train_mode == "BGR":
+train_f_path = None
+val_f_path = None
 
-    train_f_path = None
-    val_f_path = None
-
-elif train_mode == "multi_modality":
-    nchannel = 4
-    pre_train = False
-
-    train_f_path = ["/data/fangwen/mix_train/"]
-    val_f_path = ["/data/fangwen/mix_validation/"]
+# elif train_mode == "multi_modality":
+# train_f_path = ["/data/fangwen/mix_train/"]
+# val_f_path = ["/data/fangwen/mix_validation/"]
 
 
-m = Models.Segnet.segnet_indices_pooling(n_classes,
-                                         input_height=input_height, input_width=input_width,
-                                         nchannel=nchannel, pre_train=pre_train)
+# m = Models.Segnet.segnet_indices_pooling(n_classes,
+#                                          input_height=input_height, input_width=input_width,
+#                                          nchannel=4, pre_train=False)
+
+m = Models.PSPnet.PSPNet50(input_shape=(480, 480, 3), n_labels=n_classes)
 
 m.compile(loss="categorical_crossentropy",
           optimizer=optimizers.SGD(lr=0.01, momentum=0.9),
@@ -64,7 +60,7 @@ if validate:
                                                 batch_size, n_classes, input_height,input_width,
                                                 output_height=input_height, output_width=input_width, data_aug=False)
 
-    callbacks = [EarlyStopping(monitor='val_loss', patience=50),
+    callbacks = [EarlyStopping(monitor='val_loss', patience=20),
                  ModelCheckpoint(filepath=os.path.join(save_weights_path, 'weights.{epoch:02d}-{val_loss:.2f}.hdf5'),
                                     monitor='val_loss', save_best_only=True),
                  ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, min_lr=0.0001),
@@ -75,24 +71,55 @@ if validate:
     # num_classes
     # array([631779, 653834019, 433645557, 15504741, 53812335, 201591354,
     #        31051623, 63456546, 317269386, 263706855, 18279714, 689206491])
+
     # inverse of frequency
-    # class_weights = array([4.34011007e+03, 4.19371021e+00, 6.32311425e+00, 1.76848514e+02,
+    # array([4.34011007e+03, 4.19371021e+00, 6.32311425e+00, 1.76848514e+02,
     #        5.09546817e+01, 1.36017262e+01, 8.83042539e+01, 4.32105208e+01,
     #        8.64246763e+00, 1.03978730e+01, 1.50001822e+02, 3.97847443e+00])
+    #
+    # ignore void, inverse of frequency
+    # array([3.24921200e+03, 3.13961013e+00, 4.73378287e+00, 1.32397175e+02,
+    #        3.81470886e+01, 1.01828966e+01, 6.61087476e+01, 3.23494429e+01,
+    #        6.47016069e+00, 7.78434034e+00, 1.12298470e+02])
 
-    class_weights = np.array([4340.11,  # Powerline
-                              4.19,  # Low Vegetation
-                              6.32,  # Impervious Surface
-                              176.84,  # Vehicles
-                              50.95,  # Urban Furniture
-                              13.60,  # Roof
-                              88.30,  # Facade
-                              43.21,  # Bush/Hedge
-                              8.64,  # Tree
-                              10.39,  # Dirt/Gravel
-                              150.00,  # Vertical Surface
-                              3.97]  # Void
+    # median frequency balancing
+    # array([2.09763145e+02, 2.02687450e-01, 3.05604307e-01, 8.54731788e+00,
+    #        2.46270581e+00, 6.57389056e-01, 4.26785904e+00, 2.08842048e+00,
+    #        4.17701663e-01, 5.02542681e-01, 7.24978246e+00, 1.92284826e-01])
+
+    # ignore void, median frequency balancing
+    # array([1.00441050e+02, 9.70529892e-02, 1.46332748e-01, 4.09271887e+00,
+    #        1.17921934e+00, 3.14778113e-01, 2.04358226e+00, 1.00000000e+00,
+    #        2.00008412e-01, 2.40632903e-01, 3.47141897e+00])
+
+    # median frequency balancing
+    class_weights = np.array([209.763,  # Powerline
+                              0.202,  # Low Vegetation
+                              0.305,  # Impervious Surface
+                              8.547,  # Vehicles
+                              2.462,  # Urban Furniture
+                              0.657,  # Roof
+                              4.267,  # Facade
+                              2.088,  # Bush/Hedge
+                              0.417,  # Tree
+                              0.502,  # Dirt/Gravel
+                              7.249,  # Vertical Surface
+                              0.192]  # Void
                              )
+
+    # # median frequency balancing, no void
+    # class_weights = np.array([100.441,  # Powerline
+    #                           0.097,  # Low Vegetation
+    #                           0.146,  # Impervious Surface
+    #                           4.092,  # Vehicles
+    #                           1.179,  # Urban Furniture
+    #                           0.314,  # Roof
+    #                           2.043,  # Facade
+    #                           1.000,  # Bush/Hedge
+    #                           0.200,  # Tree
+    #                           0.240,  # Dirt/Gravel
+    #                           3.471]  # Vertical Surface
+    #                          )
 
     m.fit_generator(G,
                     steps_per_epoch=15922//batch_size,

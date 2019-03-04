@@ -47,7 +47,7 @@ def get_random_pos(img_shape, window_shape=(512, 512)):
     return x1, x2, y1, y2
 
 
-def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean", rotation_index=None, random_crop=None,
+def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normalization", rotation_index=None, random_crop=None,
                 data_aug=False):
     # read mask
     mask = cv2.imread(mask_path, 0)
@@ -56,12 +56,12 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean"
 
     if data_aug is not False:
         # Contrast stretching
-        if np.random.random() < 0.2:
+        if np.random.random() < 0.5:
             p2, p98 = np.percentile(img, (2, 98))
             img = exposure.rescale_intensity(img, in_range=(p2, p98))
 
         # Brightness jitter
-        elif np.random.random() < 0.5:
+        else:
             img = random_brightness(img)
 
     attacth_HSV = False
@@ -111,26 +111,27 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean"
     # train_mode = "multi_modality"
     if f_folders is not None:
         # for folder_path in f_folders:
-        # tell nadir or oblique image
-        # if folder_path.split("/")[-4] == im_path.split("/")[-4]:
-        # f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
-        # f_img = tifffile.imread(f_img_path).astype(np.float32)
-        # where_are_NaNs = np.isnan(f_img)
-        # f_img[where_are_NaNs] = 0.0
-        # # according to Michael, no further normalization is need for feature map
-        # f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
+        # # tell nadir or oblique image
+        #     if folder_path.split("/")[-4] == im_path.split("/")[-4]:
+        #     f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
+        #     f_img = tifffile.imread(f_img_path).astype(np.float32)
+        #     where_are_NaNs = np.isnan(f_img)
+        #     f_img[where_are_NaNs] = 0.0
+        #     # according to Michael, no further normalization is need for feature map
+        #     f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
         #
         # img = np.dstack((img, f_img))
 
-        # folder_path = "/data/fangwen/mix_train/f_68/"  # nDSM
+        folder_path = "/data/fangwen/mix_train/f_68/"  # nDSM
         for folder_path in f_folders:
             # print(folder_path)
-            if folder_path.split('/')[-2] == "f_68":
+            if folder_path.split('/')[-2] == "f_68" or folder_path.split('/')[-2] == "f_31" or folder_path.split('/')[-2] == "f_15":
                 f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
                 f_img = tifffile.imread(f_img_path).astype(np.float32)
                 where_are_NaNs = np.isnan(f_img)
                 f_img[where_are_NaNs] = 0.0
                 f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
+
                 img = np.dstack((img, f_img))
 
     if rotation_index is not None:

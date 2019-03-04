@@ -26,30 +26,34 @@ palette = {  # BGR
     11: (0, 0, 0)        # Void
 }
 
-n_classes = 12
-images_path = "/data/fangwen/results/level3/chip_test_set_oblique_only/rgb_img/"
-masks_path = "/data/fangwen/results/level3/chip_test_set_oblique_only/2_mask/"
+n_classes = 11
+images_path = "/data/fangwen/mix_test/rgb_img/"
+masks_path = "/data/fangwen/mix_test/2_mask/"
 
-input_height = 224
-input_width = 224
+input_height = 480
+input_width = 480
 output_height = input_height
 output_width = input_width
 
 
-##################
-train_mode = "BGR"
-##################
-if train_mode == "BGR":
-    m = Models.Segnet.segnet_indices_pooling(n_classes, input_height=input_height, input_width=input_width,
-                                             nchannel=3, pre_train=False)
-    f_path = None
+# ##################
+# train_mode = "multi_modality"
+# ##################
+# if train_mode == "BGR":
+f_path = None
 
-elif train_mode == "multi_modality":
-    m = Models.Segnet.segnet_indices_pooling(n_classes, input_height=input_height, input_width=input_width,
-                                             nchannel=75, pre_train=False)
-    f_path = "/data/fangwen/results/level3/test_set/"
+#
+# elif train_mode == "multi_modality":
+#     nchannel = 4
+#
+#     f_path = "/data/fangwen/mix_test/"
 
-m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/crop_baseline1/weights.45-1.73.hdf5", by_name=True)
+
+m = Models.Segnet.segnet_indices_pooling(n_classes,
+                                         input_height=input_height, input_width=input_width,
+                                         nchannel=3, pre_train=False)
+
+m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/3_baseline/weights.15-0.62.hdf5")
 
 assert images_path[-1] == '/'
 assert masks_path[-1] == '/'
@@ -87,6 +91,6 @@ for _ in range(0, len(images)):
         seg_img[:, :, 1] += ((pr[:, :] == c) * (palette[c][1])).astype('uint8')
         seg_img[:, :, 2] += ((pr[:, :] == c) * (palette[c][2])).astype('uint8')
     seg_img = cv2.resize(seg_img, (input_width, input_height))
-    save_path = "/home/fangwen/ShuFangwen/source/image-segmentation-keras/data/predictions_crop_RGB"
+    save_path = "/data/fangwen/predictions_RGB_11_classes_baseline3"
     make_if_not_exists(save_path)
     cv2.imwrite(os.path.join(save_path, imgName.split("/")[-1]), seg_img)

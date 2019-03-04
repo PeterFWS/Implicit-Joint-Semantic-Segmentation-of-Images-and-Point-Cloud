@@ -13,7 +13,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=480, nchannel
 	pool_size = (2, 2)
 	output_mode = "softmax"
 
-	# rate = 0.5 , kernel_constraint=MaxNorm(max_value=4, axis=[0, 1, 2])
+	rate = 0.5 #, kernel_constraint=MaxNorm(max_value=4, axis=[0, 1, 2])
 
 	# Encoder
 	inputs = Input(shape=input_shape)
@@ -49,6 +49,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=480, nchannel
 	conv_7 = Activation("relu")(conv_7)
 
 	pool_3, mask_3 = MaxPoolingWithArgmax2D(pool_size)(conv_7)
+	# pool_3 = Dropout(rate)(pool_3)
 
 
 	conv_8 = Conv2D(512, (kernel, kernel), padding="same")(pool_3)
@@ -62,6 +63,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=480, nchannel
 	conv_10 = Activation("relu")(conv_10)
 
 	pool_4, mask_4 = MaxPoolingWithArgmax2D(pool_size)(conv_10)
+	# pool_4 = Dropout(rate)(pool_4)
 
 
 	conv_11 = Conv2D(512, (kernel, kernel), padding="same")(pool_4)
@@ -103,6 +105,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=480, nchannel
 	conv_19 = Conv2D(256, (kernel, kernel), padding="same")(conv_18)
 	conv_19 = BatchNormalization()(conv_19)
 	conv_19 = Activation("relu")(conv_19)
+	# conv_19 = Dropout(rate)(conv_19)
 
 
 	unpool_3 = MaxUnpooling2D(pool_size)([conv_19, mask_3])
@@ -116,6 +119,7 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=480, nchannel
 	conv_22 = Conv2D(128, (kernel, kernel), padding="same")(conv_21)
 	conv_22 = BatchNormalization()(conv_22)
 	conv_22 = Activation("relu")(conv_22)
+	# conv_22 = Dropout(rate)(conv_22)
 
 
 	unpool_4 = MaxUnpooling2D(pool_size)([conv_22, mask_2])
@@ -153,9 +157,10 @@ def segnet_indices_pooling(nClasses, input_height=480, input_width=480, nchannel
 		# 	if str(layer.name).split("_")[-2] == "conv2d":
 		# 		layer.trainable = False
 	else:
+		print("no pre-trained.. \n")
 		model = Model(inputs=inputs, outputs=outputs, name="SegNet")
 
-	print("model.output_shape: ", model.output_shape, "\n")
+	print(model.summary())
 
 	for layer in model.layers:
 		print(layer.name, layer.trainable)
