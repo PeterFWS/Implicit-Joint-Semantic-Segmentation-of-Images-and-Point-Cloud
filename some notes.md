@@ -10,6 +10,9 @@ http://lamda.nju.edu.cn/weixs/project/CNNTricks/CNNTricks.html <br>
 #### A bunch of tips and tricks for training deep neural networks
 https://towardsdatascience.com/a-bunch-of-tips-and-tricks-for-training-deep-neural-networks-3ca24c31ddc8 <br>
 
+#### Oversampling and undersampling in data analysis
+https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis <br>
+
 
 #### How to increase your small image dataset using Keras ImageDataGenerator
 https://medium.com/@arindambaidya168/https-medium-com-arindambaidya168-using-keras-imagedatagenerator-b94a87cdefad <br>
