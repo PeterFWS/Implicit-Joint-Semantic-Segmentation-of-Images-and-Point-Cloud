@@ -7,6 +7,9 @@ https://datascience.stackexchange.com/questions/13490/how-to-set-class-weights-f
 #### Must Know Tips/Tricks in Deep Neural Networks
 http://lamda.nju.edu.cn/weixs/project/CNNTricks/CNNTricks.html <br>
 
+#### A bunch of tips and tricks for training deep neural networks
+https://towardsdatascience.com/a-bunch-of-tips-and-tricks-for-training-deep-neural-networks-3ca24c31ddc8 <br>
+
 
 #### How to increase your small image dataset using Keras ImageDataGenerator
 https://medium.com/@arindambaidya168/https-medium-com-arindambaidya168-using-keras-imagedatagenerator-b94a87cdefad <br>
