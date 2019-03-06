@@ -14,20 +14,21 @@ import tifffile
 
 
 # Global varianbles
-path_reference = "./results/for_LiDAR_5cm/selected_level3/color_labeled_points"  # where provide a list of visible images
-path_Imgs = "./data/ImgTexture/Level_3/"
-path_Ori = "./data/Ori/Level_3/"
+path_reference = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/lvl4_nadir/validation_set/4_colorlabel"  # where provide a list of visible images
 
-file_XYZ = "./data/features_dense_LiDAR_cloud_5cm/Data_xyz.txt"
+path_Imgs = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Nadir_level3_level4_level5/ImgTexture/Level_4/"
+path_Ori = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Nadir_level3_level4_level5/Ori/Level_4/"
 
-save_path = "./results/for_LiDAR_5cm/selected_level3/depth_img_origin"
+file_XYZ = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Data_11_1_19_5cm/val_xyz_y.txt"
+
+save_path = "/data/fangwen/depth_img_lvl4_nadir/validation_set"
 utilities.make_if_not_exists(save_path)
 
 
 # Reading data
 print("read points cloud from txt file...")
 start_time = time.time()
-pt_xyz = np.loadtxt(file_XYZ)
+pt_xyz = np.loadtxt(file_XYZ)[:,:3]
 duration = time.time() - start_time
 print("which needs {0}s\n".format(duration))
 
@@ -37,8 +38,8 @@ img_list = os.listdir(path_reference)  # length = 416, as for 5cm LiDAR pointclo
 for img_name in img_list:
 
     ori_name = img_name.replace("tif", "ori")
-    #img_name = "DSC04106.tif"
-    #ori_name = "DSC04106.ori"
+    # img_name = "CF014332.tif"
+    # ori_name = "CF014332.ori"
 
     # get interior and exterior orientations
     f, pixel_size, img_width, img_height, K, R, Xc, Yc, Zc = utilities.get_INTER_and_EXTER_Orientations(os.path.join(path_Ori, ori_name))
@@ -62,9 +63,15 @@ for img_name in img_list:
                 img_depth[int(py[0, i]), int(px[0, i])] = depth
 
     # set "nan" to pixel where no point projected
-    mask = (img_depth == 0)
-    img_depth[mask[:, :] == True] = np.nan
+    # mask = (img_depth == 0)
+    # img_depth[mask[:, :] == True] = np.nan
+    #
+    # where_are_NaNs = np.isnan(img_depth)
+    # img_depth[where_are_NaNs] = 0.0
 
-    tifffile.imsave(os.path.join(save_path, img_name+'_dist.tif'), img_depth)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
+    closing = cv2.morphologyEx(img_depth, cv2.MORPH_CLOSE, kernel)
+
+    tifffile.imsave(os.path.join(save_path, img_name), closing)
 
     # test = tifffile.imread(os.path.join(save_path, img_name+'_dist.tif'))

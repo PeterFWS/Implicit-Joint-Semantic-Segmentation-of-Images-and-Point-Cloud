@@ -55,8 +55,8 @@ def chip(img, chip_size=(224, 224), overlap=0.5, nchannel=3, fg=False):
                     for _ in range(chip.shape[0]):
                         if chip[_] == 0:
                             count += 1
-                    if float(count) / (hn * wn) >= 0.8:
-                        # more than 80% pixels are void
+                    if float(count) / (hn * wn) >= 0.05:
+                        # more than 5% pixels are void
                         flag[k] = 1  # this image will not be saved
                 k += 1
 
@@ -93,14 +93,14 @@ def rotate_image_random(img, rotation_index):
 
 if __name__ == "__main__":
 
-    reference = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set/2_mask"
-    data_path = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/level3_oblique/test_set"
+    reference = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/lvl4_nadir/test_set/2_mask"
+    data_path = "/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/results/lvl4_nadir/test_set"
     folders_list = os.listdir(data_path)
     folders_list.remove("2_mask")
     folders_list.remove("not_use_feature")
-    folders_list.remove("1_pointlabel")
+    # folders_list.remove("1_pointlabel")
 
-    save_path = "/data/fangwen/mix_test"
+    save_path = "/data/fangwen/mix_test2"
     make_if_not_exists(save_path)
 
     size = (480, 480)

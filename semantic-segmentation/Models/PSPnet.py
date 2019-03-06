@@ -774,4 +774,6 @@ def PSPNet50(
 
     model = Model(inputs=img_input, outputs=out)
 
+    print(model.summary())
+
     return model

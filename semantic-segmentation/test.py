@@ -53,13 +53,13 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.utils import class_weight
 #
-label_img_list = os.listdir("/data/fangwen/mix_train/3_greylabel")
+label_img_list = os.listdir("/data/fangwen/mix_train2/3_greylabel")
 #
 # # all_label = []
 num_classes = np.zeros(12, int)
 for i in tqdm(range(len(label_img_list))):
     name = label_img_list[i]
-    path = os.path.join("/data/fangwen/mix_train/3_greylabel", name)
+    path = os.path.join("/data/fangwen/mix_train2/3_greylabel", name)
     img = cv2.imread(path).ravel()
 
     for j in range(len(img)):
