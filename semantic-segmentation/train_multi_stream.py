@@ -1,6 +1,6 @@
 # coding=utf-8
 import Models
-import LoadBatches
+import LoadBatches_multi_stream
 import os
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau, TensorBoard
@@ -15,13 +15,13 @@ train_mask_path = ["/data/fangwen/mix_train2/2_mask/"]
 
 save_weights_path = "./weights/"
 
-train_f_path = ["/data/fangwen/mix_train2/"]
+# train_f_path = ["/data/fangwen/mix_train2/"]
 
 
 input_height = 480
 input_width = 480
 n_classes = 12  # 11 classes + 1 un-classified class
-batch_size = 2
+batch_size = 1
 
 validate = True
 
@@ -32,34 +32,24 @@ m.compile(loss="categorical_crossentropy",
           optimizer=optimizers.SGD(lr=0.01, momentum=0.9),
           metrics=["accuracy"])
 
-G_rgb = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, train_mask_path,
-                                           train_f_path,
+G1 = LoadBatches_multi_stream.imageSegmentationGenerator(train_images_path, train_segs_path, train_mask_path,
+                                           ["/data/fangwen/mix_train2/"],
                                            batch_size, n_classes, input_height, input_width,
                                            output_height=input_height, output_width=input_width, data_aug=True)
-
-G_f = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, train_mask_path,
-                                           train_f_path,
-                                           batch_size, n_classes, input_height, input_width,
-                                           output_height=input_height, output_width=input_width, data_aug=False)
 
 if validate:
     val_images_path = ["/data/fangwen/mix_validation2/rgb_img/"]
     val_segs_path = ["/data/fangwen/mix_validation2/3_greylabel/"]
     val_mask_path = ["/data/fangwen/mix_validation2/2_mask/"]
-    val_f_path = ["/data/fangwen/mix_validation2/"]
+    # val_f_path = ["/data/fangwen/mix_validation2/"]
 
 
-    G2_rgb = LoadBatches.imageSegmentationGenerator(val_images_path, val_segs_path, val_mask_path,
-                                                val_f_path,
+    G2 = LoadBatches_multi_stream.imageSegmentationGenerator(val_images_path, val_segs_path, val_mask_path,
+                                                ["/data/fangwen/mix_validation2/"],
                                                 batch_size, n_classes, input_height,input_width,
                                                 output_height=input_height, output_width=input_width, data_aug=False)
 
-    G2_f = LoadBatches.imageSegmentationGenerator(val_images_path, val_segs_path, val_mask_path,
-                                                val_f_path,
-                                                batch_size, n_classes, input_height,input_width,
-                                                output_height=input_height, output_width=input_width, data_aug=False)
-
-    callbacks = [EarlyStopping(monitor='val_loss', patience=20),
+    callbacks = [EarlyStopping(monitor='val_loss', patience=30),
                  ModelCheckpoint(filepath=os.path.join(save_weights_path, 'weights.{epoch:02d}-{val_loss:.2f}.hdf5'),
                                     monitor='val_loss', save_best_only=True),
                  ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, min_lr=0.0001),
@@ -79,15 +69,12 @@ if validate:
                               0.001]  # Void
                              )
 
-    m.fit_generator({'main_input': G_rgb, 'aux_input': G_rgb},
+    m.fit_generator(G1,
                     steps_per_epoch=6555//batch_size,
                     callbacks=callbacks,
-                    validation_data={'main_input': G2_rgb, 'aux_input': G2_rgb},
+                    validation_data=G2,
                     validation_steps=590//batch_size,
                     epochs=10000,
                     class_weight=class_weights)
-    m.save_weights(save_weights_path + "end_weights.hdf5")
 
-else:
-    m.fit_generator(G, steps_per_epoch=15447//batch_size, epochs=1)
     m.save_weights(save_weights_path + "end_weights.hdf5")

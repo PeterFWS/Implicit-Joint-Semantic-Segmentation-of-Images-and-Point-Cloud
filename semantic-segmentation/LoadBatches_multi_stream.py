@@ -108,8 +108,19 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 
     img[mask[:, :] == 0] = 0  # masking after normalization!
 
-    # train_mode = "multi_modality"
-    if f_folders is not None:
+
+    if f_folders is None:
+
+        if rotation_index is not None:
+            img = rotate_image_random(img, rotation_index)
+
+        if random_crop is not None:
+            x1, x2, y1, y2 = random_crop
+            img = img[y1:y2, x1:x2, :]
+
+        return img
+
+    elif f_folders is not None:
         # for folder_path in f_folders:
         # # tell nadir or oblique image
         #     if folder_path.split("/")[-4] == im_path.split("/")[-4]:
@@ -123,25 +134,24 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
         # img = np.dstack((img, f_img))
 
         ## folder_path = "/data/fangwen/mix_train/f_68/"  # nDSM
+        count = 0
         for folder_path in f_folders:
             # print(folder_path)
-            if folder_path.split('/')[-2] == "f_68":
+            if folder_path.split('/')[-2] == "f_68" or folder_path.split('/')[-2] == "f_5" or folder_path.split('/')[-2] == "f_15":
                 f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
                 f_img = tifffile.imread(f_img_path).astype(np.float32)
                 where_are_NaNs = np.isnan(f_img)
                 f_img[where_are_NaNs] = 0.0
                 f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
 
-                img = np.dstack((img, f_img))
+                if count == 0:
+                    img = f_img
+                elif count > 0:
+                    img = np.dstack((img, f_img))
 
-    if rotation_index is not None:
-        img = rotate_image_random(img, rotation_index)
+                count += 1
 
-    if random_crop is not None:
-        x1, x2, y1, y2 = random_crop
-        img = img[y1:y2, x1:x2, :]
-
-    return img
+        return img
 
 
 def getSegmentationArr(path, nClasses, width, height, rotation_index=None, random_crop=None):
@@ -217,27 +227,21 @@ def imageSegmentationGenerator(images_path, segs_path, mask_path,
 
     while True:
         X = []
+        X2 = []
         Y = []
 
         for _ in range(batch_size):
             im, seg, mk = zipped.next()
-            # add random rotation
-            # rotation_index = random.randint(1, 4)  # 0, 90, 180, 270 [degree]
-
-            # add random cropping
-            # if im.split('/')[-4].split('_')[-1] == "nadir":
-            # 	H = 1089
-            # 	W = 1451
-            # elif im.split('/')[-4].split('_')[-1] == "oblique":
-            # 	H = 500
-            # 	W = 750
-            # x1, x2, y1, y2 = get_random_pos(img_shape=(H, W), window_shape=(input_height, input_width))
 
             rotation_index = None
             random_crop = None
 
-            X.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index, random_crop,
-                                 data_aug=data_aug))
+            X.append(getImageArr(im, mk, None, input_width, input_height, rotation_index, random_crop,
+                                 data_aug=True))
+
+            X2.append(getImageArr(im, mk, f_folders, input_width, input_height, rotation_index, random_crop,
+                                 data_aug=False))
+
             Y.append(getSegmentationArr(seg, n_classes, output_width, output_height, rotation_index, random_crop))
 
-        yield np.array(X), np.array(Y)
+        yield [np.array(X), np.array(X2)], np.array(Y)
