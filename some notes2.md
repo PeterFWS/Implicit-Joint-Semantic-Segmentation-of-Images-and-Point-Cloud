@@ -10,5 +10,6 @@ https://meetshah1995.github.io/semantic-segmentation/deep-learning/pytorch/visdo
 #### Dstl Satellite Imagery Competition, 3rd Place Winners' Interview: Vladimir & Sergey
 http://blog.kaggle.com/2017/05/09/dstl-satellite-imagery-competition-3rd-place-winners-interview-vladimir-sergey/
 
-
-https://zhuanlan.zhihu.com/p/39443160
+#### Phd
+https://zhuanlan.zhihu.com/p/39443160 <br>
+https://www.zhihu.com/question/297859987/answer/508712033
