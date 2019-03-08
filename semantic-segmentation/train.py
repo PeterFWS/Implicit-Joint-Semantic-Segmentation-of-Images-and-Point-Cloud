@@ -133,10 +133,10 @@ if validate:
                              )
 
     m.fit_generator(G,
-                    steps_per_epoch=6555//batch_size,
+                    steps_per_epoch=15922//batch_size,
                     callbacks=callbacks,
                     validation_data=G2,
-                    validation_steps=590//batch_size,
+                    validation_steps=3197//batch_size,
                     epochs=10000,
                     class_weight=class_weights)
     m.save_weights(save_weights_path + "end_weights.hdf5")

@@ -311,15 +311,15 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
 
 if __name__ == "__main__":
 
-    path_predictions = "/data/fangwen/predictions_baseline4/"
+    path_predictions = "/data/fangwen/predictions_baseline5/"
     path_groundtruths = "/data/fangwen/mix_test/3_greylabel/"
     path_mask = "/data/fangwen/mix_test/2_mask/"
     path_index = "/data/fangwen/mix_test/5_index/"
 
     path_pointcloud_label = "/data/fangwen/test_xyz_y.txt"
 
-    evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=True)
+    # evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=True)
 
-    # evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label, save_3D=True)
+    evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label, save_3D=False)
 
 

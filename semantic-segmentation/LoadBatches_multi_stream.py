@@ -144,6 +144,9 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
                 f_img[where_are_NaNs] = 0.0
                 f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
 
+                # img = f_img
+                # break
+
                 if count == 0:
                     img = f_img
                 elif count > 0:
@@ -151,6 +154,13 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
 
                 count += 1
 
+        # if rotation_index is not None:
+        #     img = rotate_image_random(img, rotation_index)
+        #
+        # if random_crop is not None:
+        #     x1, x2, y1, y2 = random_crop
+        #     img = img[y1:y2, x1:x2, :]
+        #
         return img
 
 

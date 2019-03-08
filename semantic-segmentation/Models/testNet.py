@@ -1,6 +1,6 @@
 from keras import backend as K
 from keras.models import Model
-from keras.layers import Input, Conv2D, Activation, Reshape, Dropout, concatenate, Add
+from keras.layers import Input, Conv2D, Activation, Reshape, Dropout, concatenate, Average
 from keras.layers.normalization import BatchNormalization
 from keras.constraints import MaxNorm
 
@@ -90,7 +90,7 @@ input_width=480
 	conv_1 = Activation("relu")(conv_1)
 	conv_2 = Conv2D(64, (kernel, kernel), padding="same")(conv_1)
 	conv_2 = BatchNormalization()(conv_2)
-	conv_2 = Add()([Activation("relu")(conv_2), conv_2_a])
+	conv_2 = Average()([Activation("relu")(conv_2), conv_2_a])
 
 	pool_1, mask_1 = MaxPoolingWithArgmax2D(pool_size)(conv_2)
 
@@ -99,7 +99,7 @@ input_width=480
 	conv_3 = Activation("relu")(conv_3)
 	conv_4 = Conv2D(128, (kernel, kernel), padding="same")(conv_3)
 	conv_4 = BatchNormalization()(conv_4)
-	conv_4 = Add()([Activation("relu")(conv_4), conv_4_a])
+	conv_4 = Average()([Activation("relu")(conv_4), conv_4_a])
 
 	pool_2, mask_2 = MaxPoolingWithArgmax2D(pool_size)(conv_4)
 
@@ -111,7 +111,7 @@ input_width=480
 	conv_6 = Activation("relu")(conv_6)
 	conv_7 = Conv2D(256, (kernel, kernel), padding="same")(conv_6)
 	conv_7 = BatchNormalization()(conv_7)
-	conv_7 = Add()([Activation("relu")(conv_7), conv_7_a])
+	conv_7 = Average()([Activation("relu")(conv_7), conv_7_a])
 
 	pool_3, mask_3 = MaxPoolingWithArgmax2D(pool_size)(conv_7)
 
@@ -124,7 +124,7 @@ input_width=480
 	conv_9 = Activation("relu")(conv_9)
 	conv_10 = Conv2D(512, (kernel, kernel), padding="same")(conv_9)
 	conv_10 = BatchNormalization()(conv_10)
-	conv_10 = Add()([Activation("relu")(conv_10), conv_10_a])
+	conv_10 = Average()([Activation("relu")(conv_10), conv_10_a])
 
 	pool_4, mask_4 = MaxPoolingWithArgmax2D(pool_size)(conv_10)
 
@@ -138,7 +138,7 @@ input_width=480
 	conv_13 = Conv2D(512, (kernel, kernel), padding="same")(conv_12)
 	conv_13 = BatchNormalization()(conv_13)
 	conv_13 = Activation("relu")(conv_13)
-	conv_13 = Add()([Activation("relu")(conv_13), conv_13_a])
+	conv_13 = Average()([Activation("relu")(conv_13), conv_13_a])
 
 	pool_5, mask_5 = MaxPoolingWithArgmax2D(pool_size)(conv_13)
 
@@ -481,7 +481,7 @@ input_width=480
 
 	## --------------------------------------------------#
 
-	temp = Add()([conv_25, conv_25_])
+	temp = Average()([conv_25, conv_25_])
 
 	conv_26 = Conv2D(nClasses, (1, 1), padding="valid")(temp)
 	conv_26 = BatchNormalization()(conv_26)
