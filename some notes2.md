@@ -12,4 +12,5 @@ http://blog.kaggle.com/2017/05/09/dstl-satellite-imagery-competition-3rd-place-w
 
 #### Phd
 https://zhuanlan.zhihu.com/p/39443160 <br>
-https://www.zhihu.com/question/297859987/answer/508712033
+https://www.zhihu.com/question/297859987/answer/508712033 <br>
+https://news.pedaily.cn/201801/426782.shtml
