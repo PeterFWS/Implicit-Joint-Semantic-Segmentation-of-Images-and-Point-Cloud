@@ -137,22 +137,23 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
         count = 0
         for folder_path in f_folders:
             # print(folder_path)
-            if folder_path.split('/')[-2] == "f_68" or folder_path.split('/')[-2] == "f_5" or folder_path.split('/')[-2] == "f_15":
+            if folder_path.split('/')[-2] == "f_68": # or folder_path.split('/')[-2] == "f_5" or folder_path.split('/')[-2] == "f_15":
                 f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
                 f_img = tifffile.imread(f_img_path).astype(np.float32)
                 where_are_NaNs = np.isnan(f_img)
                 f_img[where_are_NaNs] = 0.0
                 f_img[mask[:, :] == 0] = 0.0  # "nan" actually was set where mask==0 # masking after normalization!
 
+                img = np.dstack((f_img, f_img, f_img))
                 # img = f_img
-                # break
+                break
 
-                if count == 0:
-                    img = f_img
-                elif count > 0:
-                    img = np.dstack((img, f_img))
+                #if count == 0:
+                #    img = f_img
+                #elif count > 0:
+                #    img = np.dstack((img, f_img))
 
-                count += 1
+                #count += 1
 
         # if rotation_index is not None:
         #     img = rotate_image_random(img, rotation_index)

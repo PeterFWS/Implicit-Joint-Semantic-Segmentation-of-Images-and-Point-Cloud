@@ -1,10 +1,13 @@
+import os
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID";
+os.environ["CUDA_VISIBLE_DEVICES"]="0";
 from keras import backend as K
 from keras.models import Model
 from keras.layers import Input, Conv2D, Activation, Reshape, Dropout, concatenate, Average
 from keras.layers.normalization import BatchNormalization
 from keras.constraints import MaxNorm
 
-from keras.utils import plot_model
+#from keras.utils import plot_model
 from mylayers import MaxPoolingWithArgmax2D, MaxUnpooling2D
 
 def testNet(nClasses, input_height=480, input_width=480):
