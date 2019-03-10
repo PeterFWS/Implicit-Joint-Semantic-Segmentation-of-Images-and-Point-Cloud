@@ -109,7 +109,8 @@ train and prediction your data.
 
 #### ./semantic-segmentation/LoadBatches.py
 
-data generator with pre-processing such as normalization, random rotation, random cropping
+data generator with pre-processing such as normalization, random rotation, random cropping <br>
+randomly brightness jitter, contrast normalization..
 
 
 #### ./semantic-segmentation/chip.py
