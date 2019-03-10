@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78ee27b0-6418-41a1-9437-c0862a560f0a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/some notes.md" beforeDir="false" afterPath="$PROJECT_DIR$/some notes.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/semantic-segmentation/evaluation.py" beforeDir="false" afterPath="$PROJECT_DIR$/semantic-segmentation/evaluation.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,20 +14,7 @@
     <favorites_list name="masterThesis_BK" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/some notes.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="540">
-                <caret line="36" column="53" selection-start-line="36" selection-start-column="53" selection-end-line="36" selection-end-column="53" />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -285,7 +272,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
       <window_info id="Favorites" order="1" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
@@ -562,8 +548,8 @@
     <entry file="file://$PROJECT_DIR$/some notes.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="540">
-            <caret line="36" column="53" selection-start-line="36" selection-start-column="53" selection-end-line="36" selection-end-column="53" />
+          <first_editor relative-caret-position="630">
+            <caret line="42" column="53" selection-start-line="42" selection-start-column="53" selection-end-line="42" selection-end-column="53" />
           </first_editor>
           <second_editor />
         </state>
