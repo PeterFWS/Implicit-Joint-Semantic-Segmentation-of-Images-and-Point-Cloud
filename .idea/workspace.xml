@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78ee27b0-6418-41a1-9437-c0862a560f0a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/semantic-segmentation/evaluation.py" beforeDir="false" afterPath="$PROJECT_DIR$/semantic-segmentation/evaluation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,7 +15,20 @@
     <favorites_list name="masterThesis_BK" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="385">
+                <caret line="35" column="3" selection-start-line="35" selection-start-column="3" selection-end-line="35" selection-end-column="3" />
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -29,8 +43,8 @@
         <option value="$PROJECT_DIR$/semantic-segmentation/train.py" />
         <option value="$PROJECT_DIR$/semantic-segmentation/LoadBatches.py" />
         <option value="$PROJECT_DIR$/semantic-segmentation/chip.py" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/some notes.md" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -53,12 +67,13 @@
             <path>
               <item name="masterThesis_BK" type="b2602c69:ProjectViewProjectNode" />
               <item name="masterThesis_BK" type="462c0819:PsiDirectoryNode" />
-              <item name="imgs" type="462c0819:PsiDirectoryNode" />
+              <item name="semantic-segmentation" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="masterThesis_BK" type="b2602c69:ProjectViewProjectNode" />
               <item name="masterThesis_BK" type="462c0819:PsiDirectoryNode" />
               <item name="semantic-segmentation" type="462c0819:PsiDirectoryNode" />
+              <item name="Models" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="masterThesis_BK" type="b2602c69:ProjectViewProjectNode" />
@@ -258,7 +273,14 @@
       <option name="project" value="LOCAL" />
       <updated>1550095659621</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="updated">
+      <created>1552256126827</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1552256126827</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TodoView">
@@ -272,10 +294,11 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
       <window_info id="Favorites" order="1" sideWeight="0.50120485" side_tool="true" weight="0.19450317" />
-      <window_info content_ui="combo" id="Project" order="2" sideWeight="0.49879518" weight="0.19309373" />
+      <window_info active="true" content_ui="combo" id="Project" order="2" sideWeight="0.49879518" visible="true" weight="0.19309373" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -356,9 +379,7 @@
     <option name="LAST_COMMIT_MESSAGE" value="updated" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/semantic-segmentation/weights/record">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/semantic-segmentation/weights/record" />
     <entry file="file://$PROJECT_DIR$/Generation_depth_Img.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -479,16 +500,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/some notes" />
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="225">
-            <caret line="15" column="501" selection-start-line="15" selection-start-column="501" selection-end-line="15" selection-end-column="501" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/semantic-segmentation/chip.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="753">
@@ -517,13 +528,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/semantic-segmentation/evaluation_record.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
-          <caret line="50" column="59" lean-forward="true" selection-start-line="50" selection-start-column="59" selection-end-line="50" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/semantic-segmentation/evaluation_record.txt" />
     <entry file="file://$PROJECT_DIR$/visualization_open3d.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -550,6 +555,26 @@
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="630">
             <caret line="42" column="53" selection-start-line="42" selection-start-column="53" selection-end-line="42" selection-end-column="53" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/semantic-segmentation/Models/PSPnet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4350">
+          <caret line="290" lean-forward="true" selection-start-line="290" selection-end-line="290" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="385">
+            <caret line="35" column="3" selection-start-line="35" selection-start-column="3" selection-end-line="35" selection-end-column="3" />
           </first_editor>
           <second_editor />
         </state>

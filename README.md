@@ -33,44 +33,44 @@ conda env create -f py2.yml
 
 ## Pre-processing part
 
-##### ./main.py
+#### ./main.py
 
 pre-processing code for aerial imagery and LiDAR point cloud, including 3D-2D projection, frustum culling, 
 Hidden-point-removal (HPR), gird interpolation and operator of Morphology.
 
 
-##### ./utilities.py
+#### ./utilities.py
 
 functions of each of algorithms implemented in pre-processing.
 
 
-##### ./myClasses.py
+#### ./myClasses.py
 
 some classes related to frustum culling, traslated from C++ code, detailed explanation in OpenGL.
 
 
-#####./visualization.py
+####./visualization.py
 
 functions used to visualize data. 
 
 
-##### ./statistics.py
+#### ./statistics.py
 
 functions used to calculate statistic information of the data.
 
 
-##### ./Generation_depth_img.py
+#### ./Generation_depth_img.py
 
 code for generating depth image.
 
 ## Semantic segmentation part
 
-##### ./version_playground
+#### ./version_playground
 
 Old code backup, including point splatting achieved in C++ if you needed.<br>
 
 
-##### ./semantic-segmentation/Models/
+#### ./semantic-segmentation/Models/
 
 * testNet (multi-stream costume CNN based on SegNet, early or late fusion, multi-input stream)
 * SegNet (main model used in thesis)
@@ -80,44 +80,44 @@ Old code backup, including point splatting achieved in C++ if you needed.<br>
 * TernausNet (runnable)
 
 
-##### ./semantic-segmentation/board/
+#### ./semantic-segmentation/board/
 
 where you save tensorboard file.
 
 
-##### ./semantic-segmentation/data/
+#### ./semantic-segmentation/data/
 
 where you save train/validation/test-set and VGG pre-treained weights.
 
 
-##### ./semantic-segmentation/weights/
+#### ./semantic-segmentation/weights/
 
 where you save trained weights.
 
 
-##### ./semantic-segmentation/pytorch_code/
+#### ./semantic-segmentation/pytorch_code/
 
 some dirty code of SegNet and pre-processing implemented in pytorch. 
 
 ### Code for training/prediction/evaluation:
 
-##### ./semantic-segmentation/train.py
-##### ./semantic-segmentation/prediction.py
+#### ./semantic-segmentation/train.py
+#### ./semantic-segmentation/prediction.py
 
 train and prediction your data.
 
 
-##### ./semantic-segmentation/LoadBatches.py
+#### ./semantic-segmentation/LoadBatches.py
 
 data generator with pre-processing such as normalization, random rotation, random cropping
 
 
-##### ./semantic-segmentation/chip.py
+#### ./semantic-segmentation/chip.py
 
 cropping images if you need.
 
 
-##### ./semantic-segmentation/evaluation.py
+#### ./semantic-segmentation/evaluation.py
 
 evaluation semantic result in 2D and 3D space.
 
