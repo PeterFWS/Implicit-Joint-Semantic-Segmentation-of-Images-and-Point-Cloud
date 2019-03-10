@@ -49,7 +49,7 @@ functions of each of algorithms implemented in pre-processing.
 some classes related to frustum culling, traslated from C++ code, detailed explanation in OpenGL.
 
 
-####./visualization.py
+#### ./visualization.py
 
 functions used to visualize data. 
 
