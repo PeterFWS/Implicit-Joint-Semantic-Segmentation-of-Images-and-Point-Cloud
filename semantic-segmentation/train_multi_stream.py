@@ -27,7 +27,7 @@ validate = True
 m = Models.testNet.testNet(nClasses=n_classes, input_height=480, input_width=480)
 
 m.compile(loss="categorical_crossentropy",
-          optimizer=optimizers.SGD(lr=0.01, momentum=0.9),
+          optimizer=optimizers.SGD(lr=0.001, momentum=0.9),
           metrics=["accuracy"])
 
 G1 = LoadBatches_multi_stream.imageSegmentationGenerator(train_images_path, train_segs_path, train_mask_path,

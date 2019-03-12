@@ -55,6 +55,7 @@ input_width=480
 	conv_7_a = Activation("relu")(conv_7_)
 
 	pool_3_, mask_3_ = MaxPoolingWithArgmax2D(pool_size)(conv_7_a)
+	pool_3_ = Dropout(0.5)(pool_3_)
 
 	conv_8_ = Conv2D(512, (kernel, kernel), padding="same")(pool_3_)
 	conv_8_ = BatchNormalization()(conv_8_)
@@ -67,6 +68,7 @@ input_width=480
 	conv_10_a = Activation("relu")(conv_10_)
 
 	pool_4_, mask_4_ = MaxPoolingWithArgmax2D(pool_size)(conv_10_a)
+	pool_4_ = Dropout(0.5)(pool_4_)
 
 
 	conv_11_ = Conv2D(512, (kernel, kernel), padding="same")(pool_4_)
@@ -114,6 +116,7 @@ input_width=480
 	conv_7 = Add()([Activation("relu")(conv_7), conv_7_a])
 
 	pool_3, mask_3 = MaxPoolingWithArgmax2D(pool_size)(conv_7)
+	pool_3 = Dropout(0.5)(pool_3)
 
 
 	conv_8 = Conv2D(512, (kernel, kernel), padding="same")(pool_3)
@@ -127,6 +130,7 @@ input_width=480
 	conv_10 = Add()([Activation("relu")(conv_10), conv_10_a])
 
 	pool_4, mask_4 = MaxPoolingWithArgmax2D(pool_size)(conv_10)
+	pool_4 = Dropout(0.5)(pool_4)
 
 
 	conv_11 = Conv2D(512, (kernel, kernel), padding="same")(pool_4)
@@ -141,6 +145,7 @@ input_width=480
 	conv_13 = Add()([Activation("relu")(conv_13), conv_13_a])
 
 	pool_5, mask_5 = MaxPoolingWithArgmax2D(pool_size)(conv_13)
+	pool_5 = Dropout(0.5)(pool_5)
 
 	# Decoder
 	unpool_1 = MaxUnpooling2D(pool_size)([pool_5, mask_5])
@@ -154,6 +159,7 @@ input_width=480
 	conv_16 = Conv2D(512, (kernel, kernel), padding="same")(conv_15)
 	conv_16 = BatchNormalization()(conv_16)
 	conv_16 = Activation("relu")(conv_16)
+	conv_16 = Dropout(0.5)(conv_16)
 
 
 	unpool_2 = MaxUnpooling2D(pool_size)([conv_16, mask_4])
@@ -167,6 +173,7 @@ input_width=480
 	conv_19 = Conv2D(256, (kernel, kernel), padding="same")(conv_18)
 	conv_19 = BatchNormalization()(conv_19)
 	conv_19 = Activation("relu")(conv_19)
+	conv_19 = Dropout(0.5)(conv_19)
 
 
 
@@ -181,6 +188,7 @@ input_width=480
 	conv_22 = Conv2D(128, (kernel, kernel), padding="same")(conv_21)
 	conv_22 = BatchNormalization()(conv_22)
 	conv_22 = Activation("relu")(conv_22)
+	conv_22 = Dropout(0.5)(conv_22)
 
 
 
@@ -210,7 +218,9 @@ input_width=480
 
 	model = Model(inputs=[main_input, auxiliary_input], outputs=outputs, name="SegNet")
 
-	# plot_model(model, to_file='/data/fangwen/model.png')
+	vgg_weight_path = "./data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5"
+	model.load_weights(vgg_weight_path, by_name=True)
+
 
 	print(model.summary())
 
