@@ -17,3 +17,6 @@ https://news.pedaily.cn/201801/426782.shtml
 
 #### Random Forest
 https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+
+#### PSPNet
+https://towardsdatascience.com/review-pspnet-winner-in-ilsvrc-2016-semantic-segmentation-scene-parsing-e089e5df177d
