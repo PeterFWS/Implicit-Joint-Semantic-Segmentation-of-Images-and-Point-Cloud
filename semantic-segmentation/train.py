@@ -9,39 +9,39 @@ import numpy as np
 # Global parameters
 # TODO: attention!!! path has to end with "/"
 # TODO: In case you have data saved in different folder, we use "list" to save path here
-train_images_path = ["/data/fangwen/mix_train2/rgb_img/"]
-train_segs_path = ["/data/fangwen/mix_train2/3_greylabel/"]
-train_mask_path = ["/data/fangwen/mix_train2/2_mask/"]
+train_images_path = ["/data/fangwen/mix_train/rgb_img/"]
+train_segs_path = ["/data/fangwen/mix_train/3_greylabel/"]
+train_mask_path = ["/data/fangwen/mix_train/2_mask/"]
 save_weights_path = "./weights/"
 
 input_height = 480
 input_width = 480
 n_classes = 12  # 11 classes + 1 un-classified class
-batch_size = 2
+batch_size = 1
 
 # train_mode = "multi_modality"
 validate = True
 
 # compile model
 # if train_mode == "BGR":
-train_f_path = None
-val_f_path = None
+# train_f_path = None
+# val_f_path = None
 
 # elif train_mode == "multi_modality":
-# train_f_path = ["/data/fangwen/mix_train2/"]
-# val_f_path = ["/data/fangwen/mix_validation2/"]
+train_f_path = ["/data/fangwen/mix_train/"]
+val_f_path = ["/data/fangwen/mix_validation/"]
 
 
-# m = Models.Segnet.segnet_indices_pooling(n_classes,
-#                                          input_height=input_height, input_width=input_width,
-#                                          nchannel=6, pre_train=False)
+m = Models.Segnet.segnet_indices_pooling(n_classes,
+                                         input_height=input_height, input_width=input_width,
+                                         nchannel=7, pre_train=True)
 
-m = Models.PSPnet.PSPNet50(input_shape=(480, 480, 3), n_labels=n_classes)
+# m = Models.PSPnet.PSPNet50(input_shape=(480, 480, 3), n_labels=n_classes)
 
 # m = Models.UNet.UNet(n_classes, input_height=input_height, input_width=input_width, nchannel=3)
 
 m.compile(loss="categorical_crossentropy",
-          optimizer=optimizers.SGD(lr=0.01, momentum=0.9),
+          optimizer=optimizers.SGD(lr=0.001, momentum=0.9),
           metrics=["accuracy"])
 
 G = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, train_mask_path,
@@ -50,11 +50,11 @@ G = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, t
                                            output_height=input_height, output_width=input_width, data_aug=True)
 
 if validate:
-    val_images_path = ["/data/fangwen/mix_validation2/rgb_img/"]
+    val_images_path = ["/data/fangwen/mix_validation/rgb_img/"]
 
-    val_segs_path = ["/data/fangwen/mix_validation2/3_greylabel/"]
+    val_segs_path = ["/data/fangwen/mix_validation/3_greylabel/"]
 
-    val_mask_path = ["/data/fangwen/mix_validation2/2_mask/"]
+    val_mask_path = ["/data/fangwen/mix_validation/2_mask/"]
 
 
     G2 = LoadBatches.imageSegmentationGenerator(val_images_path, val_segs_path, val_mask_path,
@@ -62,7 +62,7 @@ if validate:
                                                 batch_size, n_classes, input_height,input_width,
                                                 output_height=input_height, output_width=input_width, data_aug=False)
 
-    callbacks = [EarlyStopping(monitor='val_loss', patience=20),
+    callbacks = [EarlyStopping(monitor='val_loss', patience=50),
                  ModelCheckpoint(filepath=os.path.join(save_weights_path, 'weights.{epoch:02d}-{val_loss:.2f}.hdf5'),
                                     monitor='val_loss', save_best_only=True),
                  ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, min_lr=0.0001),
@@ -104,33 +104,33 @@ if validate:
 
     # ------------------------------------------------------------------------------------------
     # # median frequency balancing
-    # class_weights = np.array([209.763,  # Powerline
-    #                           0.202,  # Low Vegetation
-    #                           0.305,  # Impervious Surface
-    #                           8.547,  # Vehicles
-    #                           2.462,  # Urban Furniture
-    #                           0.657,  # Roof
-    #                           4.267,  # Facade
-    #                           2.088,  # Bush/Hedge
-    #                           0.417,  # Tree
-    #                           0.502,  # Dirt/Gravel
-    #                           7.249,  # Vertical Surface
-    #                           0.192]  # Void
-    #                          )
-
-    class_weights = np.array([201.791,  # Powerline
-                              0.0701,  # Low Vegetation
-                              0.122,  # Impervious Surface
-                              3.126,  # Vehicles
-                              0.924,  # Urban Furniture
-                              0.186,  # Roof
-                              1.434,  # Facade
-                              1.088,  # Bush/Hedge
-                              0.138,  # Tree
-                              0.117,  # Dirt/Gravel
-                              10.019,  # Vertical Surface
-                              0.001]  # Void
+    class_weights = np.array([209.763,  # Powerline
+                              0.202,  # Low Vegetation
+                              0.305,  # Impervious Surface
+                              8.547,  # Vehicles
+                              2.462,  # Urban Furniture
+                              0.657,  # Roof
+                              4.267,  # Facade
+                              2.088,  # Bush/Hedge
+                              0.417,  # Tree
+                              0.502,  # Dirt/Gravel
+                              7.249,  # Vertical Surface
+                              0.192]  # Void
                              )
+
+    # class_weights = np.array([201.791,  # Powerline
+    #                           0.0701,  # Low Vegetation
+    #                           0.122,  # Impervious Surface
+    #                           3.126,  # Vehicles
+    #                           0.924,  # Urban Furniture
+    #                           0.186,  # Roof
+    #                           1.434,  # Facade
+    #                           1.088,  # Bush/Hedge
+    #                           0.138,  # Tree
+    #                           0.117,  # Dirt/Gravel
+    #                           10.019,  # Vertical Surface
+    #                           0.001]  # Void
+    #                          )
 
     m.fit_generator(G,
                     steps_per_epoch=15922//batch_size,

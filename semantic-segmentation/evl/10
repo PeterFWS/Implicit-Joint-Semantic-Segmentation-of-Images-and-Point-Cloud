@@ -1,0 +1,23 @@
+39.8705944983% 3D points (5cm density point cloud) are not evaluated due to occlusion
+24072021 pixels processed
+Total accuracy : 40.8890221556%
+Kappa: 0.2645353806982999
+
+                    precision    recall  f1-score   support
+         PowerLine       0.00      0.00      0.00       571
+    Low Vegetation       0.90      0.41      0.56  11183823
+Impervious Surface       0.74      0.28      0.40   4395717
+          Vehicles       0.00      0.00      0.00     88079
+   Urban Furniture       0.22      0.00      0.00    471146
+              Roof       0.34      0.91      0.49   2817605
+            Facade       0.98      0.00      0.00    534588
+        Bush/Hedge       0.02      0.01      0.01    189466
+              Tree       0.22      0.01      0.01   1192986
+       Dirt/Gravel       0.16      0.52      0.24   2943442
+  Vertical Surface       0.00      0.00      0.00    254598
+              Void       0.00      0.00      0.00         0
+
+         micro avg       0.41      0.41      0.41  24072021
+         macro avg       0.30      0.18      0.14  24072021
+      weighted avg       0.65      0.41      0.42  24072021
+

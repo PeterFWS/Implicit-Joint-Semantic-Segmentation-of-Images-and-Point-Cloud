@@ -137,7 +137,7 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
         count = 0
         for folder_path in f_folders:
             # print(folder_path)
-            if folder_path.split('/')[-2] == "f_5":
+            if folder_path.split('/')[-2] == "f_68":
                 f_img_path = os.path.join(folder_path, im_path.split('/')[-1])
                 f_img = tifffile.imread(f_img_path).astype(np.float32)
                 where_are_NaNs = np.isnan(f_img)

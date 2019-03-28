@@ -4,18 +4,18 @@ from tqdm import tqdm
 from matplotlib.ticker import FuncFormatter
 from open3d import *
 
-pt_data_train = np.loadtxt("/data/fangwen/data/data_splits_5cm_onlylabel/train_xyz_y.txt")
-pt_data_test = np.loadtxt("/data/fangwen/data/data_splits_5cm_onlylabel/val_xyz_y.txt")
-pt_data_val = np.loadtxt("/data/fangwen/data/data_splits_5cm_onlylabel/test_xyz_y.txt")
+pt_data_train = np.loadtxt("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Data_11_1_19_5cm/train_xyz_y.txt")
+pt_data_test = np.loadtxt("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Data_11_1_19_5cm/val_xyz_y.txt")
+pt_data_val = np.loadtxt("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/Data_11_1_19_5cm/test_xyz_y.txt")
 
 
 data = np.concatenate((pt_data_train[:, :3], pt_data_test[:, :3], pt_data_val[:, :3]))
 label = np.concatenate((pt_data_train[:, 3], pt_data_test[:, 3], pt_data_val[:, 3]))
 
 
-l1 = np.loadtxt("/data/fangwen/data/data_splits_10cm/y_10cm_train.txt")
-l2 = np.loadtxt("/data/fangwen/data/data_splits_10cm/y_10cm_val.txt")
-l3 = np.loadtxt("/data/fangwen/data/data_splits_10cm/y_10cm_test.txt")
+l1 = np.loadtxt("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/features_dense_LiDAR_cloud_10cm/data_splits/y_10cm_train.txt")
+l2 = np.loadtxt("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/features_dense_LiDAR_cloud_10cm/data_splits/y_10cm_val.txt")
+l3 = np.loadtxt("/run/user/1001/gvfs/smb-share:server=141.58.125.9,share=s-platte/ShuFangwen/data/features_dense_LiDAR_cloud_10cm/data_splits/y_10cm_test.txt")
 label2 = np.concatenate((l1, l2, l3))
 
 

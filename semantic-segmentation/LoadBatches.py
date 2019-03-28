@@ -47,7 +47,7 @@ def get_random_pos(img_shape, window_shape=(512, 512)):
     return x1, x2, y1, y2
 
 
-def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normalization", rotation_index=None, random_crop=None,
+def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="sub_mean", rotation_index=None, random_crop=None,
                 data_aug=False):
     # read mask
     mask = cv2.imread(mask_path, 0)
@@ -64,7 +64,7 @@ def getImageArr(im_path, mask_path, f_folders, width, height, imgNorm="normaliza
         else:
             img = random_brightness(img)
 
-    attacth_HSV = False
+    attacth_HSV = True
     if attacth_HSV is not False:
         # transfer color space
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype(np.float32)

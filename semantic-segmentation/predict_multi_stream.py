@@ -39,7 +39,7 @@ f_path = "/data/fangwen/mix_test/"
 
 m = Models.testNet.testNet(nClasses=n_classes, input_height=480, input_width=480)
 
-m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/5/weights.02-1.51.hdf5")
+m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/weights.11-3.32.hdf5")
 
 assert images_path[-1] == '/'
 assert masks_path[-1] == '/'

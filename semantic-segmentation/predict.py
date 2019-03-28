@@ -40,22 +40,22 @@ output_width = input_width
 # train_mode = "multi_modality"
 # ##################
 # if train_mode == "BGR":
-f_path = None
+# f_path = None
 
 #
 # elif train_mode == "multi_modality":
 #     nchannel = 4
 #
-# f_path = "/data/fangwen/mix_test/"
+f_path = "/data/fangwen/mix_test/"
 
 
-# m = Models.Segnet.segnet_indices_pooling(n_classes,
-#                                          input_height=input_height, input_width=input_width,
-#                                          nchannel=6, pre_train=False)
+m = Models.Segnet.segnet_indices_pooling(n_classes,
+                                         input_height=input_height, input_width=input_width,
+                                         nchannel=7, pre_train=False)
 
-m = Models.PSPnet.PSPNet50(input_shape=(480, 480, 3), n_labels=n_classes)
+# m = Models.PSPnet.PSPNet50(input_shape=(480, 480, 3), n_labels=n_classes)
 
-m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/10/weights.10-1.44.hdf5")
+m.load_weights("/home/fangwen/ShuFangwen/source/image-segmentation-keras/weights/weights.56-1.99.hdf5")
 
 assert images_path[-1] == '/'
 assert masks_path[-1] == '/'
@@ -93,6 +93,6 @@ for _ in range(0, len(images)):
         seg_img[:, :, 1] += ((pr[:, :] == c) * (palette[c][1])).astype('uint8')
         seg_img[:, :, 2] += ((pr[:, :] == c) * (palette[c][2])).astype('uint8')
     seg_img = cv2.resize(seg_img, (input_width, input_height))
-    save_path = "/data/fangwen/predictions_baseline10"
+    save_path = "/data/fangwen/predictions_baseline5"
     make_if_not_exists(save_path)
     cv2.imwrite(os.path.join(save_path, imgName.split("/")[-1]), seg_img)

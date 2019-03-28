@@ -311,7 +311,7 @@ def evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, pa
 
 if __name__ == "__main__":
 
-    path_predictions = "/data/fangwen/prediction_late_average_epoch4/"
+    path_predictions = "/data/fangwen/prediction_7/"
     path_groundtruths = "/data/fangwen/mix_test/3_greylabel/"
     path_mask = "/data/fangwen/mix_test/2_mask/"
     path_index = "/data/fangwen/mix_test/5_index/"
@@ -321,5 +321,8 @@ if __name__ == "__main__":
     # evaluation_2d(path_predictions, path_groundtruths, path_mask, ignore_void=True)
 
     evaluation_3d(path_predictions, path_groundtruths, path_mask, path_index, path_pointcloud_label, save_3D=False)
+
+
+
 
 

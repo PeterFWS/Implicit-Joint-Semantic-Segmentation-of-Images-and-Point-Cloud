@@ -1,0 +1,51 @@
+----------------------------2D------------------------------
+void pixels in 2D image space are ignored
+
+819196417 pixels processed
+Total accuracy : 50.8085988125%
+Kappa: 0.38238688133647214
+
+                    precision    recall  f1-score   support
+         PowerLine       0.00      0.00      0.00    323830
+    Low Vegetation       0.64      0.80      0.72 258547649
+Impervious Surface       0.70      0.45      0.55 184745122
+          Vehicles       0.16      0.00      0.01   6180025
+   Urban Furniture       0.17      0.01      0.02  28955142
+              Roof       0.74      0.47      0.58 123466217
+            Facade       0.70      0.07      0.12  26140858
+        Bush/Hedge       0.12      0.00      0.00  17300015
+              Tree       0.31      0.26      0.28 105798985
+       Dirt/Gravel       0.18      0.64      0.28  57954472
+  Vertical Surface       0.00      0.00      0.00   9784102
+              Void       0.00      0.00      0.00         0
+
+         micro avg       0.51      0.51      0.51 819196417
+         macro avg       0.31      0.23      0.21 819196417
+      weighted avg       0.56      0.51      0.50 819196417
+
+
+----------------------------3D------------------------------
+void pixels in 2D image space are ignored
+
+39.8705944983% 3D points (5cm density point cloud) are not evaluated due to occlusion
+24072021 pixels processed
+Total accuracy : 63.791631787%
+Kappa: 0.4907682499083241
+
+                    precision    recall  f1-score   support
+         PowerLine       0.00      0.00      0.00       571
+    Low Vegetation       0.82      0.85      0.84  11183823
+Impervious Surface       0.73      0.48      0.58   4395717
+          Vehicles       0.20      0.00      0.00     88079
+   Urban Furniture       0.24      0.01      0.01    471146
+              Roof       0.82      0.48      0.61   2817605
+            Facade       0.90      0.04      0.08    534588
+        Bush/Hedge       0.03      0.00      0.00    189466
+              Tree       0.12      0.16      0.14   1192986
+       Dirt/Gravel       0.35      0.73      0.47   2943442
+  Vertical Surface       0.00      0.00      0.00    254598
+              Void       0.00      0.00      0.00         0
+
+         micro avg       0.64      0.64      0.64  24072021
+         macro avg       0.35      0.23      0.23  24072021
+      weighted avg       0.68      0.64      0.63  24072021
