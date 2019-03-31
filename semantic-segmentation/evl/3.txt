@@ -52,8 +52,6 @@ Impervious Surface       0.84      0.29      0.43 184745122
 
 
 ----------------------------3D------------------------------
-void pixels in 2D image space are ignored
-
 39.8705944983% 3D points (5cm density point cloud) are not evaluated due to occlusion
 24072021 pixels processed
 Total accuracy : 31.538835065%

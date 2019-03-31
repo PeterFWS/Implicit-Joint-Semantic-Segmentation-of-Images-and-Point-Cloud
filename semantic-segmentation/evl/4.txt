@@ -1,4 +1,10 @@
 ----------------------------2D------------------------------
+void pixels in 2D image space are NOT ignored
+1234944000 pixels processed
+Total accuracy : 33.7037678632%
+Kappa: 0.25481376788049154
+
+----------------------------2D------------------------------
 void pixels in 2D image space are ignored
 
 819196417 pixels processed
@@ -22,7 +28,6 @@ Impervious Surface       0.70      0.45      0.55 184745122
          micro avg       0.51      0.51      0.51 819196417
          macro avg       0.31      0.23      0.21 819196417
       weighted avg       0.56      0.51      0.50 819196417
-
 
 ----------------------------3D------------------------------
 void pixels in 2D image space are ignored

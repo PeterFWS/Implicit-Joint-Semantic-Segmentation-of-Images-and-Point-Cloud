@@ -1,3 +1,19 @@
+----------------------------2D------------------------------
+void pixels in 2D image space are NOT ignored
+1234944000 pixels processed
+Total accuracy : 62.1794814988%
+Kappa: 0.516584553312971
+
+
+
+----------------------------2D------------------------------
+void pixels in 2D image space are ignored
+819196417 pixels processed
+Total accuracy : 43.6674555182%
+Kappa: 0.3149000321337442
+
+
+----------------------------3D------------------------------
 39.8705944983% 3D points (5cm density point cloud) are not evaluated due to occlusion
 24072021 pixels processed
 Total accuracy : 46.7523561898%
