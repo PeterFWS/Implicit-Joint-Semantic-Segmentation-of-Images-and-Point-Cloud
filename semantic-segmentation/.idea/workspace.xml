@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b81d247b-6b54-4229-98ce-888a61b5e110" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation.py" beforeDir="false" afterPath="$PROJECT_DIR$/evaluation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/0.txt" beforeDir="false" afterPath="$PROJECT_DIR$/evl/0.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/evl/1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/10" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/11.txt" beforeDir="false" afterPath="$PROJECT_DIR$/evl/11.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/evl/2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/evl/3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/4.txt" beforeDir="false" afterPath="$PROJECT_DIR$/evl/4.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/6" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/7" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/8" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/evl/9" beforeDir="false" />
-    </list>
+    <list default="true" id="b81d247b-6b54-4229-98ce-888a61b5e110" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +10,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/evaluation.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="201">
@@ -43,20 +29,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/evl/11.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="21" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/evl/10.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="22" lean-forward="true" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="22" />
+            <state relative-caret-position="225">
+              <caret line="15" column="59" lean-forward="true" selection-start-line="15" selection-start-column="59" selection-end-line="15" selection-end-column="59" />
             </state>
           </provider>
         </entry>
@@ -86,9 +63,9 @@
         <option value="$PROJECT_DIR$/evl/7.txt" />
         <option value="$PROJECT_DIR$/evl/8.txt" />
         <option value="$PROJECT_DIR$/evl/9.txt" />
-        <option value="$PROJECT_DIR$/evl/11.txt" />
         <option value="$PROJECT_DIR$/evl/10.txt" />
         <option value="$PROJECT_DIR$/evaluation.py" />
+        <option value="$PROJECT_DIR$/evl/11.txt" />
       </list>
     </option>
   </component>
@@ -193,6 +170,14 @@
       <option name="presentableId" value="Default" />
       <updated>1548926495800</updated>
     </task>
+    <task id="LOCAL-00001" summary="UPDATE">
+      <created>1554038514073</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1554038514073</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -204,7 +189,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32891566" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5674699" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.5674699" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -219,6 +204,10 @@
       <window_info anchor="right" id="R Graphics" order="3" />
       <window_info anchor="right" id="R Packages" order="4" />
     </layout>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="UPDATE" />
+    <option name="LAST_COMMIT_MESSAGE" value="UPDATE" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Models/TernausNet.py">
@@ -355,20 +344,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/evl/11.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="21" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/evl/10.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="22" lean-forward="true" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/evaluation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="201">
@@ -383,6 +358,20 @@
             <element signature="e#3944#6733#0" />
             <element signature="e#6890#12688#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/evl/10.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="22" lean-forward="true" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/evl/11.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="59" lean-forward="true" selection-start-line="15" selection-start-column="59" selection-end-line="15" selection-end-column="59" />
         </state>
       </provider>
     </entry>
