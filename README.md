@@ -1,5 +1,5 @@
 ## Implicit Joint Semantic Segmentation of Images and Point Cloud
-##### keywords: Deep learning, semantic segmentation, ALS point cloud, aerial imagery
+##### keywords: Deep learning, semantic segmentation, ALS point cloud, aerial imagery, multi-modal features
 ```
 Master Thesis at Insititute of Photogrammetry (Ifp), University of Stuttgart, Germany
 Author: Fangwen Shu
