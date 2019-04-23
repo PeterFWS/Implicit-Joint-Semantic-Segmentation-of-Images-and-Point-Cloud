@@ -1,4 +1,4 @@
-## Implicit Joint Semantic Segmentation of Images and Point Cloud
+# Implicit Joint Semantic Segmentation of Images and Point Cloud
 ##### keywords: Deep learning, semantic segmentation, ALS point cloud, aerial imagery, multi-modal features
 ```
 Master Thesis at Insititute of Photogrammetry (Ifp), University of Stuttgart, Germany
@@ -12,13 +12,6 @@ semantic segmentation: python2
 
 End in 01.04.2018
 ```
-## Implemented Pipeline
-In order to avoid feeding noisy or non-uniformly sampled point cloud into 3D CNN, in this work, a novel fusion of the labeled LiDAR point cloud and oriented aerial imagery in 2D space is hypothesized, in this way, we can leverage image-based semantic segmentation and create a multi-view, multi-modal and multi-scale segmentation classifier. Thereafter through a fast back-projection of the 2D semantic result to 3D point cloud, we achieve a joint semantic segmentation of imagery and point cloud. <br>
-The proposed method is validated against to our own dataset: the oriented high-resolution oblique and nadir aerial imagery of village Hessigheim, Germany, captured by unmanned aerial vehicle (UAV), as well as the LiDAR point cloud obtained by the airborne laser scanning (ALS) device. The high resolution aerial images offer views of diverse urban scene, with useful geometric characteristics derived from point cloud, it is a potential combination to set up a big dataset for training a well-engineered deep CNN. 
-
-<img src="https://github.com/PeterFWS/masterThesis_BK/blob/master/imgs/pipline.png" width="700">
-<img src="https://github.com/PeterFWS/masterThesis_BK/blob/master/imgs/list_of_classes.PNG" width="700">
-
 
 ## Configuration of conda env
 
