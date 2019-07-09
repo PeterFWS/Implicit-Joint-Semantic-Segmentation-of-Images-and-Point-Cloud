@@ -11,6 +11,7 @@ pre-processing: python3
 semantic segmentation: python2
 
 End in 01.04.2018
+https://www.ifp.uni-stuttgart.de/lehre/masterarbeiten/581-shu/
 ```
 
 ## Configuration of conda env
