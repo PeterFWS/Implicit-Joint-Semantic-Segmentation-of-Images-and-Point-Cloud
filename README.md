@@ -1,7 +1,7 @@
 # Implicit Joint Semantic Segmentation of Images and Point Cloud
 ##### keywords: Deep learning, semantic segmentation, ALS point cloud, aerial imagery, multi-modal features
 
-Website at ifp, Uni Stuttgart: https://www.ifp.uni-stuttgart.de/lehre/masterarbeiten/581-shu/
+Website at Ifp, Uni Stuttgart: https://www.ifp.uni-stuttgart.de/lehre/masterarbeiten/581-shu/
 
 ```
 Master Thesis at Insititute of Photogrammetry (Ifp), University of Stuttgart, Germany
