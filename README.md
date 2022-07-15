@@ -1,7 +1,8 @@
 # Implicit Joint Semantic Segmentation of Images and Point Cloud
-##### keywords: Deep learning, semantic segmentation, ALS point cloud, aerial imagery, multi-modal features
 
-Website at Ifp, Uni Stuttgart: https://www.ifp.uni-stuttgart.de/lehre/masterarbeiten/581-shu/
+Website: https://www.ifp.uni-stuttgart.de/lehre/masterarbeiten/581-shu/
+
+#### keywords: Deep learning, semantic segmentation, ALS point cloud, aerial imagery, multi-modal features
 
 ```
 Master Thesis at Insititute of Photogrammetry (Ifp), University of Stuttgart, Germany
@@ -16,105 +17,36 @@ semantic segmentation: python2
 End in 01.04.2019
 ```
 
-## Configuration of conda env
+This is a student work, the prototype code is open-sourced in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-./conda_env/py2.yml <br>
-./conda_env/py3.yml <br>
+## The Workflow:
+ <img src="image/workflow.png" width="400">
+
+### Ground Truth Aerial Imagery and LiDAR Point Cloud:
+ <img src="image/groundtruth.png" width="400">
+
+ <img src="image/groundtruth_lidar.png" width="400">
+
+## Courtesy for the Dataset:
+
+The Hessigheim 3D (H3D) benchmark on semantic segmentation of high-resolution 3D point clouds and textured meshes from UAV LiDAR and Multi-View-Stereo.
+
+https://ifpwww.ifp.uni-stuttgart.de/benchmark/hessigheim/Default.aspx
+
+Please cite if you use the dataset for your research:
 
 ```
-conda env export > py2.yml
-conda env create -f py2.yml
+@article{KOLLE2021100001,
+         title = {The Hessigheim 3D (H3D) benchmark on semantic segmentation of high-resolution 3D point clouds and textured meshes from UAV LiDAR and Multi-View-Stereo},
+         journal = {ISPRS Open Journal of Photogrammetry and Remote Sensing},
+         volume = {1},
+         pages = {11},
+         year = {2021},
+         issn = {2667-3932},
+         doi = {https://doi.org/10.1016/j.ophoto.2021.100001},
+         url = {https://www.sciencedirect.com/science/article/pii/S2667393221000016},
+         author = {Michael Kölle and Dominik Laupheimer and Stefan Schmohl and Norbert Haala and Franz Rottensteiner and Jan Dirk Wegner and Hugo Ledoux},
+} 
 ```
-
-
-## Pre-processing part
-
-#### ./main.py
-
-pre-processing code for aerial imagery and LiDAR point cloud, including 3D-2D projection, frustum culling, 
-Hidden-point-removal (HPR), gird interpolation and operator of Morphology.
-
-
-#### ./utilities.py
-
-functions of each of algorithms implemented in pre-processing.
-
-
-#### ./myClasses.py
-
-some classes related to frustum culling, traslated from C++ code, detailed explanation in OpenGL.
-
-
-#### ./visualization.py
-
-functions used to visualize data. 
-
-
-#### ./statistics.py
-
-functions used to calculate statistic information of the data.
-
-
-#### ./Generation_depth_img.py
-
-code for generating depth image.
-
-## Semantic segmentation part
-
-#### ./version_playground
-
-Old code backup, including point splatting achieved in C++ if you needed.<br>
-
-
-#### ./semantic-segmentation/Models/
-
-* testNet (multi-stream costume CNN based on SegNet, early or late fusion, multi-input stream)
-* SegNet (main model used in thesis)
-* PSPnet (runnable, one of baselines)
-* FCN8,32 (runnable)
-* U-net (runnable)
-* TernausNet (runnable)
-
-
-#### ./semantic-segmentation/board/
-
-where you save tensorboard file.
-
-
-#### ./semantic-segmentation/data/
-
-where you save train/validation/test-set and VGG pre-treained weights.
-
-
-#### ./semantic-segmentation/weights/
-
-where you save trained weights.
-
-
-#### ./semantic-segmentation/pytorch_code/
-
-some dirty code of SegNet and pre-processing implemented in pytorch. 
-
-### Code for training/prediction/evaluation:
-
-#### ./semantic-segmentation/train.py
-#### ./semantic-segmentation/prediction.py
-
-train and prediction your data.
-
-
-#### ./semantic-segmentation/LoadBatches.py
-
-data generator with pre-processing such as normalization, random rotation, random cropping <br>
-randomly brightness jitter, contrast normalization..
-
-
-#### ./semantic-segmentation/chip.py
-
-cropping images if you need.
-
-
-#### ./semantic-segmentation/evaluation.py
-
-evaluation semantic result in 2D and 3D space.
-
